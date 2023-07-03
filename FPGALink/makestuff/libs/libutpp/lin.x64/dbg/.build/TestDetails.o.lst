@@ -1,0 +1,142 @@
+   1              		.file	"TestDetails.cpp"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libutpp" "TestDetails.cpp"
+   5              		.align 2
+   6              		.globl	_ZN8UnitTest11TestDetailsC2EPKcS2_S2_i
+   8              	_ZN8UnitTest11TestDetailsC2EPKcS2_S2_i:
+   9              	.LFB1:
+  10              		.file 1 "TestDetails.cpp"
+   1:TestDetails.cpp **** #include "TestDetails.h"
+   2:TestDetails.cpp **** 
+   3:TestDetails.cpp **** namespace UnitTest {
+   4:TestDetails.cpp **** 
+   5:TestDetails.cpp **** TestDetails::TestDetails(char const* testName_, char const* suiteName_, char const* filename_, int 
+  11              		.loc 1 5 1
+  12              		.cfi_startproc
+  13 0000 F30F1EFA 		endbr64
+  14 0004 55       		pushq	%rbp
+  15              		.cfi_def_cfa_offset 16
+  16              		.cfi_offset 6, -16
+  17 0005 4889E5   		movq	%rsp, %rbp
+  18              		.cfi_def_cfa_register 6
+  19 0008 48897DF8 		movq	%rdi, -8(%rbp)
+  20 000c 488975F0 		movq	%rsi, -16(%rbp)
+  21 0010 488955E8 		movq	%rdx, -24(%rbp)
+  22 0014 48894DE0 		movq	%rcx, -32(%rbp)
+  23 0018 448945DC 		movl	%r8d, -36(%rbp)
+  24              	.LBB2:
+   6:TestDetails.cpp ****     : suiteName(suiteName_)
+  25              		.loc 1 6 7
+  26 001c 488B45F8 		movq	-8(%rbp), %rax
+  27 0020 488B55E8 		movq	-24(%rbp), %rdx
+  28 0024 488910   		movq	%rdx, (%rax)
+   7:TestDetails.cpp ****     , testName(testName_)
+  29              		.loc 1 7 7
+  30 0027 488B45F8 		movq	-8(%rbp), %rax
+  31 002b 488B55F0 		movq	-16(%rbp), %rdx
+  32 002f 48895008 		movq	%rdx, 8(%rax)
+   8:TestDetails.cpp ****     , filename(filename_)
+  33              		.loc 1 8 7
+  34 0033 488B45F8 		movq	-8(%rbp), %rax
+  35 0037 488B55E0 		movq	-32(%rbp), %rdx
+  36 003b 48895010 		movq	%rdx, 16(%rax)
+   9:TestDetails.cpp ****     , lineNumber(lineNumber_)
+  37              		.loc 1 9 7
+  38 003f 488B45F8 		movq	-8(%rbp), %rax
+  39 0043 8B55DC   		movl	-36(%rbp), %edx
+  40 0046 895018   		movl	%edx, 24(%rax)
+  41              	.LBE2:
+  10:TestDetails.cpp **** {
+  11:TestDetails.cpp **** }
+  42              		.loc 1 11 1
+  43 0049 90       		nop
+  44 004a 5D       		popq	%rbp
+  45              		.cfi_def_cfa 7, 8
+  46 004b C3       		ret
+  47              		.cfi_endproc
+  48              	.LFE1:
+  50              		.globl	_ZN8UnitTest11TestDetailsC1EPKcS2_S2_i
+  51              		.set	_ZN8UnitTest11TestDetailsC1EPKcS2_S2_i,_ZN8UnitTest11TestDetailsC2EPKcS2_S2_i
+  52              		.align 2
+  53              		.globl	_ZN8UnitTest11TestDetailsC2ERKS0_i
+  55              	_ZN8UnitTest11TestDetailsC2ERKS0_i:
+  56              	.LFB4:
+  12:TestDetails.cpp **** 
+  13:TestDetails.cpp **** TestDetails::TestDetails(const TestDetails& details, int lineNumber_)
+  57              		.loc 1 13 1
+  58              		.cfi_startproc
+  59 004c F30F1EFA 		endbr64
+  60 0050 55       		pushq	%rbp
+  61              		.cfi_def_cfa_offset 16
+  62              		.cfi_offset 6, -16
+  63 0051 4889E5   		movq	%rsp, %rbp
+  64              		.cfi_def_cfa_register 6
+  65 0054 48897DF8 		movq	%rdi, -8(%rbp)
+  66 0058 488975F0 		movq	%rsi, -16(%rbp)
+  67 005c 8955EC   		movl	%edx, -20(%rbp)
+  68              	.LBB3:
+  14:TestDetails.cpp ****     : suiteName(details.suiteName)
+  69              		.loc 1 14 25
+  70 005f 488B45F0 		movq	-16(%rbp), %rax
+  71 0063 488B10   		movq	(%rax), %rdx
+  72              		.loc 1 14 7
+  73 0066 488B45F8 		movq	-8(%rbp), %rax
+  74 006a 488910   		movq	%rdx, (%rax)
+  15:TestDetails.cpp ****     , testName(details.testName)
+  75              		.loc 1 15 24
+  76 006d 488B45F0 		movq	-16(%rbp), %rax
+  77 0071 488B5008 		movq	8(%rax), %rdx
+  78              		.loc 1 15 7
+  79 0075 488B45F8 		movq	-8(%rbp), %rax
+  80 0079 48895008 		movq	%rdx, 8(%rax)
+  16:TestDetails.cpp ****     , filename(details.filename)
+  81              		.loc 1 16 24
+  82 007d 488B45F0 		movq	-16(%rbp), %rax
+  83 0081 488B5010 		movq	16(%rax), %rdx
+  84              		.loc 1 16 7
+  85 0085 488B45F8 		movq	-8(%rbp), %rax
+  86 0089 48895010 		movq	%rdx, 16(%rax)
+  17:TestDetails.cpp ****     , lineNumber(lineNumber_)
+  87              		.loc 1 17 7
+  88 008d 488B45F8 		movq	-8(%rbp), %rax
+  89 0091 8B55EC   		movl	-20(%rbp), %edx
+  90 0094 895018   		movl	%edx, 24(%rax)
+  91              	.LBE3:
+  18:TestDetails.cpp **** {
+  19:TestDetails.cpp **** }
+  92              		.loc 1 19 1
+  93 0097 90       		nop
+  94 0098 5D       		popq	%rbp
+  95              		.cfi_def_cfa 7, 8
+  96 0099 C3       		ret
+  97              		.cfi_endproc
+  98              	.LFE4:
+ 100              		.globl	_ZN8UnitTest11TestDetailsC1ERKS0_i
+ 101              		.set	_ZN8UnitTest11TestDetailsC1ERKS0_i,_ZN8UnitTest11TestDetailsC2ERKS0_i
+ 102              	.Letext0:
+ 103              		.file 2 "TestDetails.h"
+ 699              		.section	.note.gnu.property,"a"
+ 700              		.align 8
+ 701 0000 04000000 		.long	1f - 0f
+ 702 0004 10000000 		.long	4f - 1f
+ 703 0008 05000000 		.long	5
+ 704              	0:
+ 705 000c 474E5500 		.string	"GNU"
+ 706              	1:
+ 707              		.align 8
+ 708 0010 020000C0 		.long	0xc0000002
+ 709 0014 04000000 		.long	3f - 2f
+ 710              	2:
+ 711 0018 03000000 		.long	0x3
+ 712              	3:
+ 713 001c 00000000 		.align 8
+ 714              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 TestDetails.cpp
+     /tmp/ccXkNdPm.s:8      .text:0000000000000000 _ZN8UnitTest11TestDetailsC2EPKcS2_S2_i
+     /tmp/ccXkNdPm.s:8      .text:0000000000000000 _ZN8UnitTest11TestDetailsC1EPKcS2_S2_i
+     /tmp/ccXkNdPm.s:55     .text:000000000000004c _ZN8UnitTest11TestDetailsC2ERKS0_i
+     /tmp/ccXkNdPm.s:55     .text:000000000000004c _ZN8UnitTest11TestDetailsC1ERKS0_i
+
+NO UNDEFINED SYMBOLS

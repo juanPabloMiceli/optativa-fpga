@@ -1,0 +1,51 @@
+v 4
+file . "perceptron_fpga/tests/mnist_model/tf_mnist_inputs_9.vhdl" "35c08979c8c1587a99250b04b59935094a0e456d" "20230703053943.948":
+  package mnist_inputs_9 at 4( 56) + 0 on 520 body;
+  package body mnist_inputs_9 at 15( 296) + 0 on 521;
+file . "perceptron_fpga/tests/mnist_model/tf_mnist_inputs_7.vhdl" "267d869fe435bc7190d94b6cdec3b6b06907bb86" "20230703053943.947":
+  package mnist_inputs_7 at 4( 56) + 0 on 518 body;
+  package body mnist_inputs_7 at 15( 296) + 0 on 519;
+file . "perceptron_fpga/src/neural_network/step_activation.vhdl" "94ad1f1d494b27b53d06a35e7777deaa85c2007e" "20230702215742.304":
+  entity step_activation at 1( 0) + 0 on 150;
+  architecture logic of step_activation at 12( 219) + 0 on 151;
+file . "perceptron_fpga/tests/neural_network/perceptron_matrix_test.vhdl" "1870c2357ec2228c685f1e6c1b527bb96b790783" "20230703053943.945":
+  entity perceptron_matrix_test at 1( 0) + 0 on 514;
+  architecture behavior of perceptron_matrix_test at 12( 216) + 0 on 515;
+file . "perceptron_fpga/tests/neural_network/matrix_weights.vhdl" "47955d8475aac94866deaee936540fb0ca8083c5" "20230703053943.944":
+  package matrix_weights at 2( 1) + 0 on 512 body;
+  package body matrix_weights at 13( 242) + 0 on 513;
+file . "perceptron_fpga/tests/neural_network/perceptron_row_test.vhdl" "2c46446d5814e848c5e380a165c7f90273ab4a18" "20230703053943.943":
+  entity perceptron_row_test at 1( 0) + 0 on 510;
+  architecture behavior of perceptron_row_test at 11( 174) + 0 on 511;
+file . "perceptron_fpga/tests/neural_network/perceptron_test.vhdl" "708f4e0bd13e1417efa38a5caf98c414a2a168e4" "20230703053943.942":
+  entity perceptron_test at 1( 0) + 0 on 508;
+  architecture behavior of perceptron_test at 12( 204) + 0 on 509;
+file . "perceptron_fpga/src/neural_network/perceptron_matrix.vhdl" "ac6a8c2aae67d99ce4c2ebfe6b02d327cc45eb8f" "20230703053943.939":
+  entity perceptron_matrix at 1( 0) + 0 on 502;
+  architecture logic of perceptron_matrix at 30( 1011) + 0 on 503;
+file . "perceptron_fpga/src/neural_network/perceptron_row.vhdl" "76e4b1753b4dfe097c58bbb1f91917f72f9d0cf6" "20230703053943.937":
+  entity perceptron_row at 1( 0) + 0 on 500;
+  architecture logic of perceptron_row at 22( 482) + 0 on 501;
+file . "perceptron_fpga/src/neural_network/perceptron.vhdl" "b68e7b61515e2fd91b0bf2d8a2d0cd2cd43b9456" "20230703053943.936":
+  entity perceptron at 1( 0) + 0 on 498;
+  architecture logic of perceptron at 21( 453) + 0 on 499;
+file . "perceptron_fpga/src/neural_network/perceptron_input.vhdl" "2e1b977a5d3fe76a79d433ab3bb033b9b3845d23" "20230703053943.935":
+  package perceptron_package at 1( 0) + 0 on 497;
+file . "perceptron_fpga/tests/mnist_model/mnist_inputs.vhdl" "79d6bc09e87f378c96721526ad799da3d17659d4" "20230703053944.008":
+  package mnist_inputs at 4( 58) + 0 on 524 body;
+  package body mnist_inputs at 15( 294) + 0 on 525;
+file . "perceptron_fpga/tests/mnist_model/mnist_model_test.vhdl" "9e7ec0e133f5210442e7746da7aa05e8d2bb77a0" "20230703053944.009":
+  entity mnist_model_test at 1( 0) + 0 on 526;
+  architecture behavior of mnist_model_test at 13( 238) + 0 on 527;
+file . "perceptron_fpga/tests/mnist_model/tf_mnist_inputs_5.vhdl" "1b2f69d32bcd25c63d979791720f404dbcf29032" "20230703053943.946":
+  package mnist_inputs_5 at 4( 56) + 0 on 516 body;
+  package body mnist_inputs_5 at 15( 296) + 0 on 517;
+file . "perceptron_fpga/tests/mnist_model/mnist_weights.vhdl" "16bebc9a7879b4498fb7e79b5b2b929baec52f69" "20230703053944.006":
+  package mnist_weights at 4( 58) + 0 on 522 body;
+  package body mnist_weights at 15( 297) + 0 on 523;
+file . "perceptron_fpga/src/mnist_model/output_to_digit.vhdl" "b9ce0bcab0922fed0c7ab39974d5f399f6d77f2d" "20230703053943.940":
+  entity output_to_digit at 1( 0) + 0 on 504;
+  architecture logic of output_to_digit at 14( 265) + 0 on 505;
+file . "perceptron_fpga/src/mnist_model/mnist_model.vhdl" "1826c590e460c27324540c9f88aef30cefda03be" "20230703053943.941":
+  entity mnist_model at 1( 0) + 0 on 506;
+  architecture logic of mnist_model at 18( 400) + 0 on 507;

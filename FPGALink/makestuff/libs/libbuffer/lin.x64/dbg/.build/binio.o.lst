@@ -1,0 +1,514 @@
+   1              		.file	"binio.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libbuffer" "binio.c"
+   5              		.section	.rodata
+   6              	.LC0:
+   7 0000 726200   		.string	"rb"
+   8              	.LC1:
+   9 0003 62756641 		.string	"bufAppendFromBinaryFile()"
+   9      7070656E 
+   9      6446726F 
+   9      6D42696E 
+   9      61727946 
+  10 001d 000000   		.align 8
+  11              	.LC2:
+  12 0020 62756641 		.string	"bufAppendFromBinaryFile(): Unexpectedly hit EOF after reading %lu bytes!"
+  12      7070656E 
+  12      6446726F 
+  12      6D42696E 
+  12      61727946 
+  13              		.text
+  14              		.globl	bufAppendFromBinaryFile
+  16              	bufAppendFromBinaryFile:
+  17              	.LFB4:
+  18              		.file 1 "binio.c"
+   1:binio.c       **** /*
+   2:binio.c       ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:binio.c       ****  *
+   4:binio.c       ****  * This program is free software: you can redistribute it and/or modify
+   5:binio.c       ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:binio.c       ****  * the Free Software Foundation, either version 3 of the License, or
+   7:binio.c       ****  * (at your option) any later version.
+   8:binio.c       ****  *
+   9:binio.c       ****  * This program is distributed in the hope that it will be useful,
+  10:binio.c       ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:binio.c       ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:binio.c       ****  * GNU Lesser General Public License for more details.
+  13:binio.c       ****  *
+  14:binio.c       ****  * You should have received a copy of the GNU Lesser General Public License
+  15:binio.c       ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:binio.c       ****  */
+  17:binio.c       **** #include <stdio.h>
+  18:binio.c       **** #include <liberror.h>
+  19:binio.c       **** #include "libbuffer.h"
+  20:binio.c       **** 
+  21:binio.c       **** DLLEXPORT(BufferStatus) bufAppendFromBinaryFile(
+  22:binio.c       **** 	struct Buffer *self, const char *fileName, const char **error)
+  23:binio.c       **** {
+  19              		.loc 1 23 1
+  20              		.cfi_startproc
+  21 0000 F30F1EFA 		endbr64
+  22 0004 55       		pushq	%rbp
+  23              		.cfi_def_cfa_offset 16
+  24              		.cfi_offset 6, -16
+  25 0005 4889E5   		movq	%rsp, %rbp
+  26              		.cfi_def_cfa_register 6
+  27 0008 4883EC50 		subq	$80, %rsp
+  28 000c 48897DC8 		movq	%rdi, -56(%rbp)
+  29 0010 488975C0 		movq	%rsi, -64(%rbp)
+  30 0014 488955B8 		movq	%rdx, -72(%rbp)
+  24:binio.c       **** 	BufferStatus retVal = BUF_SUCCESS;
+  31              		.loc 1 24 15
+  32 0018 C745D000 		movl	$0, -48(%rbp)
+  32      000000
+  25:binio.c       **** 	BufferStatus bStatus;
+  26:binio.c       **** 	size_t length;
+  27:binio.c       **** 	size_t actualLength;
+  28:binio.c       **** 	long ftellResult;
+  29:binio.c       **** 	const size_t currentLength = self->length;
+  33              		.loc 1 29 15
+  34 001f 488B45C8 		movq	-56(%rbp), %rax
+  35 0023 488B4008 		movq	8(%rax), %rax
+  36 0027 488945D8 		movq	%rax, -40(%rbp)
+  30:binio.c       **** 	FILE *file = fopen(fileName, "rb");
+  37              		.loc 1 30 15
+  38 002b 488B45C0 		movq	-64(%rbp), %rax
+  39 002f 488D1500 		leaq	.LC0(%rip), %rdx
+  39      000000
+  40 0036 4889D6   		movq	%rdx, %rsi
+  41 0039 4889C7   		movq	%rax, %rdi
+  42 003c E8000000 		call	fopen@PLT
+  42      00
+  43 0041 488945E0 		movq	%rax, -32(%rbp)
+  31:binio.c       **** 	if ( !file ) {
+  44              		.loc 1 31 5
+  45 0045 48837DE0 		cmpq	$0, -32(%rbp)
+  45      00
+  46 004a 752E     		jne	.L2
+  32:binio.c       **** 		errRenderStd(error);
+  47              		.loc 1 32 3
+  48 004c 488B45B8 		movq	-72(%rbp), %rax
+  49 0050 4889C7   		movq	%rax, %rdi
+  50 0053 E8000000 		call	errRenderStd@PLT
+  50      00
+  33:binio.c       **** 		errPrefix(error, "bufAppendFromBinaryFile()");
+  51              		.loc 1 33 3
+  52 0058 488B45B8 		movq	-72(%rbp), %rax
+  53 005c 488D1500 		leaq	.LC1(%rip), %rdx
+  53      000000
+  54 0063 4889D6   		movq	%rdx, %rsi
+  55 0066 4889C7   		movq	%rax, %rdi
+  56 0069 E8000000 		call	errPrefix@PLT
+  56      00
+  34:binio.c       **** 		FAIL(BUF_FOPEN, cleanup);
+  57              		.loc 1 34 3
+  58 006e C745D002 		movl	$2, -48(%rbp)
+  58      000000
+  59 0075 E98D0100 		jmp	.L3
+  59      00
+  60              	.L2:
+  35:binio.c       **** 	}
+  36:binio.c       **** 	if ( fseek(file, 0, SEEK_END) ) {
+  61              		.loc 1 36 7
+  62 007a 488B45E0 		movq	-32(%rbp), %rax
+  63 007e BA020000 		movl	$2, %edx
+  63      00
+  64 0083 BE000000 		movl	$0, %esi
+  64      00
+  65 0088 4889C7   		movq	%rax, %rdi
+  66 008b E8000000 		call	fseek@PLT
+  66      00
+  67              		.loc 1 36 5
+  68 0090 85C0     		testl	%eax, %eax
+  69 0092 742E     		je	.L4
+  37:binio.c       **** 		errRenderStd(error);
+  70              		.loc 1 37 3
+  71 0094 488B45B8 		movq	-72(%rbp), %rax
+  72 0098 4889C7   		movq	%rax, %rdi
+  73 009b E8000000 		call	errRenderStd@PLT
+  73      00
+  38:binio.c       **** 		errPrefix(error, "bufAppendFromBinaryFile()");
+  74              		.loc 1 38 3
+  75 00a0 488B45B8 		movq	-72(%rbp), %rax
+  76 00a4 488D1500 		leaq	.LC1(%rip), %rdx
+  76      000000
+  77 00ab 4889D6   		movq	%rdx, %rsi
+  78 00ae 4889C7   		movq	%rax, %rdi
+  79 00b1 E8000000 		call	errPrefix@PLT
+  79      00
+  39:binio.c       **** 		FAIL(BUF_FSEEK, cleanup);
+  80              		.loc 1 39 3
+  81 00b6 C745D003 		movl	$3, -48(%rbp)
+  81      000000
+  82 00bd E9450100 		jmp	.L3
+  82      00
+  83              	.L4:
+  40:binio.c       **** 	}
+  41:binio.c       **** 	ftellResult = ftell(file);
+  84              		.loc 1 41 16
+  85 00c2 488B45E0 		movq	-32(%rbp), %rax
+  86 00c6 4889C7   		movq	%rax, %rdi
+  87 00c9 E8000000 		call	ftell@PLT
+  87      00
+  88 00ce 488945E8 		movq	%rax, -24(%rbp)
+  42:binio.c       **** 	if ( ftellResult < 0 ) {
+  89              		.loc 1 42 5
+  90 00d2 48837DE8 		cmpq	$0, -24(%rbp)
+  90      00
+  91 00d7 792E     		jns	.L5
+  43:binio.c       **** 		errRenderStd(error);
+  92              		.loc 1 43 3
+  93 00d9 488B45B8 		movq	-72(%rbp), %rax
+  94 00dd 4889C7   		movq	%rax, %rdi
+  95 00e0 E8000000 		call	errRenderStd@PLT
+  95      00
+  44:binio.c       **** 		errPrefix(error, "bufAppendFromBinaryFile()");
+  96              		.loc 1 44 3
+  97 00e5 488B45B8 		movq	-72(%rbp), %rax
+  98 00e9 488D1500 		leaq	.LC1(%rip), %rdx
+  98      000000
+  99 00f0 4889D6   		movq	%rdx, %rsi
+ 100 00f3 4889C7   		movq	%rax, %rdi
+ 101 00f6 E8000000 		call	errPrefix@PLT
+ 101      00
+  45:binio.c       **** 		FAIL(BUF_FTELL, cleanup);
+ 102              		.loc 1 45 3
+ 103 00fb C745D004 		movl	$4, -48(%rbp)
+ 103      000000
+ 104 0102 E9000100 		jmp	.L3
+ 104      00
+ 105              	.L5:
+  46:binio.c       **** 	}
+  47:binio.c       **** 	length = (size_t)ftellResult;
+ 106              		.loc 1 47 9
+ 107 0107 488B45E8 		movq	-24(%rbp), %rax
+ 108 010b 488945F0 		movq	%rax, -16(%rbp)
+  48:binio.c       **** 	bStatus = bufAppendConst(self, 0x00, length, error);
+ 109              		.loc 1 48 12
+ 110 010f 488B4DB8 		movq	-72(%rbp), %rcx
+ 111 0113 488B55F0 		movq	-16(%rbp), %rdx
+ 112 0117 488B45C8 		movq	-56(%rbp), %rax
+ 113 011b BE000000 		movl	$0, %esi
+ 113      00
+ 114 0120 4889C7   		movq	%rax, %rdi
+ 115 0123 E8000000 		call	bufAppendConst@PLT
+ 115      00
+ 116 0128 8945D4   		movl	%eax, -44(%rbp)
+  49:binio.c       **** 	CHECK_STATUS(bStatus, bStatus, cleanup, "bufAppendFromBinaryFile()");
+ 117              		.loc 1 49 2
+ 118 012b 837DD400 		cmpl	$0, -44(%rbp)
+ 119 012f 7421     		je	.L6
+ 120              		.loc 1 49 2 is_stmt 0 discriminator 1
+ 121 0131 488B45B8 		movq	-72(%rbp), %rax
+ 122 0135 488D1500 		leaq	.LC1(%rip), %rdx
+ 122      000000
+ 123 013c 4889D6   		movq	%rdx, %rsi
+ 124 013f 4889C7   		movq	%rax, %rdi
+ 125 0142 E8000000 		call	errPrefix@PLT
+ 125      00
+ 126 0147 8B45D4   		movl	-44(%rbp), %eax
+ 127 014a 8945D0   		movl	%eax, -48(%rbp)
+ 128 014d E9B50000 		jmp	.L3
+ 128      00
+ 129              	.L6:
+  50:binio.c       **** 	rewind(file);
+ 130              		.loc 1 50 2 is_stmt 1
+ 131 0152 488B45E0 		movq	-32(%rbp), %rax
+ 132 0156 4889C7   		movq	%rax, %rdi
+ 133 0159 E8000000 		call	rewind@PLT
+ 133      00
+  51:binio.c       **** 	actualLength = fread(self->data + currentLength, 1, length, file);
+ 134              		.loc 1 51 27
+ 135 015e 488B45C8 		movq	-56(%rbp), %rax
+ 136 0162 488B10   		movq	(%rax), %rdx
+ 137              		.loc 1 51 34
+ 138 0165 488B45D8 		movq	-40(%rbp), %rax
+ 139 0169 488D3C02 		leaq	(%rdx,%rax), %rdi
+ 140              		.loc 1 51 17
+ 141 016d 488B55E0 		movq	-32(%rbp), %rdx
+ 142 0171 488B45F0 		movq	-16(%rbp), %rax
+ 143 0175 4889D1   		movq	%rdx, %rcx
+ 144 0178 4889C2   		movq	%rax, %rdx
+ 145 017b BE010000 		movl	$1, %esi
+ 145      00
+ 146 0180 E8000000 		call	fread@PLT
+ 146      00
+ 147 0185 488945F8 		movq	%rax, -8(%rbp)
+  52:binio.c       **** 	if ( actualLength != length ) {
+ 148              		.loc 1 52 5
+ 149 0189 488B45F8 		movq	-8(%rbp), %rax
+ 150 018d 483B45F0 		cmpq	-16(%rbp), %rax
+ 151 0191 7473     		je	.L10
+  53:binio.c       **** 		CHECK_STATUS(
+ 152              		.loc 1 53 3
+ 153 0193 488B45E0 		movq	-32(%rbp), %rax
+ 154 0197 4889C7   		movq	%rax, %rdi
+ 155 019a E8000000 		call	feof@PLT
+ 155      00
+ 156 019f 85C0     		testl	%eax, %eax
+ 157 01a1 7428     		je	.L7
+ 158              		.loc 1 53 3 is_stmt 0 discriminator 1
+ 159 01a3 488B55F8 		movq	-8(%rbp), %rdx
+ 160 01a7 488B45B8 		movq	-72(%rbp), %rax
+ 161 01ab 488D0D00 		leaq	.LC2(%rip), %rcx
+ 161      000000
+ 162 01b2 4889CE   		movq	%rcx, %rsi
+ 163 01b5 4889C7   		movq	%rax, %rdi
+ 164 01b8 B8000000 		movl	$0, %eax
+ 164      00
+ 165 01bd E8000000 		call	errRender@PLT
+ 165      00
+ 166 01c2 C745D005 		movl	$5, -48(%rbp)
+ 166      000000
+ 167 01c9 EB3C     		jmp	.L3
+ 168              	.L7:
+  54:binio.c       **** 			feof(file), BUF_FEOF, cleanup,
+  55:binio.c       **** 			"bufAppendFromBinaryFile(): Unexpectedly hit EOF after reading %lu bytes!", actualLength);
+  56:binio.c       **** 		if ( ferror(file) ) {
+ 169              		.loc 1 56 8 is_stmt 1
+ 170 01cb 488B45E0 		movq	-32(%rbp), %rax
+ 171 01cf 4889C7   		movq	%rax, %rdi
+ 172 01d2 E8000000 		call	ferror@PLT
+ 172      00
+ 173              		.loc 1 56 6
+ 174 01d7 85C0     		testl	%eax, %eax
+ 175 01d9 742B     		je	.L10
+  57:binio.c       **** 			errRenderStd(error);
+ 176              		.loc 1 57 4
+ 177 01db 488B45B8 		movq	-72(%rbp), %rax
+ 178 01df 4889C7   		movq	%rax, %rdi
+ 179 01e2 E8000000 		call	errRenderStd@PLT
+ 179      00
+  58:binio.c       **** 			errPrefix(error, "bufAppendFromBinaryFile()");
+ 180              		.loc 1 58 4
+ 181 01e7 488B45B8 		movq	-72(%rbp), %rax
+ 182 01eb 488D1500 		leaq	.LC1(%rip), %rdx
+ 182      000000
+ 183 01f2 4889D6   		movq	%rdx, %rsi
+ 184 01f5 4889C7   		movq	%rax, %rdi
+ 185 01f8 E8000000 		call	errPrefix@PLT
+ 185      00
+  59:binio.c       **** 			FAIL(BUF_FERROR, cleanup);
+ 186              		.loc 1 59 4
+ 187 01fd C745D006 		movl	$6, -48(%rbp)
+ 187      000000
+ 188 0204 EB01     		jmp	.L3
+ 189              	.L10:
+  60:binio.c       **** 		}
+  61:binio.c       **** 	}
+  62:binio.c       **** cleanup:
+ 190              		.loc 1 62 1
+ 191 0206 90       		nop
+ 192              	.L3:
+  63:binio.c       **** 	if ( file ) {
+ 193              		.loc 1 63 5
+ 194 0207 48837DE0 		cmpq	$0, -32(%rbp)
+ 194      00
+ 195 020c 740C     		je	.L8
+  64:binio.c       **** 		fclose(file);
+ 196              		.loc 1 64 3
+ 197 020e 488B45E0 		movq	-32(%rbp), %rax
+ 198 0212 4889C7   		movq	%rax, %rdi
+ 199 0215 E8000000 		call	fclose@PLT
+ 199      00
+ 200              	.L8:
+  65:binio.c       **** 	}
+  66:binio.c       **** 	return retVal;
+ 201              		.loc 1 66 9
+ 202 021a 8B45D0   		movl	-48(%rbp), %eax
+  67:binio.c       **** }
+ 203              		.loc 1 67 1
+ 204 021d C9       		leave
+ 205              		.cfi_def_cfa 7, 8
+ 206 021e C3       		ret
+ 207              		.cfi_endproc
+ 208              	.LFE4:
+ 210              		.section	.rodata
+ 211              	.LC3:
+ 212 0069 776200   		.string	"wb"
+ 213              	.LC4:
+ 214 006c 62756657 		.string	"bufWriteBinaryFile()"
+ 214      72697465 
+ 214      42696E61 
+ 214      72794669 
+ 214      6C652829 
+ 215              		.text
+ 216              		.globl	bufWriteBinaryFile
+ 218              	bufWriteBinaryFile:
+ 219              	.LFB5:
+  68:binio.c       **** 
+  69:binio.c       **** DLLEXPORT(BufferStatus) bufWriteBinaryFile(
+  70:binio.c       **** 	const struct Buffer *self, const char *fileName, size_t bufAddress, size_t count,
+  71:binio.c       **** 	const char **error)
+  72:binio.c       **** {
+ 220              		.loc 1 72 1
+ 221              		.cfi_startproc
+ 222 021f F30F1EFA 		endbr64
+ 223 0223 55       		pushq	%rbp
+ 224              		.cfi_def_cfa_offset 16
+ 225              		.cfi_offset 6, -16
+ 226 0224 4889E5   		movq	%rsp, %rbp
+ 227              		.cfi_def_cfa_register 6
+ 228 0227 4883EC50 		subq	$80, %rsp
+ 229 022b 48897DD8 		movq	%rdi, -40(%rbp)
+ 230 022f 488975D0 		movq	%rsi, -48(%rbp)
+ 231 0233 488955C8 		movq	%rdx, -56(%rbp)
+ 232 0237 48894DC0 		movq	%rcx, -64(%rbp)
+ 233 023b 4C8945B8 		movq	%r8, -72(%rbp)
+  73:binio.c       **** 	BufferStatus retVal = BUF_SUCCESS;
+ 234              		.loc 1 73 15
+ 235 023f C745EC00 		movl	$0, -20(%rbp)
+ 235      000000
+  74:binio.c       **** 	size_t actualLength;
+  75:binio.c       **** 	FILE *file = fopen(fileName, "wb");
+ 236              		.loc 1 75 15
+ 237 0246 488B45D0 		movq	-48(%rbp), %rax
+ 238 024a 488D1500 		leaq	.LC3(%rip), %rdx
+ 238      000000
+ 239 0251 4889D6   		movq	%rdx, %rsi
+ 240 0254 4889C7   		movq	%rax, %rdi
+ 241 0257 E8000000 		call	fopen@PLT
+ 241      00
+ 242 025c 488945F0 		movq	%rax, -16(%rbp)
+  76:binio.c       **** 	if ( !file ) {
+ 243              		.loc 1 76 5
+ 244 0260 48837DF0 		cmpq	$0, -16(%rbp)
+ 244      00
+ 245 0265 752B     		jne	.L12
+  77:binio.c       **** 		errRenderStd(error);
+ 246              		.loc 1 77 3
+ 247 0267 488B45B8 		movq	-72(%rbp), %rax
+ 248 026b 4889C7   		movq	%rax, %rdi
+ 249 026e E8000000 		call	errRenderStd@PLT
+ 249      00
+  78:binio.c       **** 		errPrefix(error, "bufWriteBinaryFile()");
+ 250              		.loc 1 78 3
+ 251 0273 488B45B8 		movq	-72(%rbp), %rax
+ 252 0277 488D1500 		leaq	.LC4(%rip), %rdx
+ 252      000000
+ 253 027e 4889D6   		movq	%rdx, %rsi
+ 254 0281 4889C7   		movq	%rax, %rdi
+ 255 0284 E8000000 		call	errPrefix@PLT
+ 255      00
+  79:binio.c       **** 		FAIL(BUF_FOPEN, cleanup);
+ 256              		.loc 1 79 3
+ 257 0289 C745EC02 		movl	$2, -20(%rbp)
+ 257      000000
+ 258 0290 EB61     		jmp	.L13
+ 259              	.L12:
+  80:binio.c       **** 	}
+  81:binio.c       **** 	actualLength = fwrite(self->data + bufAddress, 1, count, file);
+ 260              		.loc 1 81 28
+ 261 0292 488B45D8 		movq	-40(%rbp), %rax
+ 262 0296 488B10   		movq	(%rax), %rdx
+ 263              		.loc 1 81 17
+ 264 0299 488B45C8 		movq	-56(%rbp), %rax
+ 265 029d 488D3C02 		leaq	(%rdx,%rax), %rdi
+ 266 02a1 488B55F0 		movq	-16(%rbp), %rdx
+ 267 02a5 488B45C0 		movq	-64(%rbp), %rax
+ 268 02a9 4889D1   		movq	%rdx, %rcx
+ 269 02ac 4889C2   		movq	%rax, %rdx
+ 270 02af BE010000 		movl	$1, %esi
+ 270      00
+ 271 02b4 E8000000 		call	fwrite@PLT
+ 271      00
+ 272 02b9 488945F8 		movq	%rax, -8(%rbp)
+  82:binio.c       **** 	if ( actualLength != count ) {
+ 273              		.loc 1 82 5
+ 274 02bd 488B45F8 		movq	-8(%rbp), %rax
+ 275 02c1 483B45C0 		cmpq	-64(%rbp), %rax
+ 276 02c5 742B     		je	.L16
+  83:binio.c       **** 		errRenderStd(error);
+ 277              		.loc 1 83 3
+ 278 02c7 488B45B8 		movq	-72(%rbp), %rax
+ 279 02cb 4889C7   		movq	%rax, %rdi
+ 280 02ce E8000000 		call	errRenderStd@PLT
+ 280      00
+  84:binio.c       **** 		errPrefix(error, "bufWriteBinaryFile()");
+ 281              		.loc 1 84 3
+ 282 02d3 488B45B8 		movq	-72(%rbp), %rax
+ 283 02d7 488D1500 		leaq	.LC4(%rip), %rdx
+ 283      000000
+ 284 02de 4889D6   		movq	%rdx, %rsi
+ 285 02e1 4889C7   		movq	%rax, %rdi
+ 286 02e4 E8000000 		call	errPrefix@PLT
+ 286      00
+  85:binio.c       **** 		FAIL(BUF_FERROR, cleanup);
+ 287              		.loc 1 85 3
+ 288 02e9 C745EC06 		movl	$6, -20(%rbp)
+ 288      000000
+ 289 02f0 EB01     		jmp	.L13
+ 290              	.L16:
+  86:binio.c       **** 	}
+  87:binio.c       **** cleanup:
+ 291              		.loc 1 87 1
+ 292 02f2 90       		nop
+ 293              	.L13:
+  88:binio.c       **** 	if ( file ) {
+ 294              		.loc 1 88 5
+ 295 02f3 48837DF0 		cmpq	$0, -16(%rbp)
+ 295      00
+ 296 02f8 740C     		je	.L14
+  89:binio.c       **** 		fclose(file);	
+ 297              		.loc 1 89 3
+ 298 02fa 488B45F0 		movq	-16(%rbp), %rax
+ 299 02fe 4889C7   		movq	%rax, %rdi
+ 300 0301 E8000000 		call	fclose@PLT
+ 300      00
+ 301              	.L14:
+  90:binio.c       **** 	}
+  91:binio.c       **** 	return retVal;
+ 302              		.loc 1 91 9
+ 303 0306 8B45EC   		movl	-20(%rbp), %eax
+  92:binio.c       **** }
+ 304              		.loc 1 92 1
+ 305 0309 C9       		leave
+ 306              		.cfi_def_cfa 7, 8
+ 307 030a C3       		ret
+ 308              		.cfi_endproc
+ 309              	.LFE5:
+ 311              	.Letext0:
+ 312              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+ 313              		.file 3 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 314              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h"
+ 315              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/FILE.h"
+ 316              		.file 6 "/home/pong/FPGALink/makestuff/common/makestuff.h"
+ 317              		.file 7 "libbuffer.h"
+ 318              		.file 8 "/usr/include/stdio.h"
+ 319              		.file 9 "/home/pong/FPGALink/makestuff/libs/liberror/liberror.h"
+ 1760              		.section	.note.gnu.property,"a"
+ 1761              		.align 8
+ 1762 0000 04000000 		.long	1f - 0f
+ 1763 0004 10000000 		.long	4f - 1f
+ 1764 0008 05000000 		.long	5
+ 1765              	0:
+ 1766 000c 474E5500 		.string	"GNU"
+ 1767              	1:
+ 1768              		.align 8
+ 1769 0010 020000C0 		.long	0xc0000002
+ 1770 0014 04000000 		.long	3f - 2f
+ 1771              	2:
+ 1772 0018 03000000 		.long	0x3
+ 1773              	3:
+ 1774 001c 00000000 		.align 8
+ 1775              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 binio.c
+     /tmp/ccMvECge.s:16     .text:0000000000000000 bufAppendFromBinaryFile
+     /tmp/ccMvECge.s:218    .text:000000000000021f bufWriteBinaryFile
+
+UNDEFINED SYMBOLS
+fopen
+errRenderStd
+errPrefix
+fseek
+ftell
+bufAppendConst
+rewind
+fread
+feof
+errRender
+ferror
+fclose
+fwrite

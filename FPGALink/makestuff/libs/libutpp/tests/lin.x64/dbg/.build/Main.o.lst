@@ -1,0 +1,81 @@
+   1              		.file	"Main.cpp"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libutpp/tests" "Main.cpp"
+   5              		.globl	main
+   7              	main:
+   8              	.LFB1141:
+   9              		.file 1 "Main.cpp"
+   1:Main.cpp      **** #include "../UnitTest++.h"
+   2:Main.cpp      **** #include "../TestReporterStdout.h"
+   3:Main.cpp      **** 
+   4:Main.cpp      **** 
+   5:Main.cpp      **** int main(int, char const *[])
+   6:Main.cpp      **** {
+  10              		.loc 1 6 1
+  11              		.cfi_startproc
+  12 0000 F30F1EFA 		endbr64
+  13 0004 55       		pushq	%rbp
+  14              		.cfi_def_cfa_offset 16
+  15              		.cfi_offset 6, -16
+  16 0005 4889E5   		movq	%rsp, %rbp
+  17              		.cfi_def_cfa_register 6
+  18 0008 4883EC10 		subq	$16, %rsp
+  19 000c 897DFC   		movl	%edi, -4(%rbp)
+  20 000f 488975F0 		movq	%rsi, -16(%rbp)
+   7:Main.cpp      ****     return UnitTest::RunAllTests();
+  21              		.loc 1 7 33
+  22 0013 E8000000 		call	_ZN8UnitTest11RunAllTestsEv@PLT
+  22      00
+  23              		.loc 1 7 34
+  24 0018 90       		nop
+   8:Main.cpp      **** }
+  25              		.loc 1 8 1
+  26 0019 C9       		leave
+  27              		.cfi_def_cfa 7, 8
+  28 001a C3       		ret
+  29              		.cfi_endproc
+  30              	.LFE1141:
+  32              	.Letext0:
+  33              		.file 2 "<built-in>"
+  34              		.file 3 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+  35              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types/wint_t.h"
+  36              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h"
+  37              		.file 6 "/usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h"
+  38              		.file 7 "/usr/include/x86_64-linux-gnu/bits/types/__FILE.h"
+  39              		.file 8 "/usr/include/c++/11/cwchar"
+  40              		.file 9 "/usr/include/c++/11/clocale"
+  41              		.file 10 "/usr/include/c++/11/cwctype"
+  42              		.file 11 "/usr/include/wchar.h"
+  43              		.file 12 "/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h"
+  44              		.file 13 "../TestDetails.h"
+  45              		.file 14 "/usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h"
+  46              		.file 15 "/usr/include/c++/11/debug/debug.h"
+  47              		.file 16 "/usr/include/c++/11/bits/predefined_ops.h"
+  48              		.file 17 "/usr/include/locale.h"
+  49              		.file 18 "/usr/include/x86_64-linux-gnu/bits/types.h"
+  50              		.file 19 "/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h"
+  51              		.file 20 "/usr/include/wctype.h"
+  52              		.file 21 "../TestRunner.h"
+ 2869              		.section	.note.gnu.property,"a"
+ 2870              		.align 8
+ 2871 0000 04000000 		.long	1f - 0f
+ 2872 0004 10000000 		.long	4f - 1f
+ 2873 0008 05000000 		.long	5
+ 2874              	0:
+ 2875 000c 474E5500 		.string	"GNU"
+ 2876              	1:
+ 2877              		.align 8
+ 2878 0010 020000C0 		.long	0xc0000002
+ 2879 0014 04000000 		.long	3f - 2f
+ 2880              	2:
+ 2881 0018 03000000 		.long	0x3
+ 2882              	3:
+ 2883 001c 00000000 		.align 8
+ 2884              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Main.cpp
+     /tmp/ccLt63Cc.s:7      .text:0000000000000000 main
+
+UNDEFINED SYMBOLS
+_ZN8UnitTest11RunAllTestsEv

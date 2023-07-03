@@ -1,0 +1,25 @@
+   1              		.file	"getopt1.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libargtable2" "getopt1.c"
+   5              	.Letext0:
+ 134              		.section	.note.gnu.property,"a"
+ 135              		.align 8
+ 136 0000 04000000 		.long	1f - 0f
+ 137 0004 10000000 		.long	4f - 1f
+ 138 0008 05000000 		.long	5
+ 139              	0:
+ 140 000c 474E5500 		.string	"GNU"
+ 141              	1:
+ 142              		.align 8
+ 143 0010 020000C0 		.long	0xc0000002
+ 144 0014 04000000 		.long	3f - 2f
+ 145              	2:
+ 146 0018 03000000 		.long	0x3
+ 147              	3:
+ 148 001c 00000000 		.align 8
+ 149              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 getopt1.c
+
+NO UNDEFINED SYMBOLS

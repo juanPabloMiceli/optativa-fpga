@@ -1,0 +1,24 @@
+   1              		.file	"getopt.c"
+   2              		.text
+   3              		.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+   4              		.section	.note.GNU-stack,"",@progbits
+   5              		.section	.note.gnu.property,"a"
+   6              		.align 8
+   7 0000 04000000 		.long	1f - 0f
+   8 0004 10000000 		.long	4f - 1f
+   9 0008 05000000 		.long	5
+  10              	0:
+  11 000c 474E5500 		.string	"GNU"
+  12              	1:
+  13              		.align 8
+  14 0010 020000C0 		.long	0xc0000002
+  15 0014 04000000 		.long	3f - 2f
+  16              	2:
+  17 0018 03000000 		.long	0x3
+  18              	3:
+  19 001c 00000000 		.align 8
+  20              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 getopt.c
+
+NO UNDEFINED SYMBOLS

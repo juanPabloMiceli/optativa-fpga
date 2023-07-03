@@ -1,0 +1,374 @@
+   1              		.file	"TestResults.cpp"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libutpp" "TestResults.cpp"
+   5              		.align 2
+   6              		.globl	_ZN8UnitTest11TestResultsC2EPNS_12TestReporterE
+   8              	_ZN8UnitTest11TestResultsC2EPNS_12TestReporterE:
+   9              	.LFB1:
+  10              		.file 1 "TestResults.cpp"
+   1:TestResults.cpp **** #include "TestResults.h"
+   2:TestResults.cpp **** #include "TestReporter.h"
+   3:TestResults.cpp **** 
+   4:TestResults.cpp **** #include "TestDetails.h"
+   5:TestResults.cpp **** 
+   6:TestResults.cpp **** namespace UnitTest {
+   7:TestResults.cpp **** 
+   8:TestResults.cpp **** TestResults::TestResults(TestReporter* testReporter)
+  11              		.loc 1 8 1
+  12              		.cfi_startproc
+  13 0000 F30F1EFA 		endbr64
+  14 0004 55       		pushq	%rbp
+  15              		.cfi_def_cfa_offset 16
+  16              		.cfi_offset 6, -16
+  17 0005 4889E5   		movq	%rsp, %rbp
+  18              		.cfi_def_cfa_register 6
+  19 0008 48897DF8 		movq	%rdi, -8(%rbp)
+  20 000c 488975F0 		movq	%rsi, -16(%rbp)
+  21              	.LBB2:
+   9:TestResults.cpp ****     : m_testReporter(testReporter)
+  22              		.loc 1 9 7
+  23 0010 488B45F8 		movq	-8(%rbp), %rax
+  24 0014 488B55F0 		movq	-16(%rbp), %rdx
+  25 0018 488910   		movq	%rdx, (%rax)
+  10:TestResults.cpp ****     , m_totalTestCount(0)
+  26              		.loc 1 10 7
+  27 001b 488B45F8 		movq	-8(%rbp), %rax
+  28 001f C7400800 		movl	$0, 8(%rax)
+  28      000000
+  11:TestResults.cpp ****     , m_failedTestCount(0)
+  29              		.loc 1 11 7
+  30 0026 488B45F8 		movq	-8(%rbp), %rax
+  31 002a C7400C00 		movl	$0, 12(%rax)
+  31      000000
+  12:TestResults.cpp ****     , m_failureCount(0)
+  32              		.loc 1 12 7
+  33 0031 488B45F8 		movq	-8(%rbp), %rax
+  34 0035 C7401000 		movl	$0, 16(%rax)
+  34      000000
+  13:TestResults.cpp ****     , m_currentTestFailed(false)
+  35              		.loc 1 13 7
+  36 003c 488B45F8 		movq	-8(%rbp), %rax
+  37 0040 C6401400 		movb	$0, 20(%rax)
+  38              	.LBE2:
+  14:TestResults.cpp **** {
+  15:TestResults.cpp **** }
+  39              		.loc 1 15 1
+  40 0044 90       		nop
+  41 0045 5D       		popq	%rbp
+  42              		.cfi_def_cfa 7, 8
+  43 0046 C3       		ret
+  44              		.cfi_endproc
+  45              	.LFE1:
+  47              		.globl	_ZN8UnitTest11TestResultsC1EPNS_12TestReporterE
+  48              		.set	_ZN8UnitTest11TestResultsC1EPNS_12TestReporterE,_ZN8UnitTest11TestResultsC2EPNS_12TestReporte
+  49 0047 90       		.align 2
+  50              		.globl	_ZN8UnitTest11TestResults11OnTestStartERKNS_11TestDetailsE
+  52              	_ZN8UnitTest11TestResults11OnTestStartERKNS_11TestDetailsE:
+  53              	.LFB3:
+  16:TestResults.cpp **** 
+  17:TestResults.cpp **** void TestResults::OnTestStart(TestDetails const& test)
+  18:TestResults.cpp **** {
+  54              		.loc 1 18 1
+  55              		.cfi_startproc
+  56 0048 F30F1EFA 		endbr64
+  57 004c 55       		pushq	%rbp
+  58              		.cfi_def_cfa_offset 16
+  59              		.cfi_offset 6, -16
+  60 004d 4889E5   		movq	%rsp, %rbp
+  61              		.cfi_def_cfa_register 6
+  62 0050 4883EC10 		subq	$16, %rsp
+  63 0054 48897DF8 		movq	%rdi, -8(%rbp)
+  64 0058 488975F0 		movq	%rsi, -16(%rbp)
+  19:TestResults.cpp ****     ++m_totalTestCount;
+  65              		.loc 1 19 7
+  66 005c 488B45F8 		movq	-8(%rbp), %rax
+  67 0060 8B4008   		movl	8(%rax), %eax
+  68              		.loc 1 19 5
+  69 0063 8D5001   		leal	1(%rax), %edx
+  70 0066 488B45F8 		movq	-8(%rbp), %rax
+  71 006a 895008   		movl	%edx, 8(%rax)
+  20:TestResults.cpp ****     m_currentTestFailed = false;
+  72              		.loc 1 20 25
+  73 006d 488B45F8 		movq	-8(%rbp), %rax
+  74 0071 C6401400 		movb	$0, 20(%rax)
+  21:TestResults.cpp ****     if (m_testReporter)
+  75              		.loc 1 21 9
+  76 0075 488B45F8 		movq	-8(%rbp), %rax
+  77 0079 488B00   		movq	(%rax), %rax
+  78              		.loc 1 21 5
+  79 007c 4885C0   		testq	%rax, %rax
+  80 007f 7424     		je	.L4
+  22:TestResults.cpp ****         m_testReporter->ReportTestStart(test);
+  81              		.loc 1 22 9
+  82 0081 488B45F8 		movq	-8(%rbp), %rax
+  83 0085 488B00   		movq	(%rax), %rax
+  84 0088 488B55F8 		movq	-8(%rbp), %rdx
+  85 008c 488B12   		movq	(%rdx), %rdx
+  86              		.loc 1 22 40
+  87 008f 488B12   		movq	(%rdx), %rdx
+  88 0092 4883C210 		addq	$16, %rdx
+  89 0096 488B0A   		movq	(%rdx), %rcx
+  90 0099 488B55F0 		movq	-16(%rbp), %rdx
+  91 009d 4889D6   		movq	%rdx, %rsi
+  92 00a0 4889C7   		movq	%rax, %rdi
+  93 00a3 FFD1     		call	*%rcx
+  94              	.LVL0:
+  95              	.L4:
+  23:TestResults.cpp **** }
+  96              		.loc 1 23 1
+  97 00a5 90       		nop
+  98 00a6 C9       		leave
+  99              		.cfi_def_cfa 7, 8
+ 100 00a7 C3       		ret
+ 101              		.cfi_endproc
+ 102              	.LFE3:
+ 104              		.align 2
+ 105              		.globl	_ZN8UnitTest11TestResults13OnTestFailureERKNS_11TestDetailsEPKc
+ 107              	_ZN8UnitTest11TestResults13OnTestFailureERKNS_11TestDetailsEPKc:
+ 108              	.LFB4:
+  24:TestResults.cpp **** 
+  25:TestResults.cpp **** void TestResults::OnTestFailure(TestDetails const& test, char const* failure)
+  26:TestResults.cpp **** {
+ 109              		.loc 1 26 1
+ 110              		.cfi_startproc
+ 111 00a8 F30F1EFA 		endbr64
+ 112 00ac 55       		pushq	%rbp
+ 113              		.cfi_def_cfa_offset 16
+ 114              		.cfi_offset 6, -16
+ 115 00ad 4889E5   		movq	%rsp, %rbp
+ 116              		.cfi_def_cfa_register 6
+ 117 00b0 4883EC20 		subq	$32, %rsp
+ 118 00b4 48897DF8 		movq	%rdi, -8(%rbp)
+ 119 00b8 488975F0 		movq	%rsi, -16(%rbp)
+ 120 00bc 488955E8 		movq	%rdx, -24(%rbp)
+  27:TestResults.cpp ****     ++m_failureCount;
+ 121              		.loc 1 27 7
+ 122 00c0 488B45F8 		movq	-8(%rbp), %rax
+ 123 00c4 8B4010   		movl	16(%rax), %eax
+ 124              		.loc 1 27 5
+ 125 00c7 8D5001   		leal	1(%rax), %edx
+ 126 00ca 488B45F8 		movq	-8(%rbp), %rax
+ 127 00ce 895010   		movl	%edx, 16(%rax)
+  28:TestResults.cpp ****     if (!m_currentTestFailed)
+ 128              		.loc 1 28 10
+ 129 00d1 488B45F8 		movq	-8(%rbp), %rax
+ 130 00d5 0FB64014 		movzbl	20(%rax), %eax
+ 131              		.loc 1 28 9
+ 132 00d9 83F001   		xorl	$1, %eax
+ 133              		.loc 1 28 5
+ 134 00dc 84C0     		testb	%al, %al
+ 135 00de 7419     		je	.L6
+  29:TestResults.cpp ****     {
+  30:TestResults.cpp ****         ++m_failedTestCount;
+ 136              		.loc 1 30 11
+ 137 00e0 488B45F8 		movq	-8(%rbp), %rax
+ 138 00e4 8B400C   		movl	12(%rax), %eax
+ 139              		.loc 1 30 9
+ 140 00e7 8D5001   		leal	1(%rax), %edx
+ 141 00ea 488B45F8 		movq	-8(%rbp), %rax
+ 142 00ee 89500C   		movl	%edx, 12(%rax)
+  31:TestResults.cpp ****         m_currentTestFailed = true;
+ 143              		.loc 1 31 29
+ 144 00f1 488B45F8 		movq	-8(%rbp), %rax
+ 145 00f5 C6401401 		movb	$1, 20(%rax)
+ 146              	.L6:
+  32:TestResults.cpp ****     }
+  33:TestResults.cpp **** 
+  34:TestResults.cpp ****     if (m_testReporter)
+ 147              		.loc 1 34 9
+ 148 00f9 488B45F8 		movq	-8(%rbp), %rax
+ 149 00fd 488B00   		movq	(%rax), %rax
+ 150              		.loc 1 34 5
+ 151 0100 4885C0   		testq	%rax, %rax
+ 152 0103 7429     		je	.L8
+  35:TestResults.cpp ****         m_testReporter->ReportFailure(test, failure);
+ 153              		.loc 1 35 9
+ 154 0105 488B45F8 		movq	-8(%rbp), %rax
+ 155 0109 488B00   		movq	(%rax), %rax
+ 156 010c 488B55F8 		movq	-8(%rbp), %rdx
+ 157 0110 488B12   		movq	(%rdx), %rdx
+ 158              		.loc 1 35 38
+ 159 0113 488B12   		movq	(%rdx), %rdx
+ 160 0116 4883C218 		addq	$24, %rdx
+ 161 011a 4C8B02   		movq	(%rdx), %r8
+ 162 011d 488B55E8 		movq	-24(%rbp), %rdx
+ 163 0121 488B4DF0 		movq	-16(%rbp), %rcx
+ 164 0125 4889CE   		movq	%rcx, %rsi
+ 165 0128 4889C7   		movq	%rax, %rdi
+ 166 012b 41FFD0   		call	*%r8
+ 167              	.LVL1:
+ 168              	.L8:
+  36:TestResults.cpp **** }
+ 169              		.loc 1 36 1
+ 170 012e 90       		nop
+ 171 012f C9       		leave
+ 172              		.cfi_def_cfa 7, 8
+ 173 0130 C3       		ret
+ 174              		.cfi_endproc
+ 175              	.LFE4:
+ 177 0131 90       		.align 2
+ 178              		.globl	_ZN8UnitTest11TestResults12OnTestFinishERKNS_11TestDetailsEf
+ 180              	_ZN8UnitTest11TestResults12OnTestFinishERKNS_11TestDetailsEf:
+ 181              	.LFB5:
+  37:TestResults.cpp **** 
+  38:TestResults.cpp **** void TestResults::OnTestFinish(TestDetails const& test, float secondsElapsed)
+  39:TestResults.cpp **** {
+ 182              		.loc 1 39 1
+ 183              		.cfi_startproc
+ 184 0132 F30F1EFA 		endbr64
+ 185 0136 55       		pushq	%rbp
+ 186              		.cfi_def_cfa_offset 16
+ 187              		.cfi_offset 6, -16
+ 188 0137 4889E5   		movq	%rsp, %rbp
+ 189              		.cfi_def_cfa_register 6
+ 190 013a 4883EC20 		subq	$32, %rsp
+ 191 013e 48897DF8 		movq	%rdi, -8(%rbp)
+ 192 0142 488975F0 		movq	%rsi, -16(%rbp)
+ 193 0146 F30F1145 		movss	%xmm0, -20(%rbp)
+ 193      EC
+  40:TestResults.cpp ****     if (m_testReporter)
+ 194              		.loc 1 40 9
+ 195 014b 488B45F8 		movq	-8(%rbp), %rax
+ 196 014f 488B00   		movq	(%rax), %rax
+ 197              		.loc 1 40 5
+ 198 0152 4885C0   		testq	%rax, %rax
+ 199 0155 742C     		je	.L11
+  41:TestResults.cpp ****         m_testReporter->ReportTestFinish(test, secondsElapsed);
+ 200              		.loc 1 41 9
+ 201 0157 488B45F8 		movq	-8(%rbp), %rax
+ 202 015b 488B00   		movq	(%rax), %rax
+ 203 015e 488B55F8 		movq	-8(%rbp), %rdx
+ 204 0162 488B12   		movq	(%rdx), %rdx
+ 205              		.loc 1 41 41
+ 206 0165 488B12   		movq	(%rdx), %rdx
+ 207 0168 4883C220 		addq	$32, %rdx
+ 208 016c 4C8B02   		movq	(%rdx), %r8
+ 209 016f 8B4DEC   		movl	-20(%rbp), %ecx
+ 210 0172 488B55F0 		movq	-16(%rbp), %rdx
+ 211 0176 660F6EC1 		movd	%ecx, %xmm0
+ 212 017a 4889D6   		movq	%rdx, %rsi
+ 213 017d 4889C7   		movq	%rax, %rdi
+ 214 0180 41FFD0   		call	*%r8
+ 215              	.LVL2:
+ 216              	.L11:
+  42:TestResults.cpp **** }
+ 217              		.loc 1 42 1
+ 218 0183 90       		nop
+ 219 0184 C9       		leave
+ 220              		.cfi_def_cfa 7, 8
+ 221 0185 C3       		ret
+ 222              		.cfi_endproc
+ 223              	.LFE5:
+ 225              		.align 2
+ 226              		.globl	_ZNK8UnitTest11TestResults17GetTotalTestCountEv
+ 228              	_ZNK8UnitTest11TestResults17GetTotalTestCountEv:
+ 229              	.LFB6:
+  43:TestResults.cpp **** 
+  44:TestResults.cpp **** int TestResults::GetTotalTestCount() const
+  45:TestResults.cpp **** {
+ 230              		.loc 1 45 1
+ 231              		.cfi_startproc
+ 232 0186 F30F1EFA 		endbr64
+ 233 018a 55       		pushq	%rbp
+ 234              		.cfi_def_cfa_offset 16
+ 235              		.cfi_offset 6, -16
+ 236 018b 4889E5   		movq	%rsp, %rbp
+ 237              		.cfi_def_cfa_register 6
+ 238 018e 48897DF8 		movq	%rdi, -8(%rbp)
+  46:TestResults.cpp ****     return m_totalTestCount;
+ 239              		.loc 1 46 12
+ 240 0192 488B45F8 		movq	-8(%rbp), %rax
+ 241 0196 8B4008   		movl	8(%rax), %eax
+  47:TestResults.cpp **** }
+ 242              		.loc 1 47 1
+ 243 0199 5D       		popq	%rbp
+ 244              		.cfi_def_cfa 7, 8
+ 245 019a C3       		ret
+ 246              		.cfi_endproc
+ 247              	.LFE6:
+ 249 019b 90       		.align 2
+ 250              		.globl	_ZNK8UnitTest11TestResults18GetFailedTestCountEv
+ 252              	_ZNK8UnitTest11TestResults18GetFailedTestCountEv:
+ 253              	.LFB7:
+  48:TestResults.cpp **** 
+  49:TestResults.cpp **** int TestResults::GetFailedTestCount() const
+  50:TestResults.cpp **** {
+ 254              		.loc 1 50 1
+ 255              		.cfi_startproc
+ 256 019c F30F1EFA 		endbr64
+ 257 01a0 55       		pushq	%rbp
+ 258              		.cfi_def_cfa_offset 16
+ 259              		.cfi_offset 6, -16
+ 260 01a1 4889E5   		movq	%rsp, %rbp
+ 261              		.cfi_def_cfa_register 6
+ 262 01a4 48897DF8 		movq	%rdi, -8(%rbp)
+  51:TestResults.cpp ****     return m_failedTestCount;
+ 263              		.loc 1 51 12
+ 264 01a8 488B45F8 		movq	-8(%rbp), %rax
+ 265 01ac 8B400C   		movl	12(%rax), %eax
+  52:TestResults.cpp **** }
+ 266              		.loc 1 52 1
+ 267 01af 5D       		popq	%rbp
+ 268              		.cfi_def_cfa 7, 8
+ 269 01b0 C3       		ret
+ 270              		.cfi_endproc
+ 271              	.LFE7:
+ 273 01b1 90       		.align 2
+ 274              		.globl	_ZNK8UnitTest11TestResults15GetFailureCountEv
+ 276              	_ZNK8UnitTest11TestResults15GetFailureCountEv:
+ 277              	.LFB8:
+  53:TestResults.cpp **** 
+  54:TestResults.cpp **** int TestResults::GetFailureCount() const
+  55:TestResults.cpp **** {
+ 278              		.loc 1 55 1
+ 279              		.cfi_startproc
+ 280 01b2 F30F1EFA 		endbr64
+ 281 01b6 55       		pushq	%rbp
+ 282              		.cfi_def_cfa_offset 16
+ 283              		.cfi_offset 6, -16
+ 284 01b7 4889E5   		movq	%rsp, %rbp
+ 285              		.cfi_def_cfa_register 6
+ 286 01ba 48897DF8 		movq	%rdi, -8(%rbp)
+  56:TestResults.cpp ****     return m_failureCount;
+ 287              		.loc 1 56 12
+ 288 01be 488B45F8 		movq	-8(%rbp), %rax
+ 289 01c2 8B4010   		movl	16(%rax), %eax
+  57:TestResults.cpp **** }
+ 290              		.loc 1 57 1
+ 291 01c5 5D       		popq	%rbp
+ 292              		.cfi_def_cfa 7, 8
+ 293 01c6 C3       		ret
+ 294              		.cfi_endproc
+ 295              	.LFE8:
+ 297              	.Letext0:
+ 298              		.file 2 "TestResults.h"
+ 299              		.file 3 "TestDetails.h"
+ 1349              		.section	.note.gnu.property,"a"
+ 1350              		.align 8
+ 1351 0000 04000000 		.long	1f - 0f
+ 1352 0004 10000000 		.long	4f - 1f
+ 1353 0008 05000000 		.long	5
+ 1354              	0:
+ 1355 000c 474E5500 		.string	"GNU"
+ 1356              	1:
+ 1357              		.align 8
+ 1358 0010 020000C0 		.long	0xc0000002
+ 1359 0014 04000000 		.long	3f - 2f
+ 1360              	2:
+ 1361 0018 03000000 		.long	0x3
+ 1362              	3:
+ 1363 001c 00000000 		.align 8
+ 1364              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 TestResults.cpp
+     /tmp/ccty9yVh.s:8      .text:0000000000000000 _ZN8UnitTest11TestResultsC2EPNS_12TestReporterE
+     /tmp/ccty9yVh.s:8      .text:0000000000000000 _ZN8UnitTest11TestResultsC1EPNS_12TestReporterE
+     /tmp/ccty9yVh.s:52     .text:0000000000000048 _ZN8UnitTest11TestResults11OnTestStartERKNS_11TestDetailsE
+     /tmp/ccty9yVh.s:107    .text:00000000000000a8 _ZN8UnitTest11TestResults13OnTestFailureERKNS_11TestDetailsEPKc
+     /tmp/ccty9yVh.s:180    .text:0000000000000132 _ZN8UnitTest11TestResults12OnTestFinishERKNS_11TestDetailsEf
+     /tmp/ccty9yVh.s:228    .text:0000000000000186 _ZNK8UnitTest11TestResults17GetTotalTestCountEv
+     /tmp/ccty9yVh.s:252    .text:000000000000019c _ZNK8UnitTest11TestResults18GetFailedTestCountEv
+     /tmp/ccty9yVh.s:276    .text:00000000000001b2 _ZNK8UnitTest11TestResults15GetFailureCountEv
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,1134 @@
+   1              		.file	"arg_file.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libargtable2" "arg_file.c"
+   6              	resetfn:
+   7              	.LFB0:
+   8              		.file 1 "arg_file.c"
+   1:arg_file.c    **** /*********************************************************************
+   2:arg_file.c    **** This file is part of the argtable2 library.
+   3:arg_file.c    **** Copyright (C) 1998-2001,2003-2011 Stewart Heitmann
+   4:arg_file.c    **** sheitmann@users.sourceforge.net
+   5:arg_file.c    **** 
+   6:arg_file.c    **** The argtable2 library is free software; you can redistribute it and/or
+   7:arg_file.c    **** modify it under the terms of the GNU Library General Public License as
+   8:arg_file.c    **** published by the Free Software Foundation; either version 2 of the
+   9:arg_file.c    **** License, or (at your option) any later version.
+  10:arg_file.c    **** 
+  11:arg_file.c    **** This software is distributed in the hope that it will be useful,
+  12:arg_file.c    **** but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:arg_file.c    **** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  14:arg_file.c    **** Library General Public License for more details.
+  15:arg_file.c    **** 
+  16:arg_file.c    **** You should have received a copy of the GNU Library General Public
+  17:arg_file.c    **** License along with this library; if not, write to the Free Software
+  18:arg_file.c    **** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+  19:arg_file.c    **** USA.
+  20:arg_file.c    **** **********************************************************************/
+  21:arg_file.c    **** 
+  22:arg_file.c    **** /* config.h must be included before anything else */
+  23:arg_file.c    **** #ifdef HAVE_CONFIG_H
+  24:arg_file.c    **** #include "config.h"
+  25:arg_file.c    **** #endif
+  26:arg_file.c    **** 
+  27:arg_file.c    **** #ifdef HAVE_STRING_H
+  28:arg_file.c    **** #include <string.h>
+  29:arg_file.c    **** #endif
+  30:arg_file.c    **** 
+  31:arg_file.c    **** #ifdef HAVE_STDLIB_H
+  32:arg_file.c    **** #include <stdlib.h>
+  33:arg_file.c    **** #endif
+  34:arg_file.c    **** 
+  35:arg_file.c    **** #include "argtable2.h"
+  36:arg_file.c    **** 
+  37:arg_file.c    **** #ifdef WIN32
+  38:arg_file.c    **** # define FILESEPARATOR1 '\\'
+  39:arg_file.c    **** # define FILESEPARATOR2 '/'
+  40:arg_file.c    **** #else
+  41:arg_file.c    **** # define FILESEPARATOR1 '/'
+  42:arg_file.c    **** # define FILESEPARATOR2 '/'
+  43:arg_file.c    **** #endif
+  44:arg_file.c    **** 
+  45:arg_file.c    **** /* local error codes */
+  46:arg_file.c    **** enum {EMINCOUNT=1,EMAXCOUNT};
+  47:arg_file.c    **** 
+  48:arg_file.c    **** 
+  49:arg_file.c    **** static void resetfn(struct arg_file *parent)
+  50:arg_file.c    ****     {
+   9              		.loc 1 50 5
+  10              		.cfi_startproc
+  11 0000 F30F1EFA 		endbr64
+  12 0004 55       		pushq	%rbp
+  13              		.cfi_def_cfa_offset 16
+  14              		.cfi_offset 6, -16
+  15 0005 4889E5   		movq	%rsp, %rbp
+  16              		.cfi_def_cfa_register 6
+  17 0008 48897DF8 		movq	%rdi, -8(%rbp)
+  51:arg_file.c    ****     /*printf("%s:resetfn(%p)\n",__FILE__,parent);*/
+  52:arg_file.c    ****     parent->count=0;
+  18              		.loc 1 52 18
+  19 000c 488B45F8 		movq	-8(%rbp), %rax
+  20 0010 C7406000 		movl	$0, 96(%rax)
+  20      000000
+  53:arg_file.c    ****     }
+  21              		.loc 1 53 5
+  22 0017 90       		nop
+  23 0018 5D       		popq	%rbp
+  24              		.cfi_def_cfa 7, 8
+  25 0019 C3       		ret
+  26              		.cfi_endproc
+  27              	.LFE0:
+  29              		.section	.rodata
+  30              	.LC0:
+  31 0000 2E00     		.string	"."
+  32              	.LC1:
+  33 0002 2E2E00   		.string	".."
+  34              		.text
+  36              	arg_basename:
+  37              	.LFB1:
+  54:arg_file.c    **** 
+  55:arg_file.c    **** 
+  56:arg_file.c    **** /* Returns ptr to the base filename within *filename */
+  57:arg_file.c    **** static const char* arg_basename(const char *filename)
+  58:arg_file.c    ****     {
+  38              		.loc 1 58 5
+  39              		.cfi_startproc
+  40 001a F30F1EFA 		endbr64
+  41 001e 55       		pushq	%rbp
+  42              		.cfi_def_cfa_offset 16
+  43              		.cfi_offset 6, -16
+  44 001f 4889E5   		movq	%rsp, %rbp
+  45              		.cfi_def_cfa_register 6
+  46 0022 4883EC30 		subq	$48, %rsp
+  47 0026 48897DD8 		movq	%rdi, -40(%rbp)
+  59:arg_file.c    ****     const char *result=NULL, *result1, *result2;
+  48              		.loc 1 59 17
+  49 002a 48C745E8 		movq	$0, -24(%rbp)
+  49      00000000 
+  60:arg_file.c    **** 
+  61:arg_file.c    ****     /* Find the last occurrence of eother file separator character. */
+  62:arg_file.c    ****     /* Two alternative file separator chars are supported as legal  */
+  63:arg_file.c    ****     /* file separators but not both together in the same filename.  */
+  64:arg_file.c    ****     result1 = (filename ? strrchr(filename,FILESEPARATOR1) : NULL);
+  50              		.loc 1 64 60
+  51 0032 48837DD8 		cmpq	$0, -40(%rbp)
+  51      00
+  52 0037 7413     		je	.L3
+  53              		.loc 1 64 27 discriminator 1
+  54 0039 488B45D8 		movq	-40(%rbp), %rax
+  55 003d BE2F0000 		movl	$47, %esi
+  55      00
+  56 0042 4889C7   		movq	%rax, %rdi
+  57 0045 E8000000 		call	strrchr@PLT
+  57      00
+  58 004a EB05     		jmp	.L4
+  59              	.L3:
+  60              		.loc 1 64 60 discriminator 2
+  61 004c B8000000 		movl	$0, %eax
+  61      00
+  62              	.L4:
+  63              		.loc 1 64 13 discriminator 4
+  64 0051 488945F0 		movq	%rax, -16(%rbp)
+  65:arg_file.c    ****     result2 = (filename ? strrchr(filename,FILESEPARATOR2) : NULL);
+  65              		.loc 1 65 60 discriminator 4
+  66 0055 48837DD8 		cmpq	$0, -40(%rbp)
+  66      00
+  67 005a 7413     		je	.L5
+  68              		.loc 1 65 27 discriminator 1
+  69 005c 488B45D8 		movq	-40(%rbp), %rax
+  70 0060 BE2F0000 		movl	$47, %esi
+  70      00
+  71 0065 4889C7   		movq	%rax, %rdi
+  72 0068 E8000000 		call	strrchr@PLT
+  72      00
+  73 006d EB05     		jmp	.L6
+  74              	.L5:
+  75              		.loc 1 65 60 discriminator 2
+  76 006f B8000000 		movl	$0, %eax
+  76      00
+  77              	.L6:
+  78              		.loc 1 65 13 discriminator 4
+  79 0074 488945F8 		movq	%rax, -8(%rbp)
+  66:arg_file.c    **** 
+  67:arg_file.c    ****     if (result2)
+  80              		.loc 1 67 8 discriminator 4
+  81 0078 48837DF8 		cmpq	$0, -8(%rbp)
+  81      00
+  82 007d 740C     		je	.L7
+  68:arg_file.c    ****         result=result2+1;   /* using FILESEPARATOR2 (the alternative file separator) */
+  83              		.loc 1 68 15
+  84 007f 488B45F8 		movq	-8(%rbp), %rax
+  85 0083 4883C001 		addq	$1, %rax
+  86 0087 488945E8 		movq	%rax, -24(%rbp)
+  87              	.L7:
+  69:arg_file.c    **** 
+  70:arg_file.c    ****     if (result1)
+  88              		.loc 1 70 8
+  89 008b 48837DF0 		cmpq	$0, -16(%rbp)
+  89      00
+  90 0090 740C     		je	.L8
+  71:arg_file.c    ****         result=result1+1;   /* using FILESEPARATOR1 (the preferred file separator) */
+  91              		.loc 1 71 15
+  92 0092 488B45F0 		movq	-16(%rbp), %rax
+  93 0096 4883C001 		addq	$1, %rax
+  94 009a 488945E8 		movq	%rax, -24(%rbp)
+  95              	.L8:
+  72:arg_file.c    **** 
+  73:arg_file.c    ****     if (!result)
+  96              		.loc 1 73 8
+  97 009e 48837DE8 		cmpq	$0, -24(%rbp)
+  97      00
+  98 00a3 7508     		jne	.L9
+  74:arg_file.c    ****         result = filename;  /* neither file separator was found so basename is the whole filename *
+  99              		.loc 1 74 16
+ 100 00a5 488B45D8 		movq	-40(%rbp), %rax
+ 101 00a9 488945E8 		movq	%rax, -24(%rbp)
+ 102              	.L9:
+  75:arg_file.c    **** 
+  76:arg_file.c    ****     /* special cases of "." and ".." are not considered basenames */
+  77:arg_file.c    ****     if (result && ( strcmp(".",result)==0 || strcmp("..",result)==0 ))
+ 103              		.loc 1 77 8
+ 104 00ad 48837DE8 		cmpq	$0, -24(%rbp)
+ 104      00
+ 105 00b2 744B     		je	.L10
+ 106              		.loc 1 77 21 discriminator 1
+ 107 00b4 488B45E8 		movq	-24(%rbp), %rax
+ 108 00b8 4889C6   		movq	%rax, %rsi
+ 109 00bb 488D0500 		leaq	.LC0(%rip), %rax
+ 109      000000
+ 110 00c2 4889C7   		movq	%rax, %rdi
+ 111 00c5 E8000000 		call	strcmp@PLT
+ 111      00
+ 112              		.loc 1 77 16 discriminator 1
+ 113 00ca 85C0     		testl	%eax, %eax
+ 114 00cc 741A     		je	.L11
+ 115              		.loc 1 77 46 discriminator 2
+ 116 00ce 488B45E8 		movq	-24(%rbp), %rax
+ 117 00d2 4889C6   		movq	%rax, %rsi
+ 118 00d5 488D0500 		leaq	.LC1(%rip), %rax
+ 118      000000
+ 119 00dc 4889C7   		movq	%rax, %rdi
+ 120 00df E8000000 		call	strcmp@PLT
+ 120      00
+ 121              		.loc 1 77 43 discriminator 2
+ 122 00e4 85C0     		testl	%eax, %eax
+ 123 00e6 7517     		jne	.L10
+ 124              	.L11:
+  78:arg_file.c    ****        result = filename + strlen(filename);
+ 125              		.loc 1 78 28
+ 126 00e8 488B45D8 		movq	-40(%rbp), %rax
+ 127 00ec 4889C7   		movq	%rax, %rdi
+ 128 00ef E8000000 		call	strlen@PLT
+ 128      00
+ 129              		.loc 1 78 15
+ 130 00f4 488B55D8 		movq	-40(%rbp), %rdx
+ 131 00f8 4801D0   		addq	%rdx, %rax
+ 132 00fb 488945E8 		movq	%rax, -24(%rbp)
+ 133              	.L10:
+  79:arg_file.c    **** 
+  80:arg_file.c    ****     return result;
+ 134              		.loc 1 80 12
+ 135 00ff 488B45E8 		movq	-24(%rbp), %rax
+  81:arg_file.c    ****     }
+ 136              		.loc 1 81 5
+ 137 0103 C9       		leave
+ 138              		.cfi_def_cfa 7, 8
+ 139 0104 C3       		ret
+ 140              		.cfi_endproc
+ 141              	.LFE1:
+ 144              	arg_extension:
+ 145              	.LFB2:
+  82:arg_file.c    **** 
+  83:arg_file.c    **** 
+  84:arg_file.c    **** /* Returns ptr to the file extension within *basename */
+  85:arg_file.c    **** static const char* arg_extension(const char *basename)
+  86:arg_file.c    ****     {
+ 146              		.loc 1 86 5
+ 147              		.cfi_startproc
+ 148 0105 F30F1EFA 		endbr64
+ 149 0109 55       		pushq	%rbp
+ 150              		.cfi_def_cfa_offset 16
+ 151              		.cfi_offset 6, -16
+ 152 010a 4889E5   		movq	%rsp, %rbp
+ 153              		.cfi_def_cfa_register 6
+ 154 010d 4883EC20 		subq	$32, %rsp
+ 155 0111 48897DE8 		movq	%rdi, -24(%rbp)
+  87:arg_file.c    ****     /* find the last occurrence of '.' in basename */
+  88:arg_file.c    ****     const char *result = (basename ? strrchr(basename,'.') : NULL);
+ 156              		.loc 1 88 60
+ 157 0115 48837DE8 		cmpq	$0, -24(%rbp)
+ 157      00
+ 158 011a 7413     		je	.L14
+ 159              		.loc 1 88 38 discriminator 1
+ 160 011c 488B45E8 		movq	-24(%rbp), %rax
+ 161 0120 BE2E0000 		movl	$46, %esi
+ 161      00
+ 162 0125 4889C7   		movq	%rax, %rdi
+ 163 0128 E8000000 		call	strrchr@PLT
+ 163      00
+ 164 012d EB05     		jmp	.L15
+ 165              	.L14:
+ 166              		.loc 1 88 60 discriminator 2
+ 167 012f B8000000 		movl	$0, %eax
+ 167      00
+ 168              	.L15:
+ 169              		.loc 1 88 17 discriminator 4
+ 170 0134 488945F8 		movq	%rax, -8(%rbp)
+  89:arg_file.c    **** 
+  90:arg_file.c    ****     /* if no '.' was found then return pointer to end of basename */
+  91:arg_file.c    ****     if (basename && !result)
+ 171              		.loc 1 91 8 discriminator 4
+ 172 0138 48837DE8 		cmpq	$0, -24(%rbp)
+ 172      00
+ 173 013d 741E     		je	.L16
+ 174              		.loc 1 91 18 discriminator 1
+ 175 013f 48837DF8 		cmpq	$0, -8(%rbp)
+ 175      00
+ 176 0144 7517     		jne	.L16
+  92:arg_file.c    ****         result = basename+strlen(basename);
+ 177              		.loc 1 92 27
+ 178 0146 488B45E8 		movq	-24(%rbp), %rax
+ 179 014a 4889C7   		movq	%rax, %rdi
+ 180 014d E8000000 		call	strlen@PLT
+ 180      00
+ 181              		.loc 1 92 16
+ 182 0152 488B55E8 		movq	-24(%rbp), %rdx
+ 183 0156 4801D0   		addq	%rdx, %rax
+ 184 0159 488945F8 		movq	%rax, -8(%rbp)
+ 185              	.L16:
+  93:arg_file.c    **** 
+  94:arg_file.c    ****     /* special case: basenames with a single leading dot (eg ".foo") are not considered as true ext
+  95:arg_file.c    ****     if (basename && result==basename)
+ 186              		.loc 1 95 8
+ 187 015d 48837DE8 		cmpq	$0, -24(%rbp)
+ 187      00
+ 188 0162 7421     		je	.L17
+ 189              		.loc 1 95 18 discriminator 1
+ 190 0164 488B45F8 		movq	-8(%rbp), %rax
+ 191 0168 483B45E8 		cmpq	-24(%rbp), %rax
+ 192 016c 7517     		jne	.L17
+  96:arg_file.c    ****         result = basename+strlen(basename);
+ 193              		.loc 1 96 27
+ 194 016e 488B45E8 		movq	-24(%rbp), %rax
+ 195 0172 4889C7   		movq	%rax, %rdi
+ 196 0175 E8000000 		call	strlen@PLT
+ 196      00
+ 197              		.loc 1 96 16
+ 198 017a 488B55E8 		movq	-24(%rbp), %rdx
+ 199 017e 4801D0   		addq	%rdx, %rax
+ 200 0181 488945F8 		movq	%rax, -8(%rbp)
+ 201              	.L17:
+  97:arg_file.c    **** 
+  98:arg_file.c    ****     /* special case: empty extensions (eg "foo.","foo..") are not considered as true extensions */
+  99:arg_file.c    ****     if (basename && result && result[1]=='\0')
+ 202              		.loc 1 99 8
+ 203 0185 48837DE8 		cmpq	$0, -24(%rbp)
+ 203      00
+ 204 018a 742D     		je	.L18
+ 205              		.loc 1 99 18 discriminator 1
+ 206 018c 48837DF8 		cmpq	$0, -8(%rbp)
+ 206      00
+ 207 0191 7426     		je	.L18
+ 208              		.loc 1 99 37 discriminator 2
+ 209 0193 488B45F8 		movq	-8(%rbp), %rax
+ 210 0197 4883C001 		addq	$1, %rax
+ 211 019b 0FB600   		movzbl	(%rax), %eax
+ 212              		.loc 1 99 28 discriminator 2
+ 213 019e 84C0     		testb	%al, %al
+ 214 01a0 7517     		jne	.L18
+ 100:arg_file.c    ****         result = basename+strlen(basename);
+ 215              		.loc 1 100 27
+ 216 01a2 488B45E8 		movq	-24(%rbp), %rax
+ 217 01a6 4889C7   		movq	%rax, %rdi
+ 218 01a9 E8000000 		call	strlen@PLT
+ 218      00
+ 219              		.loc 1 100 16
+ 220 01ae 488B55E8 		movq	-24(%rbp), %rdx
+ 221 01b2 4801D0   		addq	%rdx, %rax
+ 222 01b5 488945F8 		movq	%rax, -8(%rbp)
+ 223              	.L18:
+ 101:arg_file.c    **** 
+ 102:arg_file.c    ****     return result;
+ 224              		.loc 1 102 12
+ 225 01b9 488B45F8 		movq	-8(%rbp), %rax
+ 103:arg_file.c    ****     }
+ 226              		.loc 1 103 5
+ 227 01bd C9       		leave
+ 228              		.cfi_def_cfa 7, 8
+ 229 01be C3       		ret
+ 230              		.cfi_endproc
+ 231              	.LFE2:
+ 234              	scanfn:
+ 235              	.LFB3:
+ 104:arg_file.c    **** 
+ 105:arg_file.c    **** 
+ 106:arg_file.c    **** static int scanfn(struct arg_file *parent, const char *argval)
+ 107:arg_file.c    ****     {
+ 236              		.loc 1 107 5
+ 237              		.cfi_startproc
+ 238 01bf F30F1EFA 		endbr64
+ 239 01c3 55       		pushq	%rbp
+ 240              		.cfi_def_cfa_offset 16
+ 241              		.cfi_offset 6, -16
+ 242 01c4 4889E5   		movq	%rsp, %rbp
+ 243              		.cfi_def_cfa_register 6
+ 244 01c7 53       		pushq	%rbx
+ 245 01c8 4883EC28 		subq	$40, %rsp
+ 246              		.cfi_offset 3, -24
+ 247 01cc 48897DD8 		movq	%rdi, -40(%rbp)
+ 248 01d0 488975D0 		movq	%rsi, -48(%rbp)
+ 108:arg_file.c    ****     int errorcode = 0;
+ 249              		.loc 1 108 9
+ 250 01d4 C745EC00 		movl	$0, -20(%rbp)
+ 250      000000
+ 109:arg_file.c    **** 
+ 110:arg_file.c    ****     if (parent->count == parent->hdr.maxcount)
+ 251              		.loc 1 110 15
+ 252 01db 488B45D8 		movq	-40(%rbp), %rax
+ 253 01df 8B5060   		movl	96(%rax), %edx
+ 254              		.loc 1 110 37
+ 255 01e2 488B45D8 		movq	-40(%rbp), %rax
+ 256 01e6 8B402C   		movl	44(%rax), %eax
+ 257              		.loc 1 110 8
+ 258 01e9 39C2     		cmpl	%eax, %edx
+ 259 01eb 750C     		jne	.L21
+ 111:arg_file.c    ****         {
+ 112:arg_file.c    ****         /* maximum number of arguments exceeded */
+ 113:arg_file.c    ****         errorcode = EMAXCOUNT;
+ 260              		.loc 1 113 19
+ 261 01ed C745EC02 		movl	$2, -20(%rbp)
+ 261      000000
+ 262 01f4 E9B50000 		jmp	.L22
+ 262      00
+ 263              	.L21:
+ 114:arg_file.c    ****         }
+ 115:arg_file.c    ****     else if (!argval)
+ 264              		.loc 1 115 13
+ 265 01f9 48837DD0 		cmpq	$0, -48(%rbp)
+ 265      00
+ 266 01fe 7516     		jne	.L23
+ 116:arg_file.c    ****         {
+ 117:arg_file.c    ****         /* a valid argument with no argument value was given. */
+ 118:arg_file.c    ****         /* This happens when an optional argument value was invoked. */
+ 119:arg_file.c    ****         /* leave parent arguiment value unaltered but still count the argument. */
+ 120:arg_file.c    ****         parent->count++;
+ 267              		.loc 1 120 15
+ 268 0200 488B45D8 		movq	-40(%rbp), %rax
+ 269 0204 8B4060   		movl	96(%rax), %eax
+ 270              		.loc 1 120 22
+ 271 0207 8D5001   		leal	1(%rax), %edx
+ 272 020a 488B45D8 		movq	-40(%rbp), %rax
+ 273 020e 895060   		movl	%edx, 96(%rax)
+ 274 0211 E9980000 		jmp	.L22
+ 274      00
+ 275              	.L23:
+ 121:arg_file.c    ****         } 
+ 122:arg_file.c    ****     else
+ 123:arg_file.c    ****         {
+ 124:arg_file.c    ****         parent->filename[parent->count]  = argval;
+ 276              		.loc 1 124 15
+ 277 0216 488B45D8 		movq	-40(%rbp), %rax
+ 278 021a 488B5068 		movq	104(%rax), %rdx
+ 279              		.loc 1 124 32
+ 280 021e 488B45D8 		movq	-40(%rbp), %rax
+ 281 0222 8B4060   		movl	96(%rax), %eax
+ 282 0225 4898     		cltq
+ 283              		.loc 1 124 25
+ 284 0227 48C1E003 		salq	$3, %rax
+ 285 022b 4801C2   		addq	%rax, %rdx
+ 286              		.loc 1 124 42
+ 287 022e 488B45D0 		movq	-48(%rbp), %rax
+ 288 0232 488902   		movq	%rax, (%rdx)
+ 125:arg_file.c    ****         parent->basename[parent->count]  = arg_basename(argval);
+ 289              		.loc 1 125 15
+ 290 0235 488B45D8 		movq	-40(%rbp), %rax
+ 291 0239 488B5070 		movq	112(%rax), %rdx
+ 292              		.loc 1 125 32
+ 293 023d 488B45D8 		movq	-40(%rbp), %rax
+ 294 0241 8B4060   		movl	96(%rax), %eax
+ 295 0244 4898     		cltq
+ 296              		.loc 1 125 25
+ 297 0246 48C1E003 		salq	$3, %rax
+ 298 024a 488D1C02 		leaq	(%rdx,%rax), %rbx
+ 299              		.loc 1 125 44
+ 300 024e 488B45D0 		movq	-48(%rbp), %rax
+ 301 0252 4889C7   		movq	%rax, %rdi
+ 302 0255 E8C0FDFF 		call	arg_basename
+ 302      FF
+ 303              		.loc 1 125 42
+ 304 025a 488903   		movq	%rax, (%rbx)
+ 126:arg_file.c    ****         parent->extension[parent->count] = arg_extension(parent->basename[parent->count]); /* only 
+ 305              		.loc 1 126 64
+ 306 025d 488B45D8 		movq	-40(%rbp), %rax
+ 307 0261 488B5070 		movq	112(%rax), %rdx
+ 308              		.loc 1 126 81
+ 309 0265 488B45D8 		movq	-40(%rbp), %rax
+ 310 0269 8B4060   		movl	96(%rax), %eax
+ 311 026c 4898     		cltq
+ 312              		.loc 1 126 74
+ 313 026e 48C1E003 		salq	$3, %rax
+ 314 0272 4801D0   		addq	%rdx, %rax
+ 315              		.loc 1 126 44
+ 316 0275 488B00   		movq	(%rax), %rax
+ 317              		.loc 1 126 15
+ 318 0278 488B55D8 		movq	-40(%rbp), %rdx
+ 319 027c 488B4A78 		movq	120(%rdx), %rcx
+ 320              		.loc 1 126 33
+ 321 0280 488B55D8 		movq	-40(%rbp), %rdx
+ 322 0284 8B5260   		movl	96(%rdx), %edx
+ 323 0287 4863D2   		movslq	%edx, %rdx
+ 324              		.loc 1 126 26
+ 325 028a 48C1E203 		salq	$3, %rdx
+ 326 028e 488D1C11 		leaq	(%rcx,%rdx), %rbx
+ 327              		.loc 1 126 44
+ 328 0292 4889C7   		movq	%rax, %rdi
+ 329 0295 E86BFEFF 		call	arg_extension
+ 329      FF
+ 330              		.loc 1 126 42
+ 331 029a 488903   		movq	%rax, (%rbx)
+ 127:arg_file.c    ****         parent->count++;
+ 332              		.loc 1 127 15
+ 333 029d 488B45D8 		movq	-40(%rbp), %rax
+ 334 02a1 8B4060   		movl	96(%rax), %eax
+ 335              		.loc 1 127 22
+ 336 02a4 8D5001   		leal	1(%rax), %edx
+ 337 02a7 488B45D8 		movq	-40(%rbp), %rax
+ 338 02ab 895060   		movl	%edx, 96(%rax)
+ 339              	.L22:
+ 128:arg_file.c    ****         }
+ 129:arg_file.c    **** 
+ 130:arg_file.c    ****     /*printf("%s:scanfn(%p) returns %d\n",__FILE__,parent,errorcode);*/
+ 131:arg_file.c    ****     return errorcode;
+ 340              		.loc 1 131 12
+ 341 02ae 8B45EC   		movl	-20(%rbp), %eax
+ 132:arg_file.c    ****     }
+ 342              		.loc 1 132 5
+ 343 02b1 488B5DF8 		movq	-8(%rbp), %rbx
+ 344 02b5 C9       		leave
+ 345              		.cfi_def_cfa 7, 8
+ 346 02b6 C3       		ret
+ 347              		.cfi_endproc
+ 348              	.LFE3:
+ 351              	checkfn:
+ 352              	.LFB4:
+ 133:arg_file.c    **** 
+ 134:arg_file.c    **** 
+ 135:arg_file.c    **** static int checkfn(struct arg_file *parent)
+ 136:arg_file.c    ****     {
+ 353              		.loc 1 136 5
+ 354              		.cfi_startproc
+ 355 02b7 F30F1EFA 		endbr64
+ 356 02bb 55       		pushq	%rbp
+ 357              		.cfi_def_cfa_offset 16
+ 358              		.cfi_offset 6, -16
+ 359 02bc 4889E5   		movq	%rsp, %rbp
+ 360              		.cfi_def_cfa_register 6
+ 361 02bf 48897DE8 		movq	%rdi, -24(%rbp)
+ 137:arg_file.c    ****     int errorcode = (parent->count < parent->hdr.mincount) ? EMINCOUNT : 0;
+ 362              		.loc 1 137 28
+ 363 02c3 488B45E8 		movq	-24(%rbp), %rax
+ 364 02c7 8B5060   		movl	96(%rax), %edx
+ 365              		.loc 1 137 49
+ 366 02ca 488B45E8 		movq	-24(%rbp), %rax
+ 367 02ce 8B4028   		movl	40(%rax), %eax
+ 368              		.loc 1 137 72
+ 369 02d1 39C2     		cmpl	%eax, %edx
+ 370 02d3 0F9CC0   		setl	%al
+ 371              		.loc 1 137 9
+ 372 02d6 0FB6C0   		movzbl	%al, %eax
+ 373 02d9 8945FC   		movl	%eax, -4(%rbp)
+ 138:arg_file.c    ****     /*printf("%s:checkfn(%p) returns %d\n",__FILE__,parent,errorcode);*/
+ 139:arg_file.c    ****     return errorcode;
+ 374              		.loc 1 139 12
+ 375 02dc 8B45FC   		movl	-4(%rbp), %eax
+ 140:arg_file.c    ****     }
+ 376              		.loc 1 140 5
+ 377 02df 5D       		popq	%rbp
+ 378              		.cfi_def_cfa 7, 8
+ 379 02e0 C3       		ret
+ 380              		.cfi_endproc
+ 381              	.LFE4:
+ 383              		.section	.rodata
+ 384              	.LC2:
+ 385 0005 00       		.string	""
+ 386              	.LC3:
+ 387 0006 25733A20 		.string	"%s: "
+ 387      00
+ 388              	.LC4:
+ 389 000b 6D697373 		.string	"missing option "
+ 389      696E6720 
+ 389      6F707469 
+ 389      6F6E2000 
+ 390              	.LC5:
+ 391 001b 0A00     		.string	"\n"
+ 392              	.LC6:
+ 393 001d 65786365 		.string	"excess option "
+ 393      7373206F 
+ 393      7074696F 
+ 393      6E2000
+ 394              	.LC7:
+ 395 002c 756E6B6E 		.string	"unknown error at \"%s\"\n"
+ 395      6F776E20 
+ 395      6572726F 
+ 395      72206174 
+ 395      20222573 
+ 396              		.text
+ 398              	errorfn:
+ 399              	.LFB5:
+ 141:arg_file.c    **** 
+ 142:arg_file.c    **** 
+ 143:arg_file.c    **** static void errorfn(struct arg_file *parent, FILE *fp, int errorcode, const char *argval, const cha
+ 144:arg_file.c    ****     {
+ 400              		.loc 1 144 5
+ 401              		.cfi_startproc
+ 402 02e1 F30F1EFA 		endbr64
+ 403 02e5 55       		pushq	%rbp
+ 404              		.cfi_def_cfa_offset 16
+ 405              		.cfi_offset 6, -16
+ 406 02e6 4889E5   		movq	%rsp, %rbp
+ 407              		.cfi_def_cfa_register 6
+ 408 02e9 4883EC50 		subq	$80, %rsp
+ 409 02ed 48897DD8 		movq	%rdi, -40(%rbp)
+ 410 02f1 488975D0 		movq	%rsi, -48(%rbp)
+ 411 02f5 8955CC   		movl	%edx, -52(%rbp)
+ 412 02f8 48894DC0 		movq	%rcx, -64(%rbp)
+ 413 02fc 4C8945B8 		movq	%r8, -72(%rbp)
+ 145:arg_file.c    ****     const char *shortopts = parent->hdr.shortopts;
+ 414              		.loc 1 145 17
+ 415 0300 488B45D8 		movq	-40(%rbp), %rax
+ 416 0304 488B4008 		movq	8(%rax), %rax
+ 417 0308 488945E8 		movq	%rax, -24(%rbp)
+ 146:arg_file.c    ****     const char *longopts  = parent->hdr.longopts;
+ 418              		.loc 1 146 17
+ 419 030c 488B45D8 		movq	-40(%rbp), %rax
+ 420 0310 488B4010 		movq	16(%rax), %rax
+ 421 0314 488945F0 		movq	%rax, -16(%rbp)
+ 147:arg_file.c    ****     const char *datatype  = parent->hdr.datatype;
+ 422              		.loc 1 147 17
+ 423 0318 488B45D8 		movq	-40(%rbp), %rax
+ 424 031c 488B4018 		movq	24(%rax), %rax
+ 425 0320 488945F8 		movq	%rax, -8(%rbp)
+ 148:arg_file.c    **** 
+ 149:arg_file.c    ****     /* make argval NULL safe */
+ 150:arg_file.c    ****     argval = argval ? argval : "";
+ 426              		.loc 1 150 30
+ 427 0324 48837DC0 		cmpq	$0, -64(%rbp)
+ 427      00
+ 428 0329 7406     		je	.L28
+ 429              		.loc 1 150 30 is_stmt 0 discriminator 1
+ 430 032b 488B45C0 		movq	-64(%rbp), %rax
+ 431 032f EB07     		jmp	.L29
+ 432              	.L28:
+ 433              		.loc 1 150 30 discriminator 2
+ 434 0331 488D0500 		leaq	.LC2(%rip), %rax
+ 434      000000
+ 435              	.L29:
+ 436              		.loc 1 150 12 is_stmt 1 discriminator 4
+ 437 0338 488945C0 		movq	%rax, -64(%rbp)
+ 151:arg_file.c    **** 
+ 152:arg_file.c    ****     fprintf(fp,"%s: ",progname);
+ 438              		.loc 1 152 5 discriminator 4
+ 439 033c 488B55B8 		movq	-72(%rbp), %rdx
+ 440 0340 488B45D0 		movq	-48(%rbp), %rax
+ 441 0344 488D0D00 		leaq	.LC3(%rip), %rcx
+ 441      000000
+ 442 034b 4889CE   		movq	%rcx, %rsi
+ 443 034e 4889C7   		movq	%rax, %rdi
+ 444 0351 B8000000 		movl	$0, %eax
+ 444      00
+ 445 0356 E8000000 		call	fprintf@PLT
+ 445      00
+ 153:arg_file.c    ****     switch(errorcode)
+ 446              		.loc 1 153 5 discriminator 4
+ 447 035b 837DCC01 		cmpl	$1, -52(%rbp)
+ 448 035f 740B     		je	.L30
+ 449              		.loc 1 153 5 is_stmt 0
+ 450 0361 837DCC02 		cmpl	$2, -52(%rbp)
+ 451 0365 7446     		je	.L31
+ 452 0367 E9820000 		jmp	.L34
+ 452      00
+ 453              	.L30:
+ 154:arg_file.c    ****         {
+ 155:arg_file.c    ****         case EMINCOUNT:
+ 156:arg_file.c    ****             fputs("missing option ",fp);
+ 454              		.loc 1 156 13 is_stmt 1
+ 455 036c 488B45D0 		movq	-48(%rbp), %rax
+ 456 0370 4889C1   		movq	%rax, %rcx
+ 457 0373 BA0F0000 		movl	$15, %edx
+ 457      00
+ 458 0378 BE010000 		movl	$1, %esi
+ 458      00
+ 459 037d 488D0500 		leaq	.LC4(%rip), %rax
+ 459      000000
+ 460 0384 4889C7   		movq	%rax, %rdi
+ 461 0387 E8000000 		call	fwrite@PLT
+ 461      00
+ 157:arg_file.c    ****             arg_print_option(fp,shortopts,longopts,datatype,"\n");
+ 462              		.loc 1 157 13
+ 463 038c 488B4DF8 		movq	-8(%rbp), %rcx
+ 464 0390 488B55F0 		movq	-16(%rbp), %rdx
+ 465 0394 488B75E8 		movq	-24(%rbp), %rsi
+ 466 0398 488B45D0 		movq	-48(%rbp), %rax
+ 467 039c 4C8D0500 		leaq	.LC5(%rip), %r8
+ 467      000000
+ 468 03a3 4889C7   		movq	%rax, %rdi
+ 469 03a6 E8000000 		call	arg_print_option@PLT
+ 469      00
+ 158:arg_file.c    ****             break;
+ 470              		.loc 1 158 13
+ 471 03ab EB61     		jmp	.L33
+ 472              	.L31:
+ 159:arg_file.c    **** 
+ 160:arg_file.c    ****         case EMAXCOUNT:
+ 161:arg_file.c    ****             fputs("excess option ",fp);
+ 473              		.loc 1 161 13
+ 474 03ad 488B45D0 		movq	-48(%rbp), %rax
+ 475 03b1 4889C1   		movq	%rax, %rcx
+ 476 03b4 BA0E0000 		movl	$14, %edx
+ 476      00
+ 477 03b9 BE010000 		movl	$1, %esi
+ 477      00
+ 478 03be 488D0500 		leaq	.LC6(%rip), %rax
+ 478      000000
+ 479 03c5 4889C7   		movq	%rax, %rdi
+ 480 03c8 E8000000 		call	fwrite@PLT
+ 480      00
+ 162:arg_file.c    ****             arg_print_option(fp,shortopts,longopts,argval,"\n");
+ 481              		.loc 1 162 13
+ 482 03cd 488B4DC0 		movq	-64(%rbp), %rcx
+ 483 03d1 488B55F0 		movq	-16(%rbp), %rdx
+ 484 03d5 488B75E8 		movq	-24(%rbp), %rsi
+ 485 03d9 488B45D0 		movq	-48(%rbp), %rax
+ 486 03dd 4C8D0500 		leaq	.LC5(%rip), %r8
+ 486      000000
+ 487 03e4 4889C7   		movq	%rax, %rdi
+ 488 03e7 E8000000 		call	arg_print_option@PLT
+ 488      00
+ 163:arg_file.c    ****             break;
+ 489              		.loc 1 163 13
+ 490 03ec EB20     		jmp	.L33
+ 491              	.L34:
+ 164:arg_file.c    **** 
+ 165:arg_file.c    ****         default:
+ 166:arg_file.c    ****             fprintf(fp,"unknown error at \"%s\"\n",argval);
+ 492              		.loc 1 166 13
+ 493 03ee 488B55C0 		movq	-64(%rbp), %rdx
+ 494 03f2 488B45D0 		movq	-48(%rbp), %rax
+ 495 03f6 488D0D00 		leaq	.LC7(%rip), %rcx
+ 495      000000
+ 496 03fd 4889CE   		movq	%rcx, %rsi
+ 497 0400 4889C7   		movq	%rax, %rdi
+ 498 0403 B8000000 		movl	$0, %eax
+ 498      00
+ 499 0408 E8000000 		call	fprintf@PLT
+ 499      00
+ 167:arg_file.c    ****         }
+ 168:arg_file.c    ****     }
+ 500              		.loc 1 168 5
+ 501 040d 90       		nop
+ 502              	.L33:
+ 503 040e 90       		nop
+ 504 040f C9       		leave
+ 505              		.cfi_def_cfa 7, 8
+ 506 0410 C3       		ret
+ 507              		.cfi_endproc
+ 508              	.LFE5:
+ 510              		.globl	arg_file0
+ 512              	arg_file0:
+ 513              	.LFB6:
+ 169:arg_file.c    **** 
+ 170:arg_file.c    **** 
+ 171:arg_file.c    **** struct arg_file* arg_file0(const char* shortopts,
+ 172:arg_file.c    ****                            const char* longopts,
+ 173:arg_file.c    ****                            const char *datatype,
+ 174:arg_file.c    ****                            const char *glossary)
+ 175:arg_file.c    ****     {
+ 514              		.loc 1 175 5
+ 515              		.cfi_startproc
+ 516 0411 F30F1EFA 		endbr64
+ 517 0415 55       		pushq	%rbp
+ 518              		.cfi_def_cfa_offset 16
+ 519              		.cfi_offset 6, -16
+ 520 0416 4889E5   		movq	%rsp, %rbp
+ 521              		.cfi_def_cfa_register 6
+ 522 0419 4883EC20 		subq	$32, %rsp
+ 523 041d 48897DF8 		movq	%rdi, -8(%rbp)
+ 524 0421 488975F0 		movq	%rsi, -16(%rbp)
+ 525 0425 488955E8 		movq	%rdx, -24(%rbp)
+ 526 0429 48894DE0 		movq	%rcx, -32(%rbp)
+ 176:arg_file.c    ****     return arg_filen(shortopts,longopts,datatype,0,1,glossary);
+ 527              		.loc 1 176 12
+ 528 042d 488B4DE0 		movq	-32(%rbp), %rcx
+ 529 0431 488B55E8 		movq	-24(%rbp), %rdx
+ 530 0435 488B75F0 		movq	-16(%rbp), %rsi
+ 531 0439 488B45F8 		movq	-8(%rbp), %rax
+ 532 043d 4989C9   		movq	%rcx, %r9
+ 533 0440 41B80100 		movl	$1, %r8d
+ 533      0000
+ 534 0446 B9000000 		movl	$0, %ecx
+ 534      00
+ 535 044b 4889C7   		movq	%rax, %rdi
+ 536 044e E8000000 		call	arg_filen@PLT
+ 536      00
+ 177:arg_file.c    ****     }
+ 537              		.loc 1 177 5
+ 538 0453 C9       		leave
+ 539              		.cfi_def_cfa 7, 8
+ 540 0454 C3       		ret
+ 541              		.cfi_endproc
+ 542              	.LFE6:
+ 544              		.globl	arg_file1
+ 546              	arg_file1:
+ 547              	.LFB7:
+ 178:arg_file.c    **** 
+ 179:arg_file.c    **** 
+ 180:arg_file.c    **** struct arg_file* arg_file1(const char* shortopts,
+ 181:arg_file.c    ****                            const char* longopts,
+ 182:arg_file.c    ****                            const char *datatype,
+ 183:arg_file.c    ****                            const char *glossary)
+ 184:arg_file.c    ****     {
+ 548              		.loc 1 184 5
+ 549              		.cfi_startproc
+ 550 0455 F30F1EFA 		endbr64
+ 551 0459 55       		pushq	%rbp
+ 552              		.cfi_def_cfa_offset 16
+ 553              		.cfi_offset 6, -16
+ 554 045a 4889E5   		movq	%rsp, %rbp
+ 555              		.cfi_def_cfa_register 6
+ 556 045d 4883EC20 		subq	$32, %rsp
+ 557 0461 48897DF8 		movq	%rdi, -8(%rbp)
+ 558 0465 488975F0 		movq	%rsi, -16(%rbp)
+ 559 0469 488955E8 		movq	%rdx, -24(%rbp)
+ 560 046d 48894DE0 		movq	%rcx, -32(%rbp)
+ 185:arg_file.c    ****     return arg_filen(shortopts,longopts,datatype,1,1,glossary);
+ 561              		.loc 1 185 12
+ 562 0471 488B4DE0 		movq	-32(%rbp), %rcx
+ 563 0475 488B55E8 		movq	-24(%rbp), %rdx
+ 564 0479 488B75F0 		movq	-16(%rbp), %rsi
+ 565 047d 488B45F8 		movq	-8(%rbp), %rax
+ 566 0481 4989C9   		movq	%rcx, %r9
+ 567 0484 41B80100 		movl	$1, %r8d
+ 567      0000
+ 568 048a B9010000 		movl	$1, %ecx
+ 568      00
+ 569 048f 4889C7   		movq	%rax, %rdi
+ 570 0492 E8000000 		call	arg_filen@PLT
+ 570      00
+ 186:arg_file.c    ****     }
+ 571              		.loc 1 186 5
+ 572 0497 C9       		leave
+ 573              		.cfi_def_cfa 7, 8
+ 574 0498 C3       		ret
+ 575              		.cfi_endproc
+ 576              	.LFE7:
+ 578              		.section	.rodata
+ 579              	.LC8:
+ 580 0043 3C66696C 		.string	"<file>"
+ 580      653E00
+ 581              		.text
+ 582              		.globl	arg_filen
+ 584              	arg_filen:
+ 585              	.LFB8:
+ 187:arg_file.c    **** 
+ 188:arg_file.c    **** 
+ 189:arg_file.c    **** struct arg_file* arg_filen(const char* shortopts,
+ 190:arg_file.c    ****                            const char* longopts,
+ 191:arg_file.c    ****                            const char *datatype,
+ 192:arg_file.c    ****                            int mincount,
+ 193:arg_file.c    ****                            int maxcount,
+ 194:arg_file.c    ****                            const char *glossary)
+ 195:arg_file.c    ****     {
+ 586              		.loc 1 195 5
+ 587              		.cfi_startproc
+ 588 0499 F30F1EFA 		endbr64
+ 589 049d 55       		pushq	%rbp
+ 590              		.cfi_def_cfa_offset 16
+ 591              		.cfi_offset 6, -16
+ 592 049e 4889E5   		movq	%rsp, %rbp
+ 593              		.cfi_def_cfa_register 6
+ 594 04a1 4883EC50 		subq	$80, %rsp
+ 595 04a5 48897DD8 		movq	%rdi, -40(%rbp)
+ 596 04a9 488975D0 		movq	%rsi, -48(%rbp)
+ 597 04ad 488955C8 		movq	%rdx, -56(%rbp)
+ 598 04b1 894DC4   		movl	%ecx, -60(%rbp)
+ 599 04b4 448945C0 		movl	%r8d, -64(%rbp)
+ 600 04b8 4C894DB8 		movq	%r9, -72(%rbp)
+ 196:arg_file.c    ****     size_t nbytes;
+ 197:arg_file.c    ****     struct arg_file *result;
+ 198:arg_file.c    **** 
+ 199:arg_file.c    **** 	/* foolproof things by ensuring maxcount is not less than mincount */
+ 200:arg_file.c    **** 	maxcount = (maxcount<mincount) ? mincount : maxcount;
+ 601              		.loc 1 200 11
+ 602 04bc 8B55C0   		movl	-64(%rbp), %edx
+ 603 04bf 8B45C4   		movl	-60(%rbp), %eax
+ 604 04c2 39C2     		cmpl	%eax, %edx
+ 605 04c4 0F4DC2   		cmovge	%edx, %eax
+ 606 04c7 8945C0   		movl	%eax, -64(%rbp)
+ 201:arg_file.c    **** 
+ 202:arg_file.c    ****     nbytes = sizeof(struct arg_file)     /* storage for struct arg_file */
+ 203:arg_file.c    ****            + sizeof(char*) * maxcount    /* storage for filename[maxcount] array */
+ 204:arg_file.c    ****            + sizeof(char*) * maxcount    /* storage for basename[maxcount] array */
+ 607              		.loc 1 204 12
+ 608 04ca 8B45C0   		movl	-64(%rbp), %eax
+ 609 04cd 4898     		cltq
+ 610 04cf 4883C008 		addq	$8, %rax
+ 205:arg_file.c    ****            + sizeof(char*) * maxcount;   /* storage for extension[maxcount] array */
+ 611              		.loc 1 205 12
+ 612 04d3 488D1400 		leaq	(%rax,%rax), %rdx
+ 613 04d7 8B45C0   		movl	-64(%rbp), %eax
+ 614 04da 4898     		cltq
+ 615 04dc 4801D0   		addq	%rdx, %rax
+ 202:arg_file.c    ****            + sizeof(char*) * maxcount    /* storage for filename[maxcount] array */
+ 616              		.loc 1 202 12
+ 617 04df 48C1E003 		salq	$3, %rax
+ 618 04e3 488945F0 		movq	%rax, -16(%rbp)
+ 206:arg_file.c    **** 
+ 207:arg_file.c    ****     result = (struct arg_file*)malloc(nbytes);
+ 619              		.loc 1 207 32
+ 620 04e7 488B45F0 		movq	-16(%rbp), %rax
+ 621 04eb 4889C7   		movq	%rax, %rdi
+ 622 04ee E8000000 		call	malloc@PLT
+ 622      00
+ 623 04f3 488945F8 		movq	%rax, -8(%rbp)
+ 208:arg_file.c    ****     if (result)
+ 624              		.loc 1 208 8
+ 625 04f7 48837DF8 		cmpq	$0, -8(%rbp)
+ 625      00
+ 626 04fc 0F846801 		je	.L40
+ 626      0000
+ 627              	.LBB2:
+ 209:arg_file.c    ****         {
+ 210:arg_file.c    ****         int i;
+ 211:arg_file.c    **** 
+ 212:arg_file.c    ****         /* init the arg_hdr struct */
+ 213:arg_file.c    ****         result->hdr.flag      = ARG_HASVALUE;
+ 628              		.loc 1 213 31
+ 629 0502 488B45F8 		movq	-8(%rbp), %rax
+ 630 0506 C60002   		movb	$2, (%rax)
+ 214:arg_file.c    ****         result->hdr.shortopts = shortopts;
+ 631              		.loc 1 214 31
+ 632 0509 488B45F8 		movq	-8(%rbp), %rax
+ 633 050d 488B55D8 		movq	-40(%rbp), %rdx
+ 634 0511 48895008 		movq	%rdx, 8(%rax)
+ 215:arg_file.c    ****         result->hdr.longopts  = longopts;
+ 635              		.loc 1 215 31
+ 636 0515 488B45F8 		movq	-8(%rbp), %rax
+ 637 0519 488B55D0 		movq	-48(%rbp), %rdx
+ 638 051d 48895010 		movq	%rdx, 16(%rax)
+ 216:arg_file.c    ****         result->hdr.glossary  = glossary;
+ 639              		.loc 1 216 31
+ 640 0521 488B45F8 		movq	-8(%rbp), %rax
+ 641 0525 488B55B8 		movq	-72(%rbp), %rdx
+ 642 0529 48895020 		movq	%rdx, 32(%rax)
+ 217:arg_file.c    ****         result->hdr.datatype  = datatype ? datatype : "<file>";
+ 643              		.loc 1 217 53
+ 644 052d 48837DC8 		cmpq	$0, -56(%rbp)
+ 644      00
+ 645 0532 7406     		je	.L41
+ 646              		.loc 1 217 53 is_stmt 0 discriminator 1
+ 647 0534 488B45C8 		movq	-56(%rbp), %rax
+ 648 0538 EB07     		jmp	.L42
+ 649              	.L41:
+ 650              		.loc 1 217 53 discriminator 2
+ 651 053a 488D0500 		leaq	.LC8(%rip), %rax
+ 651      000000
+ 652              	.L42:
+ 653              		.loc 1 217 31 is_stmt 1 discriminator 4
+ 654 0541 488B55F8 		movq	-8(%rbp), %rdx
+ 655 0545 48894218 		movq	%rax, 24(%rdx)
+ 218:arg_file.c    ****         result->hdr.mincount  = mincount;
+ 656              		.loc 1 218 31 discriminator 4
+ 657 0549 488B45F8 		movq	-8(%rbp), %rax
+ 658 054d 8B55C4   		movl	-60(%rbp), %edx
+ 659 0550 895028   		movl	%edx, 40(%rax)
+ 219:arg_file.c    ****         result->hdr.maxcount  = maxcount;
+ 660              		.loc 1 219 31 discriminator 4
+ 661 0553 488B45F8 		movq	-8(%rbp), %rax
+ 662 0557 8B55C0   		movl	-64(%rbp), %edx
+ 663 055a 89502C   		movl	%edx, 44(%rax)
+ 220:arg_file.c    ****         result->hdr.parent    = result;
+ 664              		.loc 1 220 31 discriminator 4
+ 665 055d 488B45F8 		movq	-8(%rbp), %rax
+ 666 0561 488B55F8 		movq	-8(%rbp), %rdx
+ 667 0565 48895030 		movq	%rdx, 48(%rax)
+ 221:arg_file.c    ****         result->hdr.resetfn   = (arg_resetfn*)resetfn;
+ 668              		.loc 1 221 31 discriminator 4
+ 669 0569 488B45F8 		movq	-8(%rbp), %rax
+ 670 056d 488D158C 		leaq	resetfn(%rip), %rdx
+ 670      FAFFFF
+ 671 0574 48895038 		movq	%rdx, 56(%rax)
+ 222:arg_file.c    ****         result->hdr.scanfn    = (arg_scanfn*)scanfn;
+ 672              		.loc 1 222 31 discriminator 4
+ 673 0578 488B45F8 		movq	-8(%rbp), %rax
+ 674 057c 488D153C 		leaq	scanfn(%rip), %rdx
+ 674      FCFFFF
+ 675 0583 48895040 		movq	%rdx, 64(%rax)
+ 223:arg_file.c    ****         result->hdr.checkfn   = (arg_checkfn*)checkfn;
+ 676              		.loc 1 223 31 discriminator 4
+ 677 0587 488B45F8 		movq	-8(%rbp), %rax
+ 678 058b 488D1525 		leaq	checkfn(%rip), %rdx
+ 678      FDFFFF
+ 679 0592 48895048 		movq	%rdx, 72(%rax)
+ 224:arg_file.c    ****         result->hdr.errorfn   = (arg_errorfn*)errorfn;
+ 680              		.loc 1 224 31 discriminator 4
+ 681 0596 488B45F8 		movq	-8(%rbp), %rax
+ 682 059a 488D1540 		leaq	errorfn(%rip), %rdx
+ 682      FDFFFF
+ 683 05a1 48895050 		movq	%rdx, 80(%rax)
+ 225:arg_file.c    **** 
+ 226:arg_file.c    ****         /* store the filename,basename,extension arrays immediately after the arg_file struct */
+ 227:arg_file.c    ****         result->filename  = (const char**)(result+1);
+ 684              		.loc 1 227 50 discriminator 4
+ 685 05a5 488B45F8 		movq	-8(%rbp), %rax
+ 686 05a9 488D9080 		leaq	128(%rax), %rdx
+ 686      000000
+ 687              		.loc 1 227 27 discriminator 4
+ 688 05b0 488B45F8 		movq	-8(%rbp), %rax
+ 689 05b4 48895068 		movq	%rdx, 104(%rax)
+ 228:arg_file.c    ****         result->basename  = result->filename + maxcount;
+ 690              		.loc 1 228 35 discriminator 4
+ 691 05b8 488B45F8 		movq	-8(%rbp), %rax
+ 692 05bc 488B5068 		movq	104(%rax), %rdx
+ 693              		.loc 1 228 46 discriminator 4
+ 694 05c0 8B45C0   		movl	-64(%rbp), %eax
+ 695 05c3 4898     		cltq
+ 696 05c5 48C1E003 		salq	$3, %rax
+ 697 05c9 4801C2   		addq	%rax, %rdx
+ 698              		.loc 1 228 27 discriminator 4
+ 699 05cc 488B45F8 		movq	-8(%rbp), %rax
+ 700 05d0 48895070 		movq	%rdx, 112(%rax)
+ 229:arg_file.c    ****         result->extension = result->basename + maxcount;
+ 701              		.loc 1 229 35 discriminator 4
+ 702 05d4 488B45F8 		movq	-8(%rbp), %rax
+ 703 05d8 488B5070 		movq	112(%rax), %rdx
+ 704              		.loc 1 229 46 discriminator 4
+ 705 05dc 8B45C0   		movl	-64(%rbp), %eax
+ 706 05df 4898     		cltq
+ 707 05e1 48C1E003 		salq	$3, %rax
+ 708 05e5 4801C2   		addq	%rax, %rdx
+ 709              		.loc 1 229 27 discriminator 4
+ 710 05e8 488B45F8 		movq	-8(%rbp), %rax
+ 711 05ec 48895078 		movq	%rdx, 120(%rax)
+ 230:arg_file.c    ****         result->count = 0;
+ 712              		.loc 1 230 23 discriminator 4
+ 713 05f0 488B45F8 		movq	-8(%rbp), %rax
+ 714 05f4 C7406000 		movl	$0, 96(%rax)
+ 714      000000
+ 231:arg_file.c    **** 
+ 232:arg_file.c    ****         /* foolproof the string pointers by initialising them with empty strings */
+ 233:arg_file.c    ****         for (i=0; i<maxcount; i++)
+ 715              		.loc 1 233 15 discriminator 4
+ 716 05fb C745EC00 		movl	$0, -20(%rbp)
+ 716      000000
+ 717              		.loc 1 233 9 discriminator 4
+ 718 0602 EB5E     		jmp	.L43
+ 719              	.L44:
+ 234:arg_file.c    ****             {
+ 235:arg_file.c    ****             result->filename[i] = "";
+ 720              		.loc 1 235 19 discriminator 3
+ 721 0604 488B45F8 		movq	-8(%rbp), %rax
+ 722 0608 488B5068 		movq	104(%rax), %rdx
+ 723              		.loc 1 235 29 discriminator 3
+ 724 060c 8B45EC   		movl	-20(%rbp), %eax
+ 725 060f 4898     		cltq
+ 726 0611 48C1E003 		salq	$3, %rax
+ 727 0615 4801D0   		addq	%rdx, %rax
+ 728              		.loc 1 235 33 discriminator 3
+ 729 0618 488D1500 		leaq	.LC2(%rip), %rdx
+ 729      000000
+ 730 061f 488910   		movq	%rdx, (%rax)
+ 236:arg_file.c    ****             result->basename[i] = "";
+ 731              		.loc 1 236 19 discriminator 3
+ 732 0622 488B45F8 		movq	-8(%rbp), %rax
+ 733 0626 488B5070 		movq	112(%rax), %rdx
+ 734              		.loc 1 236 29 discriminator 3
+ 735 062a 8B45EC   		movl	-20(%rbp), %eax
+ 736 062d 4898     		cltq
+ 737 062f 48C1E003 		salq	$3, %rax
+ 738 0633 4801D0   		addq	%rdx, %rax
+ 739              		.loc 1 236 33 discriminator 3
+ 740 0636 488D1500 		leaq	.LC2(%rip), %rdx
+ 740      000000
+ 741 063d 488910   		movq	%rdx, (%rax)
+ 237:arg_file.c    ****             result->extension[i] = "";
+ 742              		.loc 1 237 19 discriminator 3
+ 743 0640 488B45F8 		movq	-8(%rbp), %rax
+ 744 0644 488B5078 		movq	120(%rax), %rdx
+ 745              		.loc 1 237 30 discriminator 3
+ 746 0648 8B45EC   		movl	-20(%rbp), %eax
+ 747 064b 4898     		cltq
+ 748 064d 48C1E003 		salq	$3, %rax
+ 749 0651 4801D0   		addq	%rdx, %rax
+ 750              		.loc 1 237 34 discriminator 3
+ 751 0654 488D1500 		leaq	.LC2(%rip), %rdx
+ 751      000000
+ 752 065b 488910   		movq	%rdx, (%rax)
+ 233:arg_file.c    ****             {
+ 753              		.loc 1 233 32 discriminator 3
+ 754 065e 8345EC01 		addl	$1, -20(%rbp)
+ 755              	.L43:
+ 233:arg_file.c    ****             {
+ 756              		.loc 1 233 20 discriminator 1
+ 757 0662 8B45EC   		movl	-20(%rbp), %eax
+ 758 0665 3B45C0   		cmpl	-64(%rbp), %eax
+ 759 0668 7C9A     		jl	.L44
+ 760              	.L40:
+ 761              	.LBE2:
+ 238:arg_file.c    ****             }
+ 239:arg_file.c    ****         }
+ 240:arg_file.c    ****     /*printf("arg_filen() returns %p\n",result);*/
+ 241:arg_file.c    ****     return result;
+ 762              		.loc 1 241 12
+ 763 066a 488B45F8 		movq	-8(%rbp), %rax
+ 242:arg_file.c    ****     }
+ 764              		.loc 1 242 5
+ 765 066e C9       		leave
+ 766              		.cfi_def_cfa 7, 8
+ 767 066f C3       		ret
+ 768              		.cfi_endproc
+ 769              	.LFE8:
+ 771              	.Letext0:
+ 772              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+ 773              		.file 3 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 774              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h"
+ 775              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/FILE.h"
+ 776              		.file 6 "argtable2.h"
+ 777              		.file 7 "/usr/include/stdlib.h"
+ 778              		.file 8 "/usr/include/stdio.h"
+ 779              		.file 9 "/usr/include/string.h"
+ 2568              		.section	.note.gnu.property,"a"
+ 2569              		.align 8
+ 2570 0000 04000000 		.long	1f - 0f
+ 2571 0004 10000000 		.long	4f - 1f
+ 2572 0008 05000000 		.long	5
+ 2573              	0:
+ 2574 000c 474E5500 		.string	"GNU"
+ 2575              	1:
+ 2576              		.align 8
+ 2577 0010 020000C0 		.long	0xc0000002
+ 2578 0014 04000000 		.long	3f - 2f
+ 2579              	2:
+ 2580 0018 03000000 		.long	0x3
+ 2581              	3:
+ 2582 001c 00000000 		.align 8
+ 2583              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arg_file.c
+     /tmp/ccFz7krV.s:6      .text:0000000000000000 resetfn
+     /tmp/ccFz7krV.s:36     .text:000000000000001a arg_basename
+     /tmp/ccFz7krV.s:144    .text:0000000000000105 arg_extension
+     /tmp/ccFz7krV.s:234    .text:00000000000001bf scanfn
+     /tmp/ccFz7krV.s:351    .text:00000000000002b7 checkfn
+     /tmp/ccFz7krV.s:398    .text:00000000000002e1 errorfn
+     /tmp/ccFz7krV.s:512    .text:0000000000000411 arg_file0
+     /tmp/ccFz7krV.s:584    .text:0000000000000499 arg_filen
+     /tmp/ccFz7krV.s:546    .text:0000000000000455 arg_file1
+
+UNDEFINED SYMBOLS
+strrchr
+strcmp
+strlen
+fprintf
+fwrite
+arg_print_option
+malloc

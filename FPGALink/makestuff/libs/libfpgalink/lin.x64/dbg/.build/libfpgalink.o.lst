@@ -1,0 +1,3851 @@
+   1              		.file	"libfpgalink.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libfpgalink" "libfpgalink.c"
+   5              		.section	.rodata
+   6              	.LC0:
+   7 0000 666C496E 		.string	"flInitialise()"
+   7      69746961 
+   7      6C697365 
+   7      282900
+   8              		.text
+   9              		.globl	flInitialise
+  11              	flInitialise:
+  12              	.LFB4:
+  13              		.file 1 "libfpgalink.c"
+   1:libfpgalink.c **** /*
+   2:libfpgalink.c ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:libfpgalink.c ****  *
+   4:libfpgalink.c ****  * This program is free software: you can redistribute it and/or modify
+   5:libfpgalink.c ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:libfpgalink.c ****  * the Free Software Foundation, either version 3 of the License, or
+   7:libfpgalink.c ****  * (at your option) any later version.
+   8:libfpgalink.c ****  *
+   9:libfpgalink.c ****  * This program is distributed in the hope that it will be useful,
+  10:libfpgalink.c ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:libfpgalink.c ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:libfpgalink.c ****  * GNU Lesser General Public License for more details.
+  13:libfpgalink.c ****  *
+  14:libfpgalink.c ****  * You should have received a copy of the GNU Lesser General Public License
+  15:libfpgalink.c ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:libfpgalink.c ****  */
+  17:libfpgalink.c **** #include <stdlib.h>
+  18:libfpgalink.c **** #include <string.h>
+  19:libfpgalink.c **** #include <makestuff.h>
+  20:libfpgalink.c **** #include <libusbwrap.h>
+  21:libfpgalink.c **** #include <liberror.h>
+  22:libfpgalink.c **** #include <libbuffer.h>
+  23:libfpgalink.c **** #include "vendorCommands.h"
+  24:libfpgalink.c **** #include "libfpgalink.h"
+  25:libfpgalink.c **** #include "private.h"
+  26:libfpgalink.c **** 
+  27:libfpgalink.c **** static FLStatus getStatus(struct FLContext *handle, uint8 *statusBuffer, const char **error);
+  28:libfpgalink.c **** 
+  29:libfpgalink.c **** // Initialise library for use.
+  30:libfpgalink.c **** //
+  31:libfpgalink.c **** DLLEXPORT(FLStatus) flInitialise(int logLevel, const char **error) {
+  14              		.loc 1 31 68
+  15              		.cfi_startproc
+  16 0000 F30F1EFA 		endbr64
+  17 0004 55       		pushq	%rbp
+  18              		.cfi_def_cfa_offset 16
+  19              		.cfi_offset 6, -16
+  20 0005 4889E5   		movq	%rsp, %rbp
+  21              		.cfi_def_cfa_register 6
+  22 0008 4883EC20 		subq	$32, %rsp
+  23 000c 897DEC   		movl	%edi, -20(%rbp)
+  24 000f 488975E0 		movq	%rsi, -32(%rbp)
+  32:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS;
+  25              		.loc 1 32 11
+  26 0013 C745F800 		movl	$0, -8(%rbp)
+  26      000000
+  33:libfpgalink.c **** 	USBStatus uStatus = usbInitialise(logLevel, error);
+  27              		.loc 1 33 22
+  28 001a 488B55E0 		movq	-32(%rbp), %rdx
+  29 001e 8B45EC   		movl	-20(%rbp), %eax
+  30 0021 4889D6   		movq	%rdx, %rsi
+  31 0024 89C7     		movl	%eax, %edi
+  32 0026 E8000000 		call	usbInitialise@PLT
+  32      00
+  33 002b 8945FC   		movl	%eax, -4(%rbp)
+  34:libfpgalink.c **** 	CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flInitialise()");
+  34              		.loc 1 34 2
+  35 002e 837DFC00 		cmpl	$0, -4(%rbp)
+  36 0032 741F     		je	.L4
+  37              		.loc 1 34 2 is_stmt 0 discriminator 1
+  38 0034 488B45E0 		movq	-32(%rbp), %rax
+  39 0038 488D1500 		leaq	.LC0(%rip), %rdx
+  39      000000
+  40 003f 4889D6   		movq	%rdx, %rsi
+  41 0042 4889C7   		movq	%rax, %rdi
+  42 0045 E8000000 		call	errPrefix@PLT
+  42      00
+  43 004a C745F802 		movl	$2, -8(%rbp)
+  43      000000
+  44 0051 EB01     		jmp	.L2
+  45              	.L4:
+  35:libfpgalink.c **** cleanup:
+  46              		.loc 1 35 1 is_stmt 1
+  47 0053 90       		nop
+  48              	.L2:
+  36:libfpgalink.c **** 	return retVal;
+  49              		.loc 1 36 9
+  50 0054 8B45F8   		movl	-8(%rbp), %eax
+  37:libfpgalink.c **** }
+  51              		.loc 1 37 1
+  52 0057 C9       		leave
+  53              		.cfi_def_cfa 7, 8
+  54 0058 C3       		ret
+  55              		.cfi_endproc
+  56              	.LFE4:
+  58              		.globl	flFreeError
+  60              	flFreeError:
+  61              	.LFB5:
+  38:libfpgalink.c **** 
+  39:libfpgalink.c **** // Convenience function to avoid having to include liberror.h.
+  40:libfpgalink.c **** //
+  41:libfpgalink.c **** DLLEXPORT(void) flFreeError(const char *err) {
+  62              		.loc 1 41 46
+  63              		.cfi_startproc
+  64 0059 F30F1EFA 		endbr64
+  65 005d 55       		pushq	%rbp
+  66              		.cfi_def_cfa_offset 16
+  67              		.cfi_offset 6, -16
+  68 005e 4889E5   		movq	%rsp, %rbp
+  69              		.cfi_def_cfa_register 6
+  70 0061 4883EC10 		subq	$16, %rsp
+  71 0065 48897DF8 		movq	%rdi, -8(%rbp)
+  42:libfpgalink.c **** 	errFree(err);
+  72              		.loc 1 42 2
+  73 0069 488B45F8 		movq	-8(%rbp), %rax
+  74 006d 4889C7   		movq	%rax, %rdi
+  75 0070 E8000000 		call	errFree@PLT
+  75      00
+  43:libfpgalink.c **** }
+  76              		.loc 1 43 1
+  77 0075 90       		nop
+  78 0076 C9       		leave
+  79              		.cfi_def_cfa 7, 8
+  80 0077 C3       		ret
+  81              		.cfi_endproc
+  82              	.LFE5:
+  84              		.section	.rodata
+  85              	.LC1:
+  86 000f 666C4973 		.string	"flIsDeviceAvailable()"
+  86      44657669 
+  86      63654176 
+  86      61696C61 
+  86      626C6528 
+  87              		.text
+  88              		.globl	flIsDeviceAvailable
+  90              	flIsDeviceAvailable:
+  91              	.LFB6:
+  44:libfpgalink.c **** 
+  45:libfpgalink.c **** // Return with true in isAvailable if the given VID:PID[:DID] is available.
+  46:libfpgalink.c **** //
+  47:libfpgalink.c **** DLLEXPORT(FLStatus) flIsDeviceAvailable(
+  48:libfpgalink.c **** 	const char *vp, uint8 *isAvailable, const char **error)
+  49:libfpgalink.c **** {
+  92              		.loc 1 49 1
+  93              		.cfi_startproc
+  94 0078 F30F1EFA 		endbr64
+  95 007c 55       		pushq	%rbp
+  96              		.cfi_def_cfa_offset 16
+  97              		.cfi_offset 6, -16
+  98 007d 4889E5   		movq	%rsp, %rbp
+  99              		.cfi_def_cfa_register 6
+ 100 0080 4883EC40 		subq	$64, %rsp
+ 101 0084 48897DD8 		movq	%rdi, -40(%rbp)
+ 102 0088 488975D0 		movq	%rsi, -48(%rbp)
+ 103 008c 488955C8 		movq	%rdx, -56(%rbp)
+ 104              		.loc 1 49 1
+ 105 0090 64488B04 		movq	%fs:40, %rax
+ 105      25280000 
+ 105      00
+ 106 0099 488945F8 		movq	%rax, -8(%rbp)
+ 107 009d 31C0     		xorl	%eax, %eax
+  50:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS;
+ 108              		.loc 1 50 11
+ 109 009f C745F000 		movl	$0, -16(%rbp)
+ 109      000000
+  51:libfpgalink.c **** 	bool flag;
+  52:libfpgalink.c **** 	USBStatus uStatus = usbIsDeviceAvailable(vp, &flag, error);
+ 110              		.loc 1 52 22
+ 111 00a6 488B55C8 		movq	-56(%rbp), %rdx
+ 112 00aa 488D4DEF 		leaq	-17(%rbp), %rcx
+ 113 00ae 488B45D8 		movq	-40(%rbp), %rax
+ 114 00b2 4889CE   		movq	%rcx, %rsi
+ 115 00b5 4889C7   		movq	%rax, %rdi
+ 116 00b8 E8000000 		call	usbIsDeviceAvailable@PLT
+ 116      00
+ 117 00bd 8945F4   		movl	%eax, -12(%rbp)
+  53:libfpgalink.c **** 	CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flIsDeviceAvailable()");
+ 118              		.loc 1 53 2
+ 119 00c0 837DF400 		cmpl	$0, -12(%rbp)
+ 120 00c4 741F     		je	.L7
+ 121              		.loc 1 53 2 is_stmt 0 discriminator 1
+ 122 00c6 488B45C8 		movq	-56(%rbp), %rax
+ 123 00ca 488D1500 		leaq	.LC1(%rip), %rdx
+ 123      000000
+ 124 00d1 4889D6   		movq	%rdx, %rsi
+ 125 00d4 4889C7   		movq	%rax, %rdi
+ 126 00d7 E8000000 		call	errPrefix@PLT
+ 126      00
+ 127 00dc C745F002 		movl	$2, -16(%rbp)
+ 127      000000
+ 128 00e3 EB0C     		jmp	.L8
+ 129              	.L7:
+  54:libfpgalink.c **** 	*isAvailable = flag ? 0x01 : 0x00;
+ 130              		.loc 1 54 29 is_stmt 1
+ 131 00e5 0FB645EF 		movzbl	-17(%rbp), %eax
+ 132 00e9 89C2     		movl	%eax, %edx
+ 133              		.loc 1 54 15
+ 134 00eb 488B45D0 		movq	-48(%rbp), %rax
+ 135 00ef 8810     		movb	%dl, (%rax)
+ 136              	.L8:
+  55:libfpgalink.c **** cleanup:
+  56:libfpgalink.c **** 	return retVal;
+ 137              		.loc 1 56 9
+ 138 00f1 8B45F0   		movl	-16(%rbp), %eax
+  57:libfpgalink.c **** }
+ 139              		.loc 1 57 1
+ 140 00f4 488B55F8 		movq	-8(%rbp), %rdx
+ 141 00f8 64482B14 		subq	%fs:40, %rdx
+ 141      25280000 
+ 141      00
+ 142 0101 7405     		je	.L10
+ 143 0103 E8000000 		call	__stack_chk_fail@PLT
+ 143      00
+ 144              	.L10:
+ 145 0108 C9       		leave
+ 146              		.cfi_def_cfa 7, 8
+ 147 0109 C3       		ret
+ 148              		.cfi_endproc
+ 149              	.LFE6:
+ 151              		.section	.rodata
+ 152              	.LC2:
+ 153 0025 666C4F70 		.string	"flOpen()"
+ 153      656E2829 
+ 153      00
+ 154 002e 0000     		.align 8
+ 155              	.LC3:
+ 156 0030 666C4F70 		.string	"flOpen(): Device at %s not recognised"
+ 156      656E2829 
+ 156      3A204465 
+ 156      76696365 
+ 156      20617420 
+ 157 0056 0000     		.align 8
+ 158              	.LC4:
+ 159 0058 666C4F70 		.string	"flOpen(): Device at %s supports neither NeroProg nor CommFPGA"
+ 159      656E2829 
+ 159      3A204465 
+ 159      76696365 
+ 159      20617420 
+ 160              		.text
+ 161              		.globl	flOpen
+ 163              	flOpen:
+ 164              	.LFB7:
+  58:libfpgalink.c **** 
+  59:libfpgalink.c **** // Open a connection, get device status & sanity-check it.
+  60:libfpgalink.c **** //
+  61:libfpgalink.c **** DLLEXPORT(FLStatus) flOpen(const char *vp, struct FLContext **handle, const char **error) {
+ 165              		.loc 1 61 91
+ 166              		.cfi_startproc
+ 167 010a F30F1EFA 		endbr64
+ 168 010e 55       		pushq	%rbp
+ 169              		.cfi_def_cfa_offset 16
+ 170              		.cfi_offset 6, -16
+ 171 010f 4889E5   		movq	%rsp, %rbp
+ 172              		.cfi_def_cfa_register 6
+ 173 0112 4883EC60 		subq	$96, %rsp
+ 174 0116 48897DB8 		movq	%rdi, -72(%rbp)
+ 175 011a 488975B0 		movq	%rsi, -80(%rbp)
+ 176 011e 488955A8 		movq	%rdx, -88(%rbp)
+ 177              		.loc 1 61 91
+ 178 0122 64488B04 		movq	%fs:40, %rax
+ 178      25280000 
+ 178      00
+ 179 012b 488945F8 		movq	%rax, -8(%rbp)
+ 180 012f 31C0     		xorl	%eax, %eax
+  62:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS, fStatus;
+ 181              		.loc 1 62 11
+ 182 0131 C745CC00 		movl	$0, -52(%rbp)
+ 182      000000
+  63:libfpgalink.c **** 	USBStatus uStatus;
+  64:libfpgalink.c **** 	uint8 statusBuffer[16];
+  65:libfpgalink.c **** 	struct FLContext *newCxt = (struct FLContext *)calloc(sizeof(struct FLContext), 1);
+ 183              		.loc 1 65 49
+ 184 0138 BE010000 		movl	$1, %esi
+ 184      00
+ 185 013d BF500000 		movl	$80, %edi
+ 185      00
+ 186 0142 E8000000 		call	calloc@PLT
+ 186      00
+ 187 0147 488945D8 		movq	%rax, -40(%rbp)
+  66:libfpgalink.c **** 	uint8 progEndpoints, commEndpoints;
+  67:libfpgalink.c **** 	CHECK_STATUS(!newCxt, FL_ALLOC_ERR, cleanup, "flOpen()");
+ 188              		.loc 1 67 2
+ 189 014b 48837DD8 		cmpq	$0, -40(%rbp)
+ 189      00
+ 190 0150 7522     		jne	.L12
+ 191              		.loc 1 67 2 is_stmt 0 discriminator 1
+ 192 0152 488B45A8 		movq	-88(%rbp), %rax
+ 193 0156 488D1500 		leaq	.LC2(%rip), %rdx
+ 193      000000
+ 194 015d 4889D6   		movq	%rdx, %rsi
+ 195 0160 4889C7   		movq	%rax, %rdi
+ 196 0163 E8000000 		call	errPrefix@PLT
+ 196      00
+ 197 0168 C745CC01 		movl	$1, -52(%rbp)
+ 197      000000
+ 198 016f E9F50100 		jmp	.L13
+ 198      00
+ 199              	.L12:
+  68:libfpgalink.c **** 	uStatus = usbOpenDevice(vp, 1, 0, 0, &newCxt->device, error);
+ 200              		.loc 1 68 12 is_stmt 1
+ 201 0174 488B55D8 		movq	-40(%rbp), %rdx
+ 202 0178 488B4DA8 		movq	-88(%rbp), %rcx
+ 203 017c 488B45B8 		movq	-72(%rbp), %rax
+ 204 0180 4989C9   		movq	%rcx, %r9
+ 205 0183 4989D0   		movq	%rdx, %r8
+ 206 0186 B9000000 		movl	$0, %ecx
+ 206      00
+ 207 018b BA000000 		movl	$0, %edx
+ 207      00
+ 208 0190 BE010000 		movl	$1, %esi
+ 208      00
+ 209 0195 4889C7   		movq	%rax, %rdi
+ 210 0198 E8000000 		call	usbOpenDevice@PLT
+ 210      00
+ 211 019d 8945D0   		movl	%eax, -48(%rbp)
+  69:libfpgalink.c **** 	CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flOpen()");
+ 212              		.loc 1 69 2
+ 213 01a0 837DD000 		cmpl	$0, -48(%rbp)
+ 214 01a4 7422     		je	.L14
+ 215              		.loc 1 69 2 is_stmt 0 discriminator 1
+ 216 01a6 488B45A8 		movq	-88(%rbp), %rax
+ 217 01aa 488D1500 		leaq	.LC2(%rip), %rdx
+ 217      000000
+ 218 01b1 4889D6   		movq	%rdx, %rsi
+ 219 01b4 4889C7   		movq	%rax, %rdi
+ 220 01b7 E8000000 		call	errPrefix@PLT
+ 220      00
+ 221 01bc C745CC02 		movl	$2, -52(%rbp)
+ 221      000000
+ 222 01c3 E9A10100 		jmp	.L13
+ 222      00
+ 223              	.L14:
+  70:libfpgalink.c **** 	fStatus = getStatus(newCxt, statusBuffer, error);
+ 224              		.loc 1 70 12 is_stmt 1
+ 225 01c8 488B55A8 		movq	-88(%rbp), %rdx
+ 226 01cc 488D4DE0 		leaq	-32(%rbp), %rcx
+ 227 01d0 488B45D8 		movq	-40(%rbp), %rax
+ 228 01d4 4889CE   		movq	%rcx, %rsi
+ 229 01d7 4889C7   		movq	%rax, %rdi
+ 230 01da E82E1500 		call	getStatus
+ 230      00
+ 231 01df 8945D4   		movl	%eax, -44(%rbp)
+  71:libfpgalink.c **** 	CHECK_STATUS(fStatus, fStatus, cleanup, "flOpen()");
+ 232              		.loc 1 71 2
+ 233 01e2 837DD400 		cmpl	$0, -44(%rbp)
+ 234 01e6 7421     		je	.L15
+ 235              		.loc 1 71 2 is_stmt 0 discriminator 1
+ 236 01e8 488B45A8 		movq	-88(%rbp), %rax
+ 237 01ec 488D1500 		leaq	.LC2(%rip), %rdx
+ 237      000000
+ 238 01f3 4889D6   		movq	%rdx, %rsi
+ 239 01f6 4889C7   		movq	%rax, %rdi
+ 240 01f9 E8000000 		call	errPrefix@PLT
+ 240      00
+ 241 01fe 8B45D4   		movl	-44(%rbp), %eax
+ 242 0201 8945CC   		movl	%eax, -52(%rbp)
+ 243 0204 E9600100 		jmp	.L13
+ 243      00
+ 244              	.L15:
+  72:libfpgalink.c **** 	CHECK_STATUS(
+ 245              		.loc 1 72 2 is_stmt 1
+ 246 0209 0FB645E0 		movzbl	-32(%rbp), %eax
+ 247 020d 3C4E     		cmpb	$78, %al
+ 248 020f 7518     		jne	.L16
+ 249              		.loc 1 72 2 is_stmt 0 discriminator 2
+ 250 0211 0FB645E1 		movzbl	-31(%rbp), %eax
+ 251 0215 3C45     		cmpb	$69, %al
+ 252 0217 7510     		jne	.L16
+ 253              		.loc 1 72 2 discriminator 4
+ 254 0219 0FB645E2 		movzbl	-30(%rbp), %eax
+ 255 021d 3C4D     		cmpb	$77, %al
+ 256 021f 7508     		jne	.L16
+ 257              		.loc 1 72 2 discriminator 6
+ 258 0221 0FB645E3 		movzbl	-29(%rbp), %eax
+ 259 0225 3C49     		cmpb	$73, %al
+ 260 0227 742B     		je	.L17
+ 261              	.L16:
+ 262              		.loc 1 72 2 discriminator 7
+ 263 0229 488B55B8 		movq	-72(%rbp), %rdx
+ 264 022d 488B45A8 		movq	-88(%rbp), %rax
+ 265 0231 488D0D00 		leaq	.LC3(%rip), %rcx
+ 265      000000
+ 266 0238 4889CE   		movq	%rcx, %rsi
+ 267 023b 4889C7   		movq	%rax, %rdi
+ 268 023e B8000000 		movl	$0, %eax
+ 268      00
+ 269 0243 E8000000 		call	errRender@PLT
+ 269      00
+ 270 0248 C745CC03 		movl	$3, -52(%rbp)
+ 270      000000
+ 271 024f E9150100 		jmp	.L13
+ 271      00
+ 272              	.L17:
+  73:libfpgalink.c **** 		statusBuffer[0] != 'N' || statusBuffer[1] != 'E' ||
+  74:libfpgalink.c **** 		statusBuffer[2] != 'M' || statusBuffer[3] != 'I',
+  75:libfpgalink.c **** 		FL_PROTOCOL_ERR, cleanup,
+  76:libfpgalink.c **** 		"flOpen(): Device at %s not recognised", vp);
+  77:libfpgalink.c **** 	CHECK_STATUS(
+ 273              		.loc 1 77 2 is_stmt 1
+ 274 0254 0FB645E6 		movzbl	-26(%rbp), %eax
+ 275 0258 84C0     		testb	%al, %al
+ 276 025a 7533     		jne	.L18
+ 277              		.loc 1 77 2 is_stmt 0 discriminator 1
+ 278 025c 0FB645E7 		movzbl	-25(%rbp), %eax
+ 279 0260 84C0     		testb	%al, %al
+ 280 0262 752B     		jne	.L18
+ 281              		.loc 1 77 2 discriminator 2
+ 282 0264 488B55B8 		movq	-72(%rbp), %rdx
+ 283 0268 488B45A8 		movq	-88(%rbp), %rax
+ 284 026c 488D0D00 		leaq	.LC4(%rip), %rcx
+ 284      000000
+ 285 0273 4889CE   		movq	%rcx, %rsi
+ 286 0276 4889C7   		movq	%rax, %rdi
+ 287 0279 B8000000 		movl	$0, %eax
+ 287      00
+ 288 027e E8000000 		call	errRender@PLT
+ 288      00
+ 289 0283 C745CC03 		movl	$3, -52(%rbp)
+ 289      000000
+ 290 028a E9DA0000 		jmp	.L13
+ 290      00
+ 291              	.L18:
+  78:libfpgalink.c **** 		!statusBuffer[6] && !statusBuffer[7], FL_PROTOCOL_ERR, cleanup,
+  79:libfpgalink.c **** 		"flOpen(): Device at %s supports neither NeroProg nor CommFPGA", vp);
+  80:libfpgalink.c **** 	progEndpoints = statusBuffer[6];
+ 292              		.loc 1 80 16 is_stmt 1
+ 293 028f 0FB645E6 		movzbl	-26(%rbp), %eax
+ 294 0293 8845CA   		movb	%al, -54(%rbp)
+  81:libfpgalink.c **** 	commEndpoints = statusBuffer[7];
+ 295              		.loc 1 81 16
+ 296 0296 0FB645E7 		movzbl	-25(%rbp), %eax
+ 297 029a 8845CB   		movb	%al, -53(%rbp)
+  82:libfpgalink.c **** 	if ( progEndpoints ) {
+ 298              		.loc 1 82 5
+ 299 029d 807DCA00 		cmpb	$0, -54(%rbp)
+ 300 02a1 7428     		je	.L19
+  83:libfpgalink.c **** 		newCxt->isNeroCapable = true;
+ 301              		.loc 1 83 25
+ 302 02a3 488B45D8 		movq	-40(%rbp), %rax
+ 303 02a7 C6401401 		movb	$1, 20(%rax)
+  84:libfpgalink.c **** 		newCxt->progOutEP = (progEndpoints >> 4);
+ 304              		.loc 1 84 21
+ 305 02ab 0FB645CA 		movzbl	-54(%rbp), %eax
+ 306 02af C0E804   		shrb	$4, %al
+ 307 02b2 89C2     		movl	%eax, %edx
+ 308 02b4 488B45D8 		movq	-40(%rbp), %rax
+ 309 02b8 885015   		movb	%dl, 21(%rax)
+  85:libfpgalink.c **** 		newCxt->progInEP = (progEndpoints & 0x0F);
+ 310              		.loc 1 85 37
+ 311 02bb 0FB645CA 		movzbl	-54(%rbp), %eax
+ 312 02bf 83E00F   		andl	$15, %eax
+ 313 02c2 89C2     		movl	%eax, %edx
+ 314              		.loc 1 85 20
+ 315 02c4 488B45D8 		movq	-40(%rbp), %rax
+ 316 02c8 885016   		movb	%dl, 22(%rax)
+ 317              	.L19:
+  86:libfpgalink.c **** 	}
+  87:libfpgalink.c **** 	if ( commEndpoints ) {
+ 318              		.loc 1 87 5
+ 319 02cb 807DCB00 		cmpb	$0, -53(%rbp)
+ 320 02cf 7428     		je	.L20
+  88:libfpgalink.c **** 		newCxt->isCommCapable = true;
+ 321              		.loc 1 88 25
+ 322 02d1 488B45D8 		movq	-40(%rbp), %rax
+ 323 02d5 C6400801 		movb	$1, 8(%rax)
+  89:libfpgalink.c **** 		newCxt->commOutEP = (commEndpoints >> 4);
+ 324              		.loc 1 89 21
+ 325 02d9 0FB645CB 		movzbl	-53(%rbp), %eax
+ 326 02dd C0E804   		shrb	$4, %al
+ 327 02e0 89C2     		movl	%eax, %edx
+ 328 02e2 488B45D8 		movq	-40(%rbp), %rax
+ 329 02e6 885009   		movb	%dl, 9(%rax)
+  90:libfpgalink.c **** 		newCxt->commInEP = (commEndpoints & 0x0F);
+ 330              		.loc 1 90 37
+ 331 02e9 0FB645CB 		movzbl	-53(%rbp), %eax
+ 332 02ed 83E00F   		andl	$15, %eax
+ 333 02f0 89C2     		movl	%eax, %edx
+ 334              		.loc 1 90 20
+ 335 02f2 488B45D8 		movq	-40(%rbp), %rax
+ 336 02f6 88500A   		movb	%dl, 10(%rax)
+ 337              	.L20:
+  91:libfpgalink.c **** 	}
+  92:libfpgalink.c **** 	newCxt->firmwareID = (uint16)(
+  93:libfpgalink.c **** 		(statusBuffer[8] << 8) |
+ 338              		.loc 1 93 16
+ 339 02f9 0FB645E8 		movzbl	-24(%rbp), %eax
+ 340 02fd 0FB6C0   		movzbl	%al, %eax
+ 341              		.loc 1 93 20
+ 342 0300 C1E008   		sall	$8, %eax
+ 343              		.loc 1 93 26
+ 344 0303 89C2     		movl	%eax, %edx
+  94:libfpgalink.c **** 		statusBuffer[9]
+ 345              		.loc 1 94 15
+ 346 0305 0FB645E9 		movzbl	-23(%rbp), %eax
+ 347 0309 0FB6C0   		movzbl	%al, %eax
+  93:libfpgalink.c **** 		statusBuffer[9]
+ 348              		.loc 1 93 26
+ 349 030c 09D0     		orl	%edx, %eax
+  92:libfpgalink.c **** 		(statusBuffer[8] << 8) |
+ 350              		.loc 1 92 23
+ 351 030e 89C2     		movl	%eax, %edx
+  92:libfpgalink.c **** 		(statusBuffer[8] << 8) |
+ 352              		.loc 1 92 21
+ 353 0310 488B45D8 		movq	-40(%rbp), %rax
+ 354 0314 6689500C 		movw	%dx, 12(%rax)
+  95:libfpgalink.c **** 	);
+  96:libfpgalink.c **** 	newCxt->firmwareVersion = (uint32)(
+  97:libfpgalink.c **** 		(statusBuffer[10] << 24) |
+ 355              		.loc 1 97 16
+ 356 0318 0FB645EA 		movzbl	-22(%rbp), %eax
+ 357 031c 0FB6C0   		movzbl	%al, %eax
+ 358              		.loc 1 97 21
+ 359 031f C1E018   		sall	$24, %eax
+ 360 0322 89C2     		movl	%eax, %edx
+  98:libfpgalink.c **** 		(statusBuffer[11] << 16) |
+ 361              		.loc 1 98 16
+ 362 0324 0FB645EB 		movzbl	-21(%rbp), %eax
+ 363 0328 0FB6C0   		movzbl	%al, %eax
+ 364              		.loc 1 98 21
+ 365 032b C1E010   		sall	$16, %eax
+  97:libfpgalink.c **** 		(statusBuffer[11] << 16) |
+ 366              		.loc 1 97 28
+ 367 032e 09C2     		orl	%eax, %edx
+  99:libfpgalink.c **** 		(statusBuffer[12] << 8)  |
+ 368              		.loc 1 99 16
+ 369 0330 0FB645EC 		movzbl	-20(%rbp), %eax
+ 370 0334 0FB6C0   		movzbl	%al, %eax
+ 371              		.loc 1 99 21
+ 372 0337 C1E008   		sall	$8, %eax
+  98:libfpgalink.c **** 		(statusBuffer[11] << 16) |
+ 373              		.loc 1 98 28
+ 374 033a 09C2     		orl	%eax, %edx
+ 100:libfpgalink.c **** 		statusBuffer[13]
+ 375              		.loc 1 100 15
+ 376 033c 0FB645ED 		movzbl	-19(%rbp), %eax
+ 377 0340 0FB6C0   		movzbl	%al, %eax
+  99:libfpgalink.c **** 		(statusBuffer[12] << 8)  |
+ 378              		.loc 1 99 28
+ 379 0343 09D0     		orl	%edx, %eax
+  96:libfpgalink.c **** 		(statusBuffer[10] << 24) |
+ 380              		.loc 1 96 28
+ 381 0345 89C2     		movl	%eax, %edx
+  96:libfpgalink.c **** 		(statusBuffer[10] << 24) |
+ 382              		.loc 1 96 26
+ 383 0347 488B45D8 		movq	-40(%rbp), %rax
+ 384 034b 895010   		movl	%edx, 16(%rax)
+ 101:libfpgalink.c **** 	);
+ 102:libfpgalink.c **** 	newCxt->chunkSize = 0x10000;  // default maximum libusbwrap chunk size
+ 385              		.loc 1 102 20
+ 386 034e 488B45D8 		movq	-40(%rbp), %rax
+ 387 0352 C7404800 		movl	$65536, 72(%rax)
+ 387      000100
+ 103:libfpgalink.c **** 	*handle = newCxt;
+ 388              		.loc 1 103 10
+ 389 0359 488B45B0 		movq	-80(%rbp), %rax
+ 390 035d 488B55D8 		movq	-40(%rbp), %rdx
+ 391 0361 488910   		movq	%rdx, (%rax)
+ 104:libfpgalink.c **** 	return retVal;
+ 392              		.loc 1 104 9
+ 393 0364 8B45CC   		movl	-52(%rbp), %eax
+ 394 0367 EB41     		jmp	.L24
+ 395              	.L13:
+ 105:libfpgalink.c **** cleanup:
+ 106:libfpgalink.c **** 	if ( newCxt ) {
+ 396              		.loc 1 106 5
+ 397 0369 48837DD8 		cmpq	$0, -40(%rbp)
+ 397      00
+ 398 036e 742C     		je	.L22
+ 107:libfpgalink.c **** 		if ( newCxt->device ) {
+ 399              		.loc 1 107 14
+ 400 0370 488B45D8 		movq	-40(%rbp), %rax
+ 401 0374 488B00   		movq	(%rax), %rax
+ 402              		.loc 1 107 6
+ 403 0377 4885C0   		testq	%rax, %rax
+ 404 037a 7414     		je	.L23
+ 108:libfpgalink.c **** 			usbCloseDevice(newCxt->device, 0);
+ 405              		.loc 1 108 4
+ 406 037c 488B45D8 		movq	-40(%rbp), %rax
+ 407 0380 488B00   		movq	(%rax), %rax
+ 408 0383 BE000000 		movl	$0, %esi
+ 408      00
+ 409 0388 4889C7   		movq	%rax, %rdi
+ 410 038b E8000000 		call	usbCloseDevice@PLT
+ 410      00
+ 411              	.L23:
+ 109:libfpgalink.c **** 		}
+ 110:libfpgalink.c **** 		free((void*)newCxt);
+ 412              		.loc 1 110 3
+ 413 0390 488B45D8 		movq	-40(%rbp), %rax
+ 414 0394 4889C7   		movq	%rax, %rdi
+ 415 0397 E8000000 		call	free@PLT
+ 415      00
+ 416              	.L22:
+ 111:libfpgalink.c **** 	}
+ 112:libfpgalink.c **** 	*handle = NULL;
+ 417              		.loc 1 112 10
+ 418 039c 488B45B0 		movq	-80(%rbp), %rax
+ 419 03a0 48C70000 		movq	$0, (%rax)
+ 419      000000
+ 113:libfpgalink.c **** 	return retVal;
+ 420              		.loc 1 113 9
+ 421 03a7 8B45CC   		movl	-52(%rbp), %eax
+ 422              	.L24:
+ 114:libfpgalink.c **** }
+ 423              		.loc 1 114 1 discriminator 1
+ 424 03aa 488B55F8 		movq	-8(%rbp), %rdx
+ 425 03ae 64482B14 		subq	%fs:40, %rdx
+ 425      25280000 
+ 425      00
+ 426 03b7 7405     		je	.L25
+ 427              		.loc 1 114 1 is_stmt 0
+ 428 03b9 E8000000 		call	__stack_chk_fail@PLT
+ 428      00
+ 429              	.L25:
+ 430 03be C9       		leave
+ 431              		.cfi_def_cfa 7, 8
+ 432 03bf C3       		ret
+ 433              		.cfi_endproc
+ 434              	.LFE7:
+ 436              		.globl	flClose
+ 438              	flClose:
+ 439              	.LFB8:
+ 115:libfpgalink.c **** 
+ 116:libfpgalink.c **** // Disconnect and cleanup, if necessary.
+ 117:libfpgalink.c **** //
+ 118:libfpgalink.c **** DLLEXPORT(void) flClose(struct FLContext *handle) {
+ 440              		.loc 1 118 51 is_stmt 1
+ 441              		.cfi_startproc
+ 442 03c0 F30F1EFA 		endbr64
+ 443 03c4 55       		pushq	%rbp
+ 444              		.cfi_def_cfa_offset 16
+ 445              		.cfi_offset 6, -16
+ 446 03c5 4889E5   		movq	%rsp, %rbp
+ 447              		.cfi_def_cfa_register 6
+ 448 03c8 4883EC40 		subq	$64, %rsp
+ 449 03cc 48897DC8 		movq	%rdi, -56(%rbp)
+ 450              		.loc 1 118 51
+ 451 03d0 64488B04 		movq	%fs:40, %rax
+ 451      25280000 
+ 451      00
+ 452 03d9 488945F8 		movq	%rax, -8(%rbp)
+ 453 03dd 31C0     		xorl	%eax, %eax
+ 119:libfpgalink.c **** 	if ( handle ) {
+ 454              		.loc 1 119 5
+ 455 03df 48837DC8 		cmpq	$0, -56(%rbp)
+ 455      00
+ 456 03e4 7478     		je	.L31
+ 457              	.LBB2:
+ 120:libfpgalink.c **** 		USBStatus uStatus;
+ 121:libfpgalink.c **** 		struct CompletionReport completionReport;
+ 122:libfpgalink.c **** 		FLStatus fStatus = flFlushAsyncWrites(handle, NULL);
+ 458              		.loc 1 122 22
+ 459 03e6 488B45C8 		movq	-56(%rbp), %rax
+ 460 03ea BE000000 		movl	$0, %esi
+ 460      00
+ 461 03ef 4889C7   		movq	%rax, %rdi
+ 462 03f2 E8000000 		call	flFlushAsyncWrites@PLT
+ 462      00
+ 463 03f7 8945D0   		movl	%eax, -48(%rbp)
+ 123:libfpgalink.c **** 		size_t queueDepth = usbNumOutstandingRequests(handle->device);
+ 464              		.loc 1 123 23
+ 465 03fa 488B45C8 		movq	-56(%rbp), %rax
+ 466 03fe 488B00   		movq	(%rax), %rax
+ 467 0401 4889C7   		movq	%rax, %rdi
+ 468 0404 E8000000 		call	usbNumOutstandingRequests@PLT
+ 468      00
+ 469 0409 488945D8 		movq	%rax, -40(%rbp)
+ 124:libfpgalink.c **** 		while ( queueDepth-- ) {
+ 470              		.loc 1 124 9
+ 471 040d EB1E     		jmp	.L28
+ 472              	.L29:
+ 125:libfpgalink.c **** 			uStatus = usbBulkAwaitCompletion(handle->device, &completionReport, NULL);
+ 473              		.loc 1 125 14
+ 474 040f 488B45C8 		movq	-56(%rbp), %rax
+ 475 0413 488B00   		movq	(%rax), %rax
+ 476 0416 488D4DE0 		leaq	-32(%rbp), %rcx
+ 477 041a BA000000 		movl	$0, %edx
+ 477      00
+ 478 041f 4889CE   		movq	%rcx, %rsi
+ 479 0422 4889C7   		movq	%rax, %rdi
+ 480 0425 E8000000 		call	usbBulkAwaitCompletion@PLT
+ 480      00
+ 481 042a 8945D4   		movl	%eax, -44(%rbp)
+ 482              	.L28:
+ 124:libfpgalink.c **** 		while ( queueDepth-- ) {
+ 483              		.loc 1 124 21
+ 484 042d 488B45D8 		movq	-40(%rbp), %rax
+ 485 0431 488D50FF 		leaq	-1(%rax), %rdx
+ 486 0435 488955D8 		movq	%rdx, -40(%rbp)
+ 124:libfpgalink.c **** 		while ( queueDepth-- ) {
+ 487              		.loc 1 124 11
+ 488 0439 4885C0   		testq	%rax, %rax
+ 489 043c 75D1     		jne	.L29
+ 126:libfpgalink.c **** 		}
+ 127:libfpgalink.c **** 		usbCloseDevice(handle->device, 0);
+ 490              		.loc 1 127 3
+ 491 043e 488B45C8 		movq	-56(%rbp), %rax
+ 492 0442 488B00   		movq	(%rax), %rax
+ 493 0445 BE000000 		movl	$0, %esi
+ 493      00
+ 494 044a 4889C7   		movq	%rax, %rdi
+ 495 044d E8000000 		call	usbCloseDevice@PLT
+ 495      00
+ 128:libfpgalink.c **** 		free((void*)handle);
+ 496              		.loc 1 128 3
+ 497 0452 488B45C8 		movq	-56(%rbp), %rax
+ 498 0456 4889C7   		movq	%rax, %rdi
+ 499 0459 E8000000 		call	free@PLT
+ 499      00
+ 500              	.L31:
+ 501              	.LBE2:
+ 129:libfpgalink.c **** 		(void)fStatus;
+ 130:libfpgalink.c **** 		(void)uStatus;
+ 131:libfpgalink.c **** 	}
+ 132:libfpgalink.c **** }
+ 502              		.loc 1 132 1
+ 503 045e 90       		nop
+ 504 045f 488B45F8 		movq	-8(%rbp), %rax
+ 505 0463 64482B04 		subq	%fs:40, %rax
+ 505      25280000 
+ 505      00
+ 506 046c 7405     		je	.L30
+ 507 046e E8000000 		call	__stack_chk_fail@PLT
+ 507      00
+ 508              	.L30:
+ 509 0473 C9       		leave
+ 510              		.cfi_def_cfa 7, 8
+ 511 0474 C3       		ret
+ 512              		.cfi_endproc
+ 513              	.LFE8:
+ 515              		.globl	flIsNeroCapable
+ 517              	flIsNeroCapable:
+ 518              	.LFB9:
+ 133:libfpgalink.c **** 
+ 134:libfpgalink.c **** // Check to see if the device supports NeroProg.
+ 135:libfpgalink.c **** //
+ 136:libfpgalink.c **** DLLEXPORT(uint8) flIsNeroCapable(struct FLContext *handle) {
+ 519              		.loc 1 136 60
+ 520              		.cfi_startproc
+ 521 0475 F30F1EFA 		endbr64
+ 522 0479 55       		pushq	%rbp
+ 523              		.cfi_def_cfa_offset 16
+ 524              		.cfi_offset 6, -16
+ 525 047a 4889E5   		movq	%rsp, %rbp
+ 526              		.cfi_def_cfa_register 6
+ 527 047d 48897DF8 		movq	%rdi, -8(%rbp)
+ 137:libfpgalink.c **** 	return handle->isNeroCapable ? 0x01 : 0x00;
+ 528              		.loc 1 137 15
+ 529 0481 488B45F8 		movq	-8(%rbp), %rax
+ 530 0485 0FB64014 		movzbl	20(%rax), %eax
+ 138:libfpgalink.c **** }
+ 531              		.loc 1 138 1
+ 532 0489 5D       		popq	%rbp
+ 533              		.cfi_def_cfa 7, 8
+ 534 048a C3       		ret
+ 535              		.cfi_endproc
+ 536              	.LFE9:
+ 538              		.globl	flIsCommCapable
+ 540              	flIsCommCapable:
+ 541              	.LFB10:
+ 139:libfpgalink.c **** 
+ 140:libfpgalink.c **** // Check to see if the device supports CommFPGA.
+ 141:libfpgalink.c **** //
+ 142:libfpgalink.c **** DLLEXPORT(uint8) flIsCommCapable(struct FLContext *handle, uint8 conduit) {
+ 542              		.loc 1 142 75
+ 543              		.cfi_startproc
+ 544 048b F30F1EFA 		endbr64
+ 545 048f 55       		pushq	%rbp
+ 546              		.cfi_def_cfa_offset 16
+ 547              		.cfi_offset 6, -16
+ 548 0490 4889E5   		movq	%rsp, %rbp
+ 549              		.cfi_def_cfa_register 6
+ 550 0493 48897DF8 		movq	%rdi, -8(%rbp)
+ 551 0497 89F0     		movl	%esi, %eax
+ 552 0499 8845F4   		movb	%al, -12(%rbp)
+ 143:libfpgalink.c **** 	// TODO: actually consider conduit
+ 144:libfpgalink.c **** 	(void)conduit;
+ 145:libfpgalink.c **** 	return handle->isCommCapable ? 0x01 : 0x00;
+ 553              		.loc 1 145 15
+ 554 049c 488B45F8 		movq	-8(%rbp), %rax
+ 555 04a0 0FB64008 		movzbl	8(%rax), %eax
+ 146:libfpgalink.c **** }
+ 556              		.loc 1 146 1
+ 557 04a4 5D       		popq	%rbp
+ 558              		.cfi_def_cfa 7, 8
+ 559 04a5 C3       		ret
+ 560              		.cfi_endproc
+ 561              	.LFE10:
+ 563              		.globl	flGetFirmwareID
+ 565              	flGetFirmwareID:
+ 566              	.LFB11:
+ 147:libfpgalink.c **** 
+ 148:libfpgalink.c **** // Retrieve the firmware ID (e.g FX2 trunk = 0xFFFF, AVR trunk = 0xAAAA).
+ 149:libfpgalink.c **** //
+ 150:libfpgalink.c **** DLLEXPORT(uint16) flGetFirmwareID(struct FLContext *handle) {
+ 567              		.loc 1 150 61
+ 568              		.cfi_startproc
+ 569 04a6 F30F1EFA 		endbr64
+ 570 04aa 55       		pushq	%rbp
+ 571              		.cfi_def_cfa_offset 16
+ 572              		.cfi_offset 6, -16
+ 573 04ab 4889E5   		movq	%rsp, %rbp
+ 574              		.cfi_def_cfa_register 6
+ 575 04ae 48897DF8 		movq	%rdi, -8(%rbp)
+ 151:libfpgalink.c **** 	return handle->firmwareID;
+ 576              		.loc 1 151 15
+ 577 04b2 488B45F8 		movq	-8(%rbp), %rax
+ 578 04b6 0FB7400C 		movzwl	12(%rax), %eax
+ 152:libfpgalink.c **** }
+ 579              		.loc 1 152 1
+ 580 04ba 5D       		popq	%rbp
+ 581              		.cfi_def_cfa 7, 8
+ 582 04bb C3       		ret
+ 583              		.cfi_endproc
+ 584              	.LFE11:
+ 586              		.globl	flGetFirmwareVersion
+ 588              	flGetFirmwareVersion:
+ 589              	.LFB12:
+ 153:libfpgalink.c **** 
+ 154:libfpgalink.c **** // Retrieve the firmware version (e.g 0x20131217). This is an 8-digit ISO date when printed in hex.
+ 155:libfpgalink.c **** //
+ 156:libfpgalink.c **** DLLEXPORT(uint32) flGetFirmwareVersion(struct FLContext *handle) {
+ 590              		.loc 1 156 66
+ 591              		.cfi_startproc
+ 592 04bc F30F1EFA 		endbr64
+ 593 04c0 55       		pushq	%rbp
+ 594              		.cfi_def_cfa_offset 16
+ 595              		.cfi_offset 6, -16
+ 596 04c1 4889E5   		movq	%rsp, %rbp
+ 597              		.cfi_def_cfa_register 6
+ 598 04c4 48897DF8 		movq	%rdi, -8(%rbp)
+ 157:libfpgalink.c **** 	return handle->firmwareVersion;
+ 599              		.loc 1 157 15
+ 600 04c8 488B45F8 		movq	-8(%rbp), %rax
+ 601 04cc 8B4010   		movl	16(%rax), %eax
+ 158:libfpgalink.c **** }
+ 602              		.loc 1 158 1
+ 603 04cf 5D       		popq	%rbp
+ 604              		.cfi_def_cfa 7, 8
+ 605 04d0 C3       		ret
+ 606              		.cfi_endproc
+ 607              	.LFE12:
+ 609              		.section	.rodata
+ 610              	.LC5:
+ 611 0096 666C5365 		.string	"flSelectConduit()"
+ 611      6C656374 
+ 611      436F6E64 
+ 611      75697428 
+ 611      2900
+ 612              		.text
+ 613              		.globl	flSelectConduit
+ 615              	flSelectConduit:
+ 616              	.LFB13:
+ 159:libfpgalink.c **** 
+ 160:libfpgalink.c **** // Select the conduit that should be used to communicate with the FPGA. Each device may support one
+ 161:libfpgalink.c **** // or more different conduits to the same FPGA, or different FPGAs.
+ 162:libfpgalink.c **** //
+ 163:libfpgalink.c **** DLLEXPORT(FLStatus) flSelectConduit(
+ 164:libfpgalink.c **** 	struct FLContext *handle, uint8 conduit, const char **error)
+ 165:libfpgalink.c **** {
+ 617              		.loc 1 165 1
+ 618              		.cfi_startproc
+ 619 04d1 F30F1EFA 		endbr64
+ 620 04d5 55       		pushq	%rbp
+ 621              		.cfi_def_cfa_offset 16
+ 622              		.cfi_offset 6, -16
+ 623 04d6 4889E5   		movq	%rsp, %rbp
+ 624              		.cfi_def_cfa_register 6
+ 625 04d9 4883EC30 		subq	$48, %rsp
+ 626 04dd 48897DE8 		movq	%rdi, -24(%rbp)
+ 627 04e1 89F0     		movl	%esi, %eax
+ 628 04e3 488955D8 		movq	%rdx, -40(%rbp)
+ 629 04e7 8845E4   		movb	%al, -28(%rbp)
+ 166:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS;
+ 630              		.loc 1 166 11
+ 631 04ea C745F800 		movl	$0, -8(%rbp)
+ 631      000000
+ 167:libfpgalink.c **** 	USBStatus uStatus = usbControlWrite(
+ 632              		.loc 1 167 22
+ 633 04f1 0FB655E4 		movzbl	-28(%rbp), %edx
+ 634 04f5 488B45E8 		movq	-24(%rbp), %rax
+ 635 04f9 488B00   		movq	(%rax), %rax
+ 636 04fc FF75D8   		pushq	-40(%rbp)
+ 637 04ff 68E80300 		pushq	$1000
+ 637      00
+ 638 0504 41B90000 		movl	$0, %r9d
+ 638      0000
+ 639 050a 41B80000 		movl	$0, %r8d
+ 639      0000
+ 640 0510 89D1     		movl	%edx, %ecx
+ 641 0512 BA000000 		movl	$0, %edx
+ 641      00
+ 642 0517 BE800000 		movl	$128, %esi
+ 642      00
+ 643 051c 4889C7   		movq	%rax, %rdi
+ 644 051f E8000000 		call	usbControlWrite@PLT
+ 644      00
+ 645 0524 4883C410 		addq	$16, %rsp
+ 646 0528 8945FC   		movl	%eax, -4(%rbp)
+ 168:libfpgalink.c **** 		handle->device,
+ 169:libfpgalink.c **** 		CMD_MODE_STATUS,   // bRequest
+ 170:libfpgalink.c **** 		0x0000,            // wValue
+ 171:libfpgalink.c **** 		(uint16)conduit,   // wIndex
+ 172:libfpgalink.c **** 		NULL,              // buffer to receive current state of ports
+ 173:libfpgalink.c **** 		0,                 // wLength
+ 174:libfpgalink.c **** 		1000,              // timeout (ms)
+ 175:libfpgalink.c **** 		error
+ 176:libfpgalink.c **** 	);
+ 177:libfpgalink.c **** 	CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flSelectConduit()");
+ 647              		.loc 1 177 2
+ 648 052b 837DFC00 		cmpl	$0, -4(%rbp)
+ 649 052f 741F     		je	.L43
+ 650              		.loc 1 177 2 is_stmt 0 discriminator 1
+ 651 0531 488B45D8 		movq	-40(%rbp), %rax
+ 652 0535 488D1500 		leaq	.LC5(%rip), %rdx
+ 652      000000
+ 653 053c 4889D6   		movq	%rdx, %rsi
+ 654 053f 4889C7   		movq	%rax, %rdi
+ 655 0542 E8000000 		call	errPrefix@PLT
+ 655      00
+ 656 0547 C745F802 		movl	$2, -8(%rbp)
+ 656      000000
+ 657 054e EB01     		jmp	.L41
+ 658              	.L43:
+ 178:libfpgalink.c **** cleanup:
+ 659              		.loc 1 178 1 is_stmt 1
+ 660 0550 90       		nop
+ 661              	.L41:
+ 179:libfpgalink.c **** 	return retVal;
+ 662              		.loc 1 179 9
+ 663 0551 8B45F8   		movl	-8(%rbp), %eax
+ 180:libfpgalink.c **** }
+ 664              		.loc 1 180 1
+ 665 0554 C9       		leave
+ 666              		.cfi_def_cfa 7, 8
+ 667 0555 C3       		ret
+ 668              		.cfi_endproc
+ 669              	.LFE13:
+ 671              		.section	.rodata
+ 672              		.align 8
+ 673              	.LC6:
+ 674 00a8 666C4973 		.string	"flIsFPGARunning(): This device does not support CommFPGA"
+ 674      46504741 
+ 674      52756E6E 
+ 674      696E6728 
+ 674      293A2054 
+ 675              	.LC7:
+ 676 00e1 666C4973 		.string	"flIsFPGARunning()"
+ 676      46504741 
+ 676      52756E6E 
+ 676      696E6728 
+ 676      2900
+ 677              		.text
+ 678              		.globl	flIsFPGARunning
+ 680              	flIsFPGARunning:
+ 681              	.LFB14:
+ 181:libfpgalink.c **** 
+ 182:libfpgalink.c **** // Return with 0x01 in isRunning if the firmware thinks the FPGA is running.
+ 183:libfpgalink.c **** //
+ 184:libfpgalink.c **** DLLEXPORT(FLStatus) flIsFPGARunning(
+ 185:libfpgalink.c **** 	struct FLContext *handle, uint8 *isRunning, const char **error)
+ 186:libfpgalink.c **** {
+ 682              		.loc 1 186 1
+ 683              		.cfi_startproc
+ 684 0556 F30F1EFA 		endbr64
+ 685 055a 55       		pushq	%rbp
+ 686              		.cfi_def_cfa_offset 16
+ 687              		.cfi_offset 6, -16
+ 688 055b 4889E5   		movq	%rsp, %rbp
+ 689              		.cfi_def_cfa_register 6
+ 690 055e 4883EC50 		subq	$80, %rsp
+ 691 0562 48897DC8 		movq	%rdi, -56(%rbp)
+ 692 0566 488975C0 		movq	%rsi, -64(%rbp)
+ 693 056a 488955B8 		movq	%rdx, -72(%rbp)
+ 694              		.loc 1 186 1
+ 695 056e 64488B04 		movq	%fs:40, %rax
+ 695      25280000 
+ 695      00
+ 696 0577 488945F8 		movq	%rax, -8(%rbp)
+ 697 057b 31C0     		xorl	%eax, %eax
+ 187:libfpgalink.c **** 	FLStatus retVal;
+ 188:libfpgalink.c **** 	uint8 statusBuffer[16];
+ 189:libfpgalink.c **** 	CHECK_STATUS(
+ 698              		.loc 1 189 2
+ 699 057d 488B45C8 		movq	-56(%rbp), %rax
+ 700 0581 0FB64008 		movzbl	8(%rax), %eax
+ 701 0585 83F001   		xorl	$1, %eax
+ 702 0588 84C0     		testb	%al, %al
+ 703 058a 741F     		je	.L45
+ 704              		.loc 1 189 2 is_stmt 0 discriminator 1
+ 705 058c 488B45B8 		movq	-72(%rbp), %rax
+ 706 0590 488D1500 		leaq	.LC6(%rip), %rdx
+ 706      000000
+ 707 0597 4889D6   		movq	%rdx, %rsi
+ 708 059a 4889C7   		movq	%rax, %rdi
+ 709 059d E8000000 		call	errPrefix@PLT
+ 709      00
+ 710 05a2 C745DC03 		movl	$3, -36(%rbp)
+ 710      000000
+ 711 05a9 EB47     		jmp	.L46
+ 712              	.L45:
+ 190:libfpgalink.c **** 		!handle->isCommCapable, FL_PROTOCOL_ERR, cleanup,
+ 191:libfpgalink.c **** 		"flIsFPGARunning(): This device does not support CommFPGA");
+ 192:libfpgalink.c **** 	retVal = getStatus(handle, statusBuffer, error);
+ 713              		.loc 1 192 11 is_stmt 1
+ 714 05ab 488B55B8 		movq	-72(%rbp), %rdx
+ 715 05af 488D4DE0 		leaq	-32(%rbp), %rcx
+ 716 05b3 488B45C8 		movq	-56(%rbp), %rax
+ 717 05b7 4889CE   		movq	%rcx, %rsi
+ 718 05ba 4889C7   		movq	%rax, %rdi
+ 719 05bd E84B1100 		call	getStatus
+ 719      00
+ 720 05c2 8945DC   		movl	%eax, -36(%rbp)
+ 193:libfpgalink.c **** 	CHECK_STATUS(retVal, retVal, cleanup, "flIsFPGARunning()");
+ 721              		.loc 1 193 2
+ 722 05c5 837DDC00 		cmpl	$0, -36(%rbp)
+ 723 05c9 7418     		je	.L47
+ 724              		.loc 1 193 2 is_stmt 0 discriminator 1
+ 725 05cb 488B45B8 		movq	-72(%rbp), %rax
+ 726 05cf 488D1500 		leaq	.LC7(%rip), %rdx
+ 726      000000
+ 727 05d6 4889D6   		movq	%rdx, %rsi
+ 728 05d9 4889C7   		movq	%rax, %rdi
+ 729 05dc E8000000 		call	errPrefix@PLT
+ 729      00
+ 730 05e1 EB0F     		jmp	.L46
+ 731              	.L47:
+ 194:libfpgalink.c **** 	*isRunning = (statusBuffer[5] & 0x01) ? 0x01 : 0x00;
+ 732              		.loc 1 194 28 is_stmt 1
+ 733 05e3 0FB645E5 		movzbl	-27(%rbp), %eax
+ 734              		.loc 1 194 47
+ 735 05e7 83E001   		andl	$1, %eax
+ 736 05ea 89C2     		movl	%eax, %edx
+ 737              		.loc 1 194 13
+ 738 05ec 488B45C0 		movq	-64(%rbp), %rax
+ 739 05f0 8810     		movb	%dl, (%rax)
+ 740              	.L46:
+ 195:libfpgalink.c **** cleanup:
+ 196:libfpgalink.c **** 	return retVal;
+ 741              		.loc 1 196 9
+ 742 05f2 8B45DC   		movl	-36(%rbp), %eax
+ 197:libfpgalink.c **** }
+ 743              		.loc 1 197 1
+ 744 05f5 488B55F8 		movq	-8(%rbp), %rdx
+ 745 05f9 64482B14 		subq	%fs:40, %rdx
+ 745      25280000 
+ 745      00
+ 746 0602 7405     		je	.L49
+ 747 0604 E8000000 		call	__stack_chk_fail@PLT
+ 747      00
+ 748              	.L49:
+ 749 0609 C9       		leave
+ 750              		.cfi_def_cfa 7, 8
+ 751 060a C3       		ret
+ 752              		.cfi_endproc
+ 753              	.LFE14:
+ 755              		.section	.rodata
+ 756              	.LC8:
+ 757 00f3 62756666 		.string	"bufferAppend()"
+ 757      65724170 
+ 757      70656E64 
+ 757      282900
+ 758              		.text
+ 760              	bufferAppend:
+ 761              	.LFB15:
+ 198:libfpgalink.c **** 
+ 199:libfpgalink.c **** static FLStatus bufferAppend(
+ 200:libfpgalink.c **** 	struct FLContext *handle, const uint8 *data, size_t count, const char **error)
+ 201:libfpgalink.c **** {
+ 762              		.loc 1 201 1
+ 763              		.cfi_startproc
+ 764 060b F30F1EFA 		endbr64
+ 765 060f 55       		pushq	%rbp
+ 766              		.cfi_def_cfa_offset 16
+ 767              		.cfi_offset 6, -16
+ 768 0610 4889E5   		movq	%rsp, %rbp
+ 769              		.cfi_def_cfa_register 6
+ 770 0613 4883EC40 		subq	$64, %rsp
+ 771 0617 48897DD8 		movq	%rdi, -40(%rbp)
+ 772 061b 488975D0 		movq	%rsi, -48(%rbp)
+ 773 061f 488955C8 		movq	%rdx, -56(%rbp)
+ 774 0623 48894DC0 		movq	%rcx, -64(%rbp)
+ 202:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS;
+ 775              		.loc 1 202 11
+ 776 0627 C745E800 		movl	$0, -24(%rbp)
+ 776      000000
+ 203:libfpgalink.c **** 	size_t spaceAvailable;
+ 204:libfpgalink.c **** 	size_t queueDepth = usbNumOutstandingRequests(handle->device);
+ 777              		.loc 1 204 22
+ 778 062e 488B45D8 		movq	-40(%rbp), %rax
+ 779 0632 488B00   		movq	(%rax), %rax
+ 780 0635 4889C7   		movq	%rax, %rdi
+ 781 0638 E8000000 		call	usbNumOutstandingRequests@PLT
+ 781      00
+ 782 063d 488945F8 		movq	%rax, -8(%rbp)
+ 205:libfpgalink.c **** 	USBStatus uStatus;
+ 206:libfpgalink.c **** 	if ( !handle->writePtr ) {
+ 783              		.loc 1 206 14
+ 784 0641 488B45D8 		movq	-40(%rbp), %rax
+ 785 0645 488B4040 		movq	64(%rax), %rax
+ 786              		.loc 1 206 5
+ 787 0649 4885C0   		testq	%rax, %rax
+ 788 064c 7559     		jne	.L51
+ 207:libfpgalink.c **** 		// There is not an active write buffer
+ 208:libfpgalink.c **** 		uStatus = usbBulkWriteAsyncPrepare(handle->device, &handle->writePtr, error);
+ 789              		.loc 1 208 13
+ 790 064e 488B45D8 		movq	-40(%rbp), %rax
+ 791 0652 488D4840 		leaq	64(%rax), %rcx
+ 792 0656 488B45D8 		movq	-40(%rbp), %rax
+ 793 065a 488B00   		movq	(%rax), %rax
+ 794 065d 488B55C0 		movq	-64(%rbp), %rdx
+ 795 0661 4889CE   		movq	%rcx, %rsi
+ 796 0664 4889C7   		movq	%rax, %rdi
+ 797 0667 E8000000 		call	usbBulkWriteAsyncPrepare@PLT
+ 797      00
+ 798 066c 8945EC   		movl	%eax, -20(%rbp)
+ 209:libfpgalink.c **** 		CHECK_STATUS(uStatus, FL_ALLOC_ERR, cleanup, "bufferAppend()");
+ 799              		.loc 1 209 3
+ 800 066f 837DEC00 		cmpl	$0, -20(%rbp)
+ 801 0673 7422     		je	.L52
+ 802              		.loc 1 209 3 is_stmt 0 discriminator 1
+ 803 0675 488B45C0 		movq	-64(%rbp), %rax
+ 804 0679 488D1500 		leaq	.LC8(%rip), %rdx
+ 804      000000
+ 805 0680 4889D6   		movq	%rdx, %rsi
+ 806 0683 4889C7   		movq	%rax, %rdi
+ 807 0686 E8000000 		call	errPrefix@PLT
+ 807      00
+ 808 068b C745E801 		movl	$1, -24(%rbp)
+ 808      000000
+ 809 0692 E9EA0200 		jmp	.L53
+ 809      00
+ 810              	.L52:
+ 210:libfpgalink.c **** 		handle->writeBuf = handle->writePtr;
+ 811              		.loc 1 210 28 is_stmt 1
+ 812 0697 488B45D8 		movq	-40(%rbp), %rax
+ 813 069b 488B5040 		movq	64(%rax), %rdx
+ 814              		.loc 1 210 20
+ 815 069f 488B45D8 		movq	-40(%rbp), %rax
+ 816 06a3 48895038 		movq	%rdx, 56(%rax)
+ 817              	.L51:
+ 211:libfpgalink.c **** 	}
+ 212:libfpgalink.c **** 	spaceAvailable = handle->chunkSize - (size_t)(handle->writePtr - handle->writeBuf);
+ 818              		.loc 1 212 25
+ 819 06a7 488B45D8 		movq	-40(%rbp), %rax
+ 820 06ab 8B4048   		movl	72(%rax), %eax
+ 821 06ae 89C6     		movl	%eax, %esi
+ 822              		.loc 1 212 54
+ 823 06b0 488B45D8 		movq	-40(%rbp), %rax
+ 824 06b4 488B5040 		movq	64(%rax), %rdx
+ 825              		.loc 1 212 73
+ 826 06b8 488B45D8 		movq	-40(%rbp), %rax
+ 827 06bc 488B4838 		movq	56(%rax), %rcx
+ 828              		.loc 1 212 65
+ 829 06c0 4889D0   		movq	%rdx, %rax
+ 830 06c3 4829C8   		subq	%rcx, %rax
+ 831              		.loc 1 212 39
+ 832 06c6 4889C2   		movq	%rax, %rdx
+ 833              		.loc 1 212 17
+ 834 06c9 4889F0   		movq	%rsi, %rax
+ 835 06cc 4829D0   		subq	%rdx, %rax
+ 836 06cf 488945F0 		movq	%rax, -16(%rbp)
+ 213:libfpgalink.c **** 	while ( count > spaceAvailable ) {
+ 837              		.loc 1 213 8
+ 838 06d3 E9520100 		jmp	.L54
+ 838      00
+ 839              	.L58:
+ 214:libfpgalink.c **** 		// Reduce the depth of the work queue a little
+ 215:libfpgalink.c **** 		while ( queueDepth > 2 && !handle->completionReport.flags.isRead ) {
+ 216:libfpgalink.c **** 			uStatus = usbBulkAwaitCompletion(
+ 840              		.loc 1 216 14
+ 841 06d8 488B45D8 		movq	-40(%rbp), %rax
+ 842 06dc 488D4820 		leaq	32(%rax), %rcx
+ 843 06e0 488B45D8 		movq	-40(%rbp), %rax
+ 844 06e4 488B00   		movq	(%rax), %rax
+ 845 06e7 488B55C0 		movq	-64(%rbp), %rdx
+ 846 06eb 4889CE   		movq	%rcx, %rsi
+ 847 06ee 4889C7   		movq	%rax, %rdi
+ 848 06f1 E8000000 		call	usbBulkAwaitCompletion@PLT
+ 848      00
+ 849 06f6 8945EC   		movl	%eax, -20(%rbp)
+ 217:libfpgalink.c **** 				handle->device, &handle->completionReport, error);
+ 218:libfpgalink.c **** 			CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "bufferAppend()");
+ 850              		.loc 1 218 4
+ 851 06f9 837DEC00 		cmpl	$0, -20(%rbp)
+ 852 06fd 7422     		je	.L56
+ 853              		.loc 1 218 4 is_stmt 0 discriminator 1
+ 854 06ff 488B45C0 		movq	-64(%rbp), %rax
+ 855 0703 488D1500 		leaq	.LC8(%rip), %rdx
+ 855      000000
+ 856 070a 4889D6   		movq	%rdx, %rsi
+ 857 070d 4889C7   		movq	%rax, %rdi
+ 858 0710 E8000000 		call	errPrefix@PLT
+ 858      00
+ 859 0715 C745E802 		movl	$2, -24(%rbp)
+ 859      000000
+ 860 071c E9600200 		jmp	.L53
+ 860      00
+ 861              	.L56:
+ 219:libfpgalink.c **** 			queueDepth--;
+ 862              		.loc 1 219 14 is_stmt 1
+ 863 0721 48836DF8 		subq	$1, -8(%rbp)
+ 863      01
+ 864              	.L55:
+ 215:libfpgalink.c **** 			uStatus = usbBulkAwaitCompletion(
+ 865              		.loc 1 215 26
+ 866 0726 48837DF8 		cmpq	$2, -8(%rbp)
+ 866      02
+ 867 072b 760F     		jbe	.L57
+ 215:libfpgalink.c **** 			uStatus = usbBulkAwaitCompletion(
+ 868              		.loc 1 215 29 discriminator 1
+ 869 072d 488B45D8 		movq	-40(%rbp), %rax
+ 870 0731 0FB64030 		movzbl	48(%rax), %eax
+ 871 0735 83E001   		andl	$1, %eax
+ 215:libfpgalink.c **** 			uStatus = usbBulkAwaitCompletion(
+ 872              		.loc 1 215 26 discriminator 1
+ 873 0738 84C0     		testb	%al, %al
+ 874 073a 749C     		je	.L58
+ 875              	.L57:
+ 220:libfpgalink.c **** 		}
+ 221:libfpgalink.c **** 		
+ 222:libfpgalink.c **** 		// Fill up this buffer
+ 223:libfpgalink.c **** 		memcpy(handle->writePtr, data, spaceAvailable);
+ 876              		.loc 1 223 16
+ 877 073c 488B45D8 		movq	-40(%rbp), %rax
+ 878 0740 488B4040 		movq	64(%rax), %rax
+ 879              		.loc 1 223 3
+ 880 0744 488B55F0 		movq	-16(%rbp), %rdx
+ 881 0748 488B4DD0 		movq	-48(%rbp), %rcx
+ 882 074c 4889CE   		movq	%rcx, %rsi
+ 883 074f 4889C7   		movq	%rax, %rdi
+ 884 0752 E8000000 		call	memcpy@PLT
+ 884      00
+ 224:libfpgalink.c **** 		data += spaceAvailable;
+ 885              		.loc 1 224 8
+ 886 0757 488B45F0 		movq	-16(%rbp), %rax
+ 887 075b 480145D0 		addq	%rax, -48(%rbp)
+ 225:libfpgalink.c **** 		count -= spaceAvailable;
+ 888              		.loc 1 225 9
+ 889 075f 488B45F0 		movq	-16(%rbp), %rax
+ 890 0763 482945C8 		subq	%rax, -56(%rbp)
+ 226:libfpgalink.c **** 		
+ 227:libfpgalink.c **** 		// Submit it
+ 228:libfpgalink.c **** 		uStatus = usbBulkWriteAsyncSubmit(
+ 891              		.loc 1 228 13
+ 892 0767 488B45D8 		movq	-40(%rbp), %rax
+ 893 076b 8B5048   		movl	72(%rax), %edx
+ 229:libfpgalink.c **** 			handle->device, handle->commOutEP, handle->chunkSize, U32MAX, error);
+ 894              		.loc 1 229 26
+ 895 076e 488B45D8 		movq	-40(%rbp), %rax
+ 896 0772 0FB64009 		movzbl	9(%rax), %eax
+ 228:libfpgalink.c **** 			handle->device, handle->commOutEP, handle->chunkSize, U32MAX, error);
+ 897              		.loc 1 228 13
+ 898 0776 0FB6F0   		movzbl	%al, %esi
+ 899 0779 488B45D8 		movq	-40(%rbp), %rax
+ 900 077d 488B00   		movq	(%rax), %rax
+ 901 0780 488B4DC0 		movq	-64(%rbp), %rcx
+ 902 0784 4989C8   		movq	%rcx, %r8
+ 903 0787 B9FFFFFF 		movl	$-1, %ecx
+ 903      FF
+ 904 078c 4889C7   		movq	%rax, %rdi
+ 905 078f E8000000 		call	usbBulkWriteAsyncSubmit@PLT
+ 905      00
+ 906 0794 8945EC   		movl	%eax, -20(%rbp)
+ 230:libfpgalink.c **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "bufferAppend()");
+ 907              		.loc 1 230 3
+ 908 0797 837DEC00 		cmpl	$0, -20(%rbp)
+ 909 079b 7422     		je	.L59
+ 910              		.loc 1 230 3 is_stmt 0 discriminator 1
+ 911 079d 488B45C0 		movq	-64(%rbp), %rax
+ 912 07a1 488D1500 		leaq	.LC8(%rip), %rdx
+ 912      000000
+ 913 07a8 4889D6   		movq	%rdx, %rsi
+ 914 07ab 4889C7   		movq	%rax, %rdi
+ 915 07ae E8000000 		call	errPrefix@PLT
+ 915      00
+ 916 07b3 C745E802 		movl	$2, -24(%rbp)
+ 916      000000
+ 917 07ba E9C20100 		jmp	.L53
+ 917      00
+ 918              	.L59:
+ 231:libfpgalink.c **** 		queueDepth++;
+ 919              		.loc 1 231 13 is_stmt 1
+ 920 07bf 488345F8 		addq	$1, -8(%rbp)
+ 920      01
+ 232:libfpgalink.c **** 		
+ 233:libfpgalink.c **** 		// Get a new buffer
+ 234:libfpgalink.c **** 		uStatus = usbBulkWriteAsyncPrepare(handle->device, &handle->writePtr, error);
+ 921              		.loc 1 234 13
+ 922 07c4 488B45D8 		movq	-40(%rbp), %rax
+ 923 07c8 488D4840 		leaq	64(%rax), %rcx
+ 924 07cc 488B45D8 		movq	-40(%rbp), %rax
+ 925 07d0 488B00   		movq	(%rax), %rax
+ 926 07d3 488B55C0 		movq	-64(%rbp), %rdx
+ 927 07d7 4889CE   		movq	%rcx, %rsi
+ 928 07da 4889C7   		movq	%rax, %rdi
+ 929 07dd E8000000 		call	usbBulkWriteAsyncPrepare@PLT
+ 929      00
+ 930 07e2 8945EC   		movl	%eax, -20(%rbp)
+ 235:libfpgalink.c **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "bufferAppend()");
+ 931              		.loc 1 235 3
+ 932 07e5 837DEC00 		cmpl	$0, -20(%rbp)
+ 933 07e9 7422     		je	.L60
+ 934              		.loc 1 235 3 is_stmt 0 discriminator 1
+ 935 07eb 488B45C0 		movq	-64(%rbp), %rax
+ 936 07ef 488D1500 		leaq	.LC8(%rip), %rdx
+ 936      000000
+ 937 07f6 4889D6   		movq	%rdx, %rsi
+ 938 07f9 4889C7   		movq	%rax, %rdi
+ 939 07fc E8000000 		call	errPrefix@PLT
+ 939      00
+ 940 0801 C745E802 		movl	$2, -24(%rbp)
+ 940      000000
+ 941 0808 E9740100 		jmp	.L53
+ 941      00
+ 942              	.L60:
+ 236:libfpgalink.c **** 		handle->writeBuf = handle->writePtr;
+ 943              		.loc 1 236 28 is_stmt 1
+ 944 080d 488B45D8 		movq	-40(%rbp), %rax
+ 945 0811 488B5040 		movq	64(%rax), %rdx
+ 946              		.loc 1 236 20
+ 947 0815 488B45D8 		movq	-40(%rbp), %rax
+ 948 0819 48895038 		movq	%rdx, 56(%rax)
+ 237:libfpgalink.c **** 		spaceAvailable = handle->chunkSize;
+ 949              		.loc 1 237 26
+ 950 081d 488B45D8 		movq	-40(%rbp), %rax
+ 951 0821 8B4048   		movl	72(%rax), %eax
+ 952              		.loc 1 237 18
+ 953 0824 89C0     		movl	%eax, %eax
+ 954 0826 488945F0 		movq	%rax, -16(%rbp)
+ 955              	.L54:
+ 213:libfpgalink.c **** 		// Reduce the depth of the work queue a little
+ 956              		.loc 1 213 16
+ 957 082a 488B45C8 		movq	-56(%rbp), %rax
+ 958 082e 483B45F0 		cmpq	-16(%rbp), %rax
+ 959 0832 0F87EEFE 		ja	.L55
+ 959      FFFF
+ 238:libfpgalink.c **** 	}
+ 239:libfpgalink.c **** 	if ( count == spaceAvailable ) {
+ 960              		.loc 1 239 5
+ 961 0838 488B45C8 		movq	-56(%rbp), %rax
+ 962 083c 483B45F0 		cmpq	-16(%rbp), %rax
+ 963 0840 0F850901 		jne	.L62
+ 963      0000
+ 240:libfpgalink.c **** 		// Reduce the depth of the work queue a little
+ 241:libfpgalink.c **** 		while ( queueDepth > 2 && !handle->completionReport.flags.isRead ) {
+ 964              		.loc 1 241 9
+ 965 0846 EB4E     		jmp	.L63
+ 966              	.L66:
+ 242:libfpgalink.c **** 			uStatus = usbBulkAwaitCompletion(
+ 967              		.loc 1 242 14
+ 968 0848 488B45D8 		movq	-40(%rbp), %rax
+ 969 084c 488D4820 		leaq	32(%rax), %rcx
+ 970 0850 488B45D8 		movq	-40(%rbp), %rax
+ 971 0854 488B00   		movq	(%rax), %rax
+ 972 0857 488B55C0 		movq	-64(%rbp), %rdx
+ 973 085b 4889CE   		movq	%rcx, %rsi
+ 974 085e 4889C7   		movq	%rax, %rdi
+ 975 0861 E8000000 		call	usbBulkAwaitCompletion@PLT
+ 975      00
+ 976 0866 8945EC   		movl	%eax, -20(%rbp)
+ 243:libfpgalink.c **** 				handle->device, &handle->completionReport, error);
+ 244:libfpgalink.c **** 			CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "bufferAppend()");
+ 977              		.loc 1 244 4
+ 978 0869 837DEC00 		cmpl	$0, -20(%rbp)
+ 979 086d 7422     		je	.L64
+ 980              		.loc 1 244 4 is_stmt 0 discriminator 1
+ 981 086f 488B45C0 		movq	-64(%rbp), %rax
+ 982 0873 488D1500 		leaq	.LC8(%rip), %rdx
+ 982      000000
+ 983 087a 4889D6   		movq	%rdx, %rsi
+ 984 087d 4889C7   		movq	%rax, %rdi
+ 985 0880 E8000000 		call	errPrefix@PLT
+ 985      00
+ 986 0885 C745E802 		movl	$2, -24(%rbp)
+ 986      000000
+ 987 088c E9F00000 		jmp	.L53
+ 987      00
+ 988              	.L64:
+ 245:libfpgalink.c **** 			queueDepth--;
+ 989              		.loc 1 245 14 is_stmt 1
+ 990 0891 48836DF8 		subq	$1, -8(%rbp)
+ 990      01
+ 991              	.L63:
+ 241:libfpgalink.c **** 			uStatus = usbBulkAwaitCompletion(
+ 992              		.loc 1 241 26
+ 993 0896 48837DF8 		cmpq	$2, -8(%rbp)
+ 993      02
+ 994 089b 760F     		jbe	.L65
+ 241:libfpgalink.c **** 			uStatus = usbBulkAwaitCompletion(
+ 995              		.loc 1 241 29 discriminator 1
+ 996 089d 488B45D8 		movq	-40(%rbp), %rax
+ 997 08a1 0FB64030 		movzbl	48(%rax), %eax
+ 998 08a5 83E001   		andl	$1, %eax
+ 241:libfpgalink.c **** 			uStatus = usbBulkAwaitCompletion(
+ 999              		.loc 1 241 26 discriminator 1
+ 1000 08a8 84C0     		testb	%al, %al
+ 1001 08aa 749C     		je	.L66
+ 1002              	.L65:
+ 246:libfpgalink.c **** 		}
+ 247:libfpgalink.c **** 		
+ 248:libfpgalink.c **** 		// Fill up this buffer
+ 249:libfpgalink.c **** 		memcpy(handle->writePtr, data, spaceAvailable);
+ 1003              		.loc 1 249 16
+ 1004 08ac 488B45D8 		movq	-40(%rbp), %rax
+ 1005 08b0 488B4040 		movq	64(%rax), %rax
+ 1006              		.loc 1 249 3
+ 1007 08b4 488B55F0 		movq	-16(%rbp), %rdx
+ 1008 08b8 488B4DD0 		movq	-48(%rbp), %rcx
+ 1009 08bc 4889CE   		movq	%rcx, %rsi
+ 1010 08bf 4889C7   		movq	%rax, %rdi
+ 1011 08c2 E8000000 		call	memcpy@PLT
+ 1011      00
+ 250:libfpgalink.c **** 		data += spaceAvailable;
+ 1012              		.loc 1 250 8
+ 1013 08c7 488B45F0 		movq	-16(%rbp), %rax
+ 1014 08cb 480145D0 		addq	%rax, -48(%rbp)
+ 251:libfpgalink.c **** 		count -= spaceAvailable;
+ 1015              		.loc 1 251 9
+ 1016 08cf 488B45F0 		movq	-16(%rbp), %rax
+ 1017 08d3 482945C8 		subq	%rax, -56(%rbp)
+ 252:libfpgalink.c **** 		
+ 253:libfpgalink.c **** 		// Submit it
+ 254:libfpgalink.c **** 		uStatus = usbBulkWriteAsyncSubmit(
+ 1018              		.loc 1 254 13
+ 1019 08d7 488B45D8 		movq	-40(%rbp), %rax
+ 1020 08db 8B5048   		movl	72(%rax), %edx
+ 255:libfpgalink.c **** 			handle->device, handle->commOutEP, handle->chunkSize, U32MAX, error);
+ 1021              		.loc 1 255 26
+ 1022 08de 488B45D8 		movq	-40(%rbp), %rax
+ 1023 08e2 0FB64009 		movzbl	9(%rax), %eax
+ 254:libfpgalink.c **** 			handle->device, handle->commOutEP, handle->chunkSize, U32MAX, error);
+ 1024              		.loc 1 254 13
+ 1025 08e6 0FB6F0   		movzbl	%al, %esi
+ 1026 08e9 488B45D8 		movq	-40(%rbp), %rax
+ 1027 08ed 488B00   		movq	(%rax), %rax
+ 1028 08f0 488B4DC0 		movq	-64(%rbp), %rcx
+ 1029 08f4 4989C8   		movq	%rcx, %r8
+ 1030 08f7 B9FFFFFF 		movl	$-1, %ecx
+ 1030      FF
+ 1031 08fc 4889C7   		movq	%rax, %rdi
+ 1032 08ff E8000000 		call	usbBulkWriteAsyncSubmit@PLT
+ 1032      00
+ 1033 0904 8945EC   		movl	%eax, -20(%rbp)
+ 256:libfpgalink.c **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "bufferAppend()");
+ 1034              		.loc 1 256 3
+ 1035 0907 837DEC00 		cmpl	$0, -20(%rbp)
+ 1036 090b 741F     		je	.L67
+ 1037              		.loc 1 256 3 is_stmt 0 discriminator 1
+ 1038 090d 488B45C0 		movq	-64(%rbp), %rax
+ 1039 0911 488D1500 		leaq	.LC8(%rip), %rdx
+ 1039      000000
+ 1040 0918 4889D6   		movq	%rdx, %rsi
+ 1041 091b 4889C7   		movq	%rax, %rdi
+ 1042 091e E8000000 		call	errPrefix@PLT
+ 1042      00
+ 1043 0923 C745E802 		movl	$2, -24(%rbp)
+ 1043      000000
+ 1044 092a EB55     		jmp	.L53
+ 1045              	.L67:
+ 257:libfpgalink.c **** 		queueDepth++;
+ 1046              		.loc 1 257 13 is_stmt 1
+ 1047 092c 488345F8 		addq	$1, -8(%rbp)
+ 1047      01
+ 258:libfpgalink.c **** 
+ 259:libfpgalink.c **** 		// Zero the pointers
+ 260:libfpgalink.c **** 		handle->writeBuf = handle->writePtr = NULL;
+ 1048              		.loc 1 260 39
+ 1049 0931 488B45D8 		movq	-40(%rbp), %rax
+ 1050 0935 48C74040 		movq	$0, 64(%rax)
+ 1050      00000000 
+ 1051              		.loc 1 260 28
+ 1052 093d 488B45D8 		movq	-40(%rbp), %rax
+ 1053 0941 488B5040 		movq	64(%rax), %rdx
+ 1054              		.loc 1 260 20
+ 1055 0945 488B45D8 		movq	-40(%rbp), %rax
+ 1056 0949 48895038 		movq	%rdx, 56(%rax)
+ 1057 094d EB32     		jmp	.L53
+ 1058              	.L62:
+ 261:libfpgalink.c **** 	} else {
+ 262:libfpgalink.c **** 		// Count is less than spaceAvailable
+ 263:libfpgalink.c **** 		memcpy(handle->writePtr, data, count);
+ 1059              		.loc 1 263 16
+ 1060 094f 488B45D8 		movq	-40(%rbp), %rax
+ 1061 0953 488B4040 		movq	64(%rax), %rax
+ 1062              		.loc 1 263 3
+ 1063 0957 488B55C8 		movq	-56(%rbp), %rdx
+ 1064 095b 488B4DD0 		movq	-48(%rbp), %rcx
+ 1065 095f 4889CE   		movq	%rcx, %rsi
+ 1066 0962 4889C7   		movq	%rax, %rdi
+ 1067 0965 E8000000 		call	memcpy@PLT
+ 1067      00
+ 264:libfpgalink.c **** 		handle->writePtr += count;
+ 1068              		.loc 1 264 20
+ 1069 096a 488B45D8 		movq	-40(%rbp), %rax
+ 1070 096e 488B5040 		movq	64(%rax), %rdx
+ 1071 0972 488B45C8 		movq	-56(%rbp), %rax
+ 1072 0976 4801C2   		addq	%rax, %rdx
+ 1073 0979 488B45D8 		movq	-40(%rbp), %rax
+ 1074 097d 48895040 		movq	%rdx, 64(%rax)
+ 1075              	.L53:
+ 265:libfpgalink.c **** 	}
+ 266:libfpgalink.c **** cleanup:
+ 267:libfpgalink.c **** 	return retVal;
+ 1076              		.loc 1 267 9
+ 1077 0981 8B45E8   		movl	-24(%rbp), %eax
+ 268:libfpgalink.c **** }
+ 1078              		.loc 1 268 1
+ 1079 0984 C9       		leave
+ 1080              		.cfi_def_cfa 7, 8
+ 1081 0985 C3       		ret
+ 1082              		.cfi_endproc
+ 1083              	.LFE15:
+ 1085              		.section	.rodata
+ 1086 0102 00000000 		.align 8
+ 1086      0000
+ 1087              	.LC9:
+ 1088 0108 666C5365 		.string	"flSetAsyncWriteChunkSize(): cannot change chunk size when there's some data pending"
+ 1088      74417379 
+ 1088      6E635772 
+ 1088      69746543 
+ 1088      68756E6B 
+ 1089              		.text
+ 1090              		.globl	flSetAsyncWriteChunkSize
+ 1092              	flSetAsyncWriteChunkSize:
+ 1093              	.LFB16:
+ 269:libfpgalink.c **** 
+ 270:libfpgalink.c **** DLLEXPORT(FLStatus) flSetAsyncWriteChunkSize(
+ 271:libfpgalink.c **** 	struct FLContext *handle, uint16 chunkSize, const char **error)
+ 272:libfpgalink.c **** {
+ 1094              		.loc 1 272 1
+ 1095              		.cfi_startproc
+ 1096 0986 F30F1EFA 		endbr64
+ 1097 098a 55       		pushq	%rbp
+ 1098              		.cfi_def_cfa_offset 16
+ 1099              		.cfi_offset 6, -16
+ 1100 098b 4889E5   		movq	%rsp, %rbp
+ 1101              		.cfi_def_cfa_register 6
+ 1102 098e 4883EC30 		subq	$48, %rsp
+ 1103 0992 48897DE8 		movq	%rdi, -24(%rbp)
+ 1104 0996 89F0     		movl	%esi, %eax
+ 1105 0998 488955D8 		movq	%rdx, -40(%rbp)
+ 1106 099c 668945E4 		movw	%ax, -28(%rbp)
+ 273:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS;
+ 1107              		.loc 1 273 11
+ 1108 09a0 C745FC00 		movl	$0, -4(%rbp)
+ 1108      000000
+ 274:libfpgalink.c **** 	CHECK_STATUS(
+ 1109              		.loc 1 274 2
+ 1110 09a7 488B45E8 		movq	-24(%rbp), %rax
+ 1111 09ab 488B4040 		movq	64(%rax), %rax
+ 1112 09af 4885C0   		testq	%rax, %rax
+ 1113 09b2 741F     		je	.L70
+ 1114              		.loc 1 274 2 is_stmt 0 discriminator 1
+ 1115 09b4 488B45D8 		movq	-40(%rbp), %rax
+ 1116 09b8 488D1500 		leaq	.LC9(%rip), %rdx
+ 1116      000000
+ 1117 09bf 4889D6   		movq	%rdx, %rsi
+ 1118 09c2 4889C7   		movq	%rax, %rdi
+ 1119 09c5 E8000000 		call	errPrefix@PLT
+ 1119      00
+ 1120 09ca C745FC16 		movl	$22, -4(%rbp)
+ 1120      000000
+ 1121 09d1 EB1F     		jmp	.L71
+ 1122              	.L70:
+ 275:libfpgalink.c **** 		handle->writePtr, FL_BAD_STATE, cleanup,
+ 276:libfpgalink.c **** 		"flSetAsyncWriteChunkSize(): cannot change chunk size when there's some data pending");
+ 277:libfpgalink.c **** 	if ( chunkSize ) {
+ 1123              		.loc 1 277 5 is_stmt 1
+ 1124 09d3 66837DE4 		cmpw	$0, -28(%rbp)
+ 1124      00
+ 1125 09d8 740D     		je	.L72
+ 278:libfpgalink.c **** 		handle->chunkSize = chunkSize;
+ 1126              		.loc 1 278 21
+ 1127 09da 0FB755E4 		movzwl	-28(%rbp), %edx
+ 1128 09de 488B45E8 		movq	-24(%rbp), %rax
+ 1129 09e2 895048   		movl	%edx, 72(%rax)
+ 1130 09e5 EB0B     		jmp	.L71
+ 1131              	.L72:
+ 279:libfpgalink.c **** 	} else {
+ 280:libfpgalink.c **** 		handle->chunkSize = 0x10000;
+ 1132              		.loc 1 280 21
+ 1133 09e7 488B45E8 		movq	-24(%rbp), %rax
+ 1134 09eb C7404800 		movl	$65536, 72(%rax)
+ 1134      000100
+ 1135              	.L71:
+ 281:libfpgalink.c **** 	}
+ 282:libfpgalink.c **** cleanup:
+ 283:libfpgalink.c **** 	return retVal;
+ 1136              		.loc 1 283 9
+ 1137 09f2 8B45FC   		movl	-4(%rbp), %eax
+ 284:libfpgalink.c **** }
+ 1138              		.loc 1 284 1
+ 1139 09f5 C9       		leave
+ 1140              		.cfi_def_cfa 7, 8
+ 1141 09f6 C3       		ret
+ 1142              		.cfi_endproc
+ 1143              	.LFE16:
+ 1145              		.section	.rodata
+ 1146 015c 00000000 		.align 8
+ 1147              	.LC10:
+ 1148 0160 666C466C 		.string	"flFlushAsyncWrites(): This device does not support CommFPGA"
+ 1148      75736841 
+ 1148      73796E63 
+ 1148      57726974 
+ 1148      65732829 
+ 1149              	.LC11:
+ 1150 019c 666C466C 		.string	"flFlushAsyncWrites()"
+ 1150      75736841 
+ 1150      73796E63 
+ 1150      57726974 
+ 1150      65732829 
+ 1151              		.text
+ 1152              		.globl	flFlushAsyncWrites
+ 1154              	flFlushAsyncWrites:
+ 1155              	.LFB17:
+ 285:libfpgalink.c **** 
+ 286:libfpgalink.c **** DLLEXPORT(FLStatus) flFlushAsyncWrites(struct FLContext *handle, const char **error) {
+ 1156              		.loc 1 286 86
+ 1157              		.cfi_startproc
+ 1158 09f7 F30F1EFA 		endbr64
+ 1159 09fb 55       		pushq	%rbp
+ 1160              		.cfi_def_cfa_offset 16
+ 1161              		.cfi_offset 6, -16
+ 1162 09fc 4889E5   		movq	%rsp, %rbp
+ 1163              		.cfi_def_cfa_register 6
+ 1164 09ff 4883EC20 		subq	$32, %rsp
+ 1165 0a03 48897DE8 		movq	%rdi, -24(%rbp)
+ 1166 0a07 488975E0 		movq	%rsi, -32(%rbp)
+ 287:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS;
+ 1167              		.loc 1 287 11
+ 1168 0a0b C745F800 		movl	$0, -8(%rbp)
+ 1168      000000
+ 288:libfpgalink.c **** 	USBStatus uStatus;
+ 289:libfpgalink.c **** 	if ( handle->writePtr && handle->writeBuf && handle->writePtr > handle->writeBuf ) {
+ 1169              		.loc 1 289 13
+ 1170 0a12 488B45E8 		movq	-24(%rbp), %rax
+ 1171 0a16 488B4040 		movq	64(%rax), %rax
+ 1172              		.loc 1 289 5
+ 1173 0a1a 4885C0   		testq	%rax, %rax
+ 1174 0a1d 0F84DE00 		je	.L79
+ 1174      0000
+ 1175              		.loc 1 289 33 discriminator 1
+ 1176 0a23 488B45E8 		movq	-24(%rbp), %rax
+ 1177 0a27 488B4038 		movq	56(%rax), %rax
+ 1178              		.loc 1 289 24 discriminator 1
+ 1179 0a2b 4885C0   		testq	%rax, %rax
+ 1180 0a2e 0F84CD00 		je	.L79
+ 1180      0000
+ 1181              		.loc 1 289 53 discriminator 2
+ 1182 0a34 488B45E8 		movq	-24(%rbp), %rax
+ 1183 0a38 488B5040 		movq	64(%rax), %rdx
+ 1184              		.loc 1 289 72 discriminator 2
+ 1185 0a3c 488B45E8 		movq	-24(%rbp), %rax
+ 1186 0a40 488B4038 		movq	56(%rax), %rax
+ 1187              		.loc 1 289 44 discriminator 2
+ 1188 0a44 4839C2   		cmpq	%rax, %rdx
+ 1189 0a47 0F86B400 		jbe	.L79
+ 1189      0000
+ 290:libfpgalink.c **** 		CHECK_STATUS(
+ 1190              		.loc 1 290 3
+ 1191 0a4d 488B45E8 		movq	-24(%rbp), %rax
+ 1192 0a51 0FB64008 		movzbl	8(%rax), %eax
+ 1193 0a55 83F001   		xorl	$1, %eax
+ 1194 0a58 84C0     		testb	%al, %al
+ 1195 0a5a 7422     		je	.L76
+ 1196              		.loc 1 290 3 is_stmt 0 discriminator 1
+ 1197 0a5c 488B45E0 		movq	-32(%rbp), %rax
+ 1198 0a60 488D1500 		leaq	.LC10(%rip), %rdx
+ 1198      000000
+ 1199 0a67 4889D6   		movq	%rdx, %rsi
+ 1200 0a6a 4889C7   		movq	%rax, %rdi
+ 1201 0a6d E8000000 		call	errPrefix@PLT
+ 1201      00
+ 1202 0a72 C745F803 		movl	$3, -8(%rbp)
+ 1202      000000
+ 1203 0a79 E9840000 		jmp	.L75
+ 1203      00
+ 1204              	.L76:
+ 291:libfpgalink.c **** 			!handle->isCommCapable, FL_PROTOCOL_ERR, cleanup,
+ 292:libfpgalink.c **** 			"flFlushAsyncWrites(): This device does not support CommFPGA");
+ 293:libfpgalink.c **** 		uStatus = usbBulkWriteAsyncSubmit(
+ 294:libfpgalink.c **** 			handle->device, handle->commOutEP,
+ 295:libfpgalink.c **** 			(uint32)(handle->writePtr - handle->writeBuf),
+ 1205              		.loc 1 295 19 is_stmt 1
+ 1206 0a7e 488B45E8 		movq	-24(%rbp), %rax
+ 1207 0a82 488B5040 		movq	64(%rax), %rdx
+ 1208              		.loc 1 295 38
+ 1209 0a86 488B45E8 		movq	-24(%rbp), %rax
+ 1210 0a8a 488B4838 		movq	56(%rax), %rcx
+ 1211              		.loc 1 295 30
+ 1212 0a8e 4889D0   		movq	%rdx, %rax
+ 1213 0a91 4829C8   		subq	%rcx, %rax
+ 293:libfpgalink.c **** 			handle->device, handle->commOutEP,
+ 1214              		.loc 1 293 13
+ 1215 0a94 89C2     		movl	%eax, %edx
+ 294:libfpgalink.c **** 			(uint32)(handle->writePtr - handle->writeBuf),
+ 1216              		.loc 1 294 26
+ 1217 0a96 488B45E8 		movq	-24(%rbp), %rax
+ 1218 0a9a 0FB64009 		movzbl	9(%rax), %eax
+ 293:libfpgalink.c **** 			handle->device, handle->commOutEP,
+ 1219              		.loc 1 293 13
+ 1220 0a9e 0FB6F0   		movzbl	%al, %esi
+ 1221 0aa1 488B45E8 		movq	-24(%rbp), %rax
+ 1222 0aa5 488B00   		movq	(%rax), %rax
+ 1223 0aa8 41B80000 		movl	$0, %r8d
+ 1223      0000
+ 1224 0aae B9FFFFFF 		movl	$-1, %ecx
+ 1224      FF
+ 1225 0ab3 4889C7   		movq	%rax, %rdi
+ 1226 0ab6 E8000000 		call	usbBulkWriteAsyncSubmit@PLT
+ 1226      00
+ 1227 0abb 8945FC   		movl	%eax, -4(%rbp)
+ 296:libfpgalink.c **** 			U32MAX, NULL);
+ 297:libfpgalink.c **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flFlushAsyncWrites()");
+ 1228              		.loc 1 297 3
+ 1229 0abe 837DFC00 		cmpl	$0, -4(%rbp)
+ 1230 0ac2 741F     		je	.L77
+ 1231              		.loc 1 297 3 is_stmt 0 discriminator 1
+ 1232 0ac4 488B45E0 		movq	-32(%rbp), %rax
+ 1233 0ac8 488D1500 		leaq	.LC11(%rip), %rdx
+ 1233      000000
+ 1234 0acf 4889D6   		movq	%rdx, %rsi
+ 1235 0ad2 4889C7   		movq	%rax, %rdi
+ 1236 0ad5 E8000000 		call	errPrefix@PLT
+ 1236      00
+ 1237 0ada C745F802 		movl	$2, -8(%rbp)
+ 1237      000000
+ 1238 0ae1 EB1F     		jmp	.L75
+ 1239              	.L77:
+ 298:libfpgalink.c **** 		handle->writePtr = handle->writeBuf = NULL;
+ 1240              		.loc 1 298 39 is_stmt 1
+ 1241 0ae3 488B45E8 		movq	-24(%rbp), %rax
+ 1242 0ae7 48C74038 		movq	$0, 56(%rax)
+ 1242      00000000 
+ 1243              		.loc 1 298 28
+ 1244 0aef 488B45E8 		movq	-24(%rbp), %rax
+ 1245 0af3 488B5038 		movq	56(%rax), %rdx
+ 1246              		.loc 1 298 20
+ 1247 0af7 488B45E8 		movq	-24(%rbp), %rax
+ 1248 0afb 48895040 		movq	%rdx, 64(%rax)
+ 1249 0aff EB01     		jmp	.L75
+ 1250              	.L79:
+ 299:libfpgalink.c **** 	}
+ 300:libfpgalink.c **** cleanup:
+ 1251              		.loc 1 300 1
+ 1252 0b01 90       		nop
+ 1253              	.L75:
+ 301:libfpgalink.c **** 	return retVal;
+ 1254              		.loc 1 301 9
+ 1255 0b02 8B45F8   		movl	-8(%rbp), %eax
+ 302:libfpgalink.c **** }
+ 1256              		.loc 1 302 1
+ 1257 0b05 C9       		leave
+ 1258              		.cfi_def_cfa 7, 8
+ 1259 0b06 C3       		ret
+ 1260              		.cfi_endproc
+ 1261              	.LFE17:
+ 1263              		.section	.rodata
+ 1264              	.LC12:
+ 1265 01b1 666C4177 		.string	"flAwaitAsyncWrites()"
+ 1265      61697441 
+ 1265      73796E63 
+ 1265      57726974 
+ 1265      65732829 
+ 1266 01c6 0000     		.align 8
+ 1267              	.LC13:
+ 1268 01c8 666C4177 		.string	"flAwaitAsyncWrites(): An asynchronous read is in flight"
+ 1268      61697441 
+ 1268      73796E63 
+ 1268      57726974 
+ 1268      65732829 
+ 1269              		.text
+ 1270              		.globl	flAwaitAsyncWrites
+ 1272              	flAwaitAsyncWrites:
+ 1273              	.LFB18:
+ 303:libfpgalink.c **** 
+ 304:libfpgalink.c **** DLLEXPORT(FLStatus) flAwaitAsyncWrites(struct FLContext *handle, const char **error) {
+ 1274              		.loc 1 304 86
+ 1275              		.cfi_startproc
+ 1276 0b07 F30F1EFA 		endbr64
+ 1277 0b0b 55       		pushq	%rbp
+ 1278              		.cfi_def_cfa_offset 16
+ 1279              		.cfi_offset 6, -16
+ 1280 0b0c 4889E5   		movq	%rsp, %rbp
+ 1281              		.cfi_def_cfa_register 6
+ 1282 0b0f 4883EC30 		subq	$48, %rsp
+ 1283 0b13 48897DD8 		movq	%rdi, -40(%rbp)
+ 1284 0b17 488975D0 		movq	%rsi, -48(%rbp)
+ 305:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS, fStatus;
+ 1285              		.loc 1 305 11
+ 1286 0b1b C745EC00 		movl	$0, -20(%rbp)
+ 1286      000000
+ 306:libfpgalink.c **** 	USBStatus uStatus;
+ 307:libfpgalink.c **** 	size_t queueDepth;
+ 308:libfpgalink.c **** 	fStatus = flFlushAsyncWrites(handle, error);
+ 1287              		.loc 1 308 12
+ 1288 0b22 488B55D0 		movq	-48(%rbp), %rdx
+ 1289 0b26 488B45D8 		movq	-40(%rbp), %rax
+ 1290 0b2a 4889D6   		movq	%rdx, %rsi
+ 1291 0b2d 4889C7   		movq	%rax, %rdi
+ 1292 0b30 E8000000 		call	flFlushAsyncWrites@PLT
+ 1292      00
+ 1293 0b35 8945F0   		movl	%eax, -16(%rbp)
+ 309:libfpgalink.c **** 	CHECK_STATUS(fStatus, fStatus, cleanup, "flAwaitAsyncWrites()");
+ 1294              		.loc 1 309 2
+ 1295 0b38 837DF000 		cmpl	$0, -16(%rbp)
+ 1296 0b3c 7421     		je	.L81
+ 1297              		.loc 1 309 2 is_stmt 0 discriminator 1
+ 1298 0b3e 488B45D0 		movq	-48(%rbp), %rax
+ 1299 0b42 488D1500 		leaq	.LC12(%rip), %rdx
+ 1299      000000
+ 1300 0b49 4889D6   		movq	%rdx, %rsi
+ 1301 0b4c 4889C7   		movq	%rax, %rdi
+ 1302 0b4f E8000000 		call	errPrefix@PLT
+ 1302      00
+ 1303 0b54 8B45F0   		movl	-16(%rbp), %eax
+ 1304 0b57 8945EC   		movl	%eax, -20(%rbp)
+ 1305 0b5a E99D0000 		jmp	.L82
+ 1305      00
+ 1306              	.L81:
+ 310:libfpgalink.c **** 	queueDepth = usbNumOutstandingRequests(handle->device);
+ 1307              		.loc 1 310 15 is_stmt 1
+ 1308 0b5f 488B45D8 		movq	-40(%rbp), %rax
+ 1309 0b63 488B00   		movq	(%rax), %rax
+ 1310 0b66 4889C7   		movq	%rax, %rdi
+ 1311 0b69 E8000000 		call	usbNumOutstandingRequests@PLT
+ 1311      00
+ 1312 0b6e 488945F8 		movq	%rax, -8(%rbp)
+ 311:libfpgalink.c **** 	while ( queueDepth && !handle->completionReport.flags.isRead ) {
+ 1313              		.loc 1 311 8
+ 1314 0b72 EB4B     		jmp	.L83
+ 1315              	.L86:
+ 312:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 1316              		.loc 1 312 13
+ 1317 0b74 488B45D8 		movq	-40(%rbp), %rax
+ 1318 0b78 488D4820 		leaq	32(%rax), %rcx
+ 1319 0b7c 488B45D8 		movq	-40(%rbp), %rax
+ 1320 0b80 488B00   		movq	(%rax), %rax
+ 1321 0b83 488B55D0 		movq	-48(%rbp), %rdx
+ 1322 0b87 4889CE   		movq	%rcx, %rsi
+ 1323 0b8a 4889C7   		movq	%rax, %rdi
+ 1324 0b8d E8000000 		call	usbBulkAwaitCompletion@PLT
+ 1324      00
+ 1325 0b92 8945F4   		movl	%eax, -12(%rbp)
+ 313:libfpgalink.c **** 			handle->device, &handle->completionReport, error
+ 314:libfpgalink.c **** 		);
+ 315:libfpgalink.c **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flAwaitAsyncWrites()");
+ 1326              		.loc 1 315 3
+ 1327 0b95 837DF400 		cmpl	$0, -12(%rbp)
+ 1328 0b99 741F     		je	.L84
+ 1329              		.loc 1 315 3 is_stmt 0 discriminator 1
+ 1330 0b9b 488B45D0 		movq	-48(%rbp), %rax
+ 1331 0b9f 488D1500 		leaq	.LC12(%rip), %rdx
+ 1331      000000
+ 1332 0ba6 4889D6   		movq	%rdx, %rsi
+ 1333 0ba9 4889C7   		movq	%rax, %rdi
+ 1334 0bac E8000000 		call	errPrefix@PLT
+ 1334      00
+ 1335 0bb1 C745EC02 		movl	$2, -20(%rbp)
+ 1335      000000
+ 1336 0bb8 EB42     		jmp	.L82
+ 1337              	.L84:
+ 316:libfpgalink.c **** 		queueDepth--;
+ 1338              		.loc 1 316 13 is_stmt 1
+ 1339 0bba 48836DF8 		subq	$1, -8(%rbp)
+ 1339      01
+ 1340              	.L83:
+ 311:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 1341              		.loc 1 311 21
+ 1342 0bbf 48837DF8 		cmpq	$0, -8(%rbp)
+ 1342      00
+ 1343 0bc4 740F     		je	.L85
+ 311:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 1344              		.loc 1 311 24 discriminator 1
+ 1345 0bc6 488B45D8 		movq	-40(%rbp), %rax
+ 1346 0bca 0FB64030 		movzbl	48(%rax), %eax
+ 1347 0bce 83E001   		andl	$1, %eax
+ 311:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 1348              		.loc 1 311 21 discriminator 1
+ 1349 0bd1 84C0     		testb	%al, %al
+ 1350 0bd3 749F     		je	.L86
+ 1351              	.L85:
+ 317:libfpgalink.c **** 	}
+ 318:libfpgalink.c **** 	CHECK_STATUS(
+ 1352              		.loc 1 318 2
+ 1353 0bd5 48837DF8 		cmpq	$0, -8(%rbp)
+ 1353      00
+ 1354 0bda 741F     		je	.L88
+ 1355              		.loc 1 318 2 is_stmt 0 discriminator 1
+ 1356 0bdc 488B45D0 		movq	-48(%rbp), %rax
+ 1357 0be0 488D1500 		leaq	.LC13(%rip), %rdx
+ 1357      000000
+ 1358 0be7 4889D6   		movq	%rdx, %rsi
+ 1359 0bea 4889C7   		movq	%rax, %rdi
+ 1360 0bed E8000000 		call	errPrefix@PLT
+ 1360      00
+ 1361 0bf2 C745EC16 		movl	$22, -20(%rbp)
+ 1361      000000
+ 1362 0bf9 EB01     		jmp	.L82
+ 1363              	.L88:
+ 319:libfpgalink.c **** 		queueDepth, FL_BAD_STATE, cleanup,
+ 320:libfpgalink.c **** 		"flAwaitAsyncWrites(): An asynchronous read is in flight");
+ 321:libfpgalink.c **** cleanup:
+ 1364              		.loc 1 321 1 is_stmt 1
+ 1365 0bfb 90       		nop
+ 1366              	.L82:
+ 322:libfpgalink.c **** 	return retVal;
+ 1367              		.loc 1 322 9
+ 1368 0bfc 8B45EC   		movl	-20(%rbp), %eax
+ 323:libfpgalink.c **** }
+ 1369              		.loc 1 323 1
+ 1370 0bff C9       		leave
+ 1371              		.cfi_def_cfa 7, 8
+ 1372 0c00 C3       		ret
+ 1373              		.cfi_endproc
+ 1374              	.LFE18:
+ 1376              		.section	.rodata
+ 1377              	.LC14:
+ 1378 0200 666C5772 		.string	"flWriteChannel()"
+ 1378      69746543 
+ 1378      68616E6E 
+ 1378      656C2829 
+ 1378      00
+ 1379              		.text
+ 1380              		.globl	flWriteChannel
+ 1382              	flWriteChannel:
+ 1383              	.LFB19:
+ 324:libfpgalink.c **** 
+ 325:libfpgalink.c **** // Write some bytes to the specified channel, synchronously.
+ 326:libfpgalink.c **** //
+ 327:libfpgalink.c **** DLLEXPORT(FLStatus) flWriteChannel(
+ 328:libfpgalink.c **** 	struct FLContext *handle, uint8 chan, size_t count, const uint8 *data, const char **error)
+ 329:libfpgalink.c **** {
+ 1384              		.loc 1 329 1
+ 1385              		.cfi_startproc
+ 1386 0c01 F30F1EFA 		endbr64
+ 1387 0c05 55       		pushq	%rbp
+ 1388              		.cfi_def_cfa_offset 16
+ 1389              		.cfi_offset 6, -16
+ 1390 0c06 4889E5   		movq	%rsp, %rbp
+ 1391              		.cfi_def_cfa_register 6
+ 1392 0c09 4883EC40 		subq	$64, %rsp
+ 1393 0c0d 48897DE8 		movq	%rdi, -24(%rbp)
+ 1394 0c11 89F0     		movl	%esi, %eax
+ 1395 0c13 488955D8 		movq	%rdx, -40(%rbp)
+ 1396 0c17 48894DD0 		movq	%rcx, -48(%rbp)
+ 1397 0c1b 4C8945C8 		movq	%r8, -56(%rbp)
+ 1398 0c1f 8845E4   		movb	%al, -28(%rbp)
+ 330:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS, fStatus;
+ 1399              		.loc 1 330 11
+ 1400 0c22 C745F800 		movl	$0, -8(%rbp)
+ 1400      000000
+ 331:libfpgalink.c **** 	fStatus = flWriteChannelAsync(handle, chan, count, data, error);
+ 1401              		.loc 1 331 12
+ 1402 0c29 0FB675E4 		movzbl	-28(%rbp), %esi
+ 1403 0c2d 488B7DC8 		movq	-56(%rbp), %rdi
+ 1404 0c31 488B4DD0 		movq	-48(%rbp), %rcx
+ 1405 0c35 488B55D8 		movq	-40(%rbp), %rdx
+ 1406 0c39 488B45E8 		movq	-24(%rbp), %rax
+ 1407 0c3d 4989F8   		movq	%rdi, %r8
+ 1408 0c40 4889C7   		movq	%rax, %rdi
+ 1409 0c43 E8000000 		call	flWriteChannelAsync@PLT
+ 1409      00
+ 1410 0c48 8945FC   		movl	%eax, -4(%rbp)
+ 332:libfpgalink.c **** 	CHECK_STATUS(fStatus, fStatus, cleanup, "flWriteChannel()");
+ 1411              		.loc 1 332 2
+ 1412 0c4b 837DFC00 		cmpl	$0, -4(%rbp)
+ 1413 0c4f 741E     		je	.L90
+ 1414              		.loc 1 332 2 is_stmt 0 discriminator 1
+ 1415 0c51 488B45C8 		movq	-56(%rbp), %rax
+ 1416 0c55 488D1500 		leaq	.LC14(%rip), %rdx
+ 1416      000000
+ 1417 0c5c 4889D6   		movq	%rdx, %rsi
+ 1418 0c5f 4889C7   		movq	%rax, %rdi
+ 1419 0c62 E8000000 		call	errPrefix@PLT
+ 1419      00
+ 1420 0c67 8B45FC   		movl	-4(%rbp), %eax
+ 1421 0c6a 8945F8   		movl	%eax, -8(%rbp)
+ 1422 0c6d EB3B     		jmp	.L91
+ 1423              	.L90:
+ 333:libfpgalink.c **** 	fStatus = flAwaitAsyncWrites(handle, error);
+ 1424              		.loc 1 333 12 is_stmt 1
+ 1425 0c6f 488B55C8 		movq	-56(%rbp), %rdx
+ 1426 0c73 488B45E8 		movq	-24(%rbp), %rax
+ 1427 0c77 4889D6   		movq	%rdx, %rsi
+ 1428 0c7a 4889C7   		movq	%rax, %rdi
+ 1429 0c7d E8000000 		call	flAwaitAsyncWrites@PLT
+ 1429      00
+ 1430 0c82 8945FC   		movl	%eax, -4(%rbp)
+ 334:libfpgalink.c **** 	CHECK_STATUS(fStatus, fStatus, cleanup, "flWriteChannel()");
+ 1431              		.loc 1 334 2
+ 1432 0c85 837DFC00 		cmpl	$0, -4(%rbp)
+ 1433 0c89 741E     		je	.L93
+ 1434              		.loc 1 334 2 is_stmt 0 discriminator 1
+ 1435 0c8b 488B45C8 		movq	-56(%rbp), %rax
+ 1436 0c8f 488D1500 		leaq	.LC14(%rip), %rdx
+ 1436      000000
+ 1437 0c96 4889D6   		movq	%rdx, %rsi
+ 1438 0c99 4889C7   		movq	%rax, %rdi
+ 1439 0c9c E8000000 		call	errPrefix@PLT
+ 1439      00
+ 1440 0ca1 8B45FC   		movl	-4(%rbp), %eax
+ 1441 0ca4 8945F8   		movl	%eax, -8(%rbp)
+ 1442 0ca7 EB01     		jmp	.L91
+ 1443              	.L93:
+ 335:libfpgalink.c **** cleanup:
+ 1444              		.loc 1 335 1 is_stmt 1
+ 1445 0ca9 90       		nop
+ 1446              	.L91:
+ 336:libfpgalink.c **** 	return retVal;
+ 1447              		.loc 1 336 9
+ 1448 0caa 8B45F8   		movl	-8(%rbp), %eax
+ 337:libfpgalink.c **** }
+ 1449              		.loc 1 337 1
+ 1450 0cad C9       		leave
+ 1451              		.cfi_def_cfa 7, 8
+ 1452 0cae C3       		ret
+ 1453              		.cfi_endproc
+ 1454              	.LFE19:
+ 1456              		.section	.rodata
+ 1457 0211 00000000 		.align 8
+ 1457      000000
+ 1458              	.LC15:
+ 1459 0218 666C5772 		.string	"flWriteChannelAsync(): Zero-length writes are illegal!"
+ 1459      69746543 
+ 1459      68616E6E 
+ 1459      656C4173 
+ 1459      796E6328 
+ 1460 024f 00       		.align 8
+ 1461              	.LC16:
+ 1462 0250 666C5772 		.string	"flWriteChannelAsync(): This device does not support CommFPGA"
+ 1462      69746543 
+ 1462      68616E6E 
+ 1462      656C4173 
+ 1462      796E6328 
+ 1463              	.LC17:
+ 1464 028d 666C5772 		.string	"flWriteChannelAsync()"
+ 1464      69746543 
+ 1464      68616E6E 
+ 1464      656C4173 
+ 1464      796E6328 
+ 1465              		.text
+ 1466              		.globl	flWriteChannelAsync
+ 1468              	flWriteChannelAsync:
+ 1469              	.LFB20:
+ 338:libfpgalink.c **** 
+ 339:libfpgalink.c **** // Write some bytes to the specified channel, asynchronously.
+ 340:libfpgalink.c **** //
+ 341:libfpgalink.c **** DLLEXPORT(FLStatus) flWriteChannelAsync(
+ 342:libfpgalink.c **** 	struct FLContext *handle, uint8 chan, size_t count, const uint8 *data,
+ 343:libfpgalink.c **** 	const char **error)
+ 344:libfpgalink.c **** {
+ 1470              		.loc 1 344 1
+ 1471              		.cfi_startproc
+ 1472 0caf F30F1EFA 		endbr64
+ 1473 0cb3 55       		pushq	%rbp
+ 1474              		.cfi_def_cfa_offset 16
+ 1475              		.cfi_offset 6, -16
+ 1476 0cb4 4889E5   		movq	%rsp, %rbp
+ 1477              		.cfi_def_cfa_register 6
+ 1478 0cb7 4883EC50 		subq	$80, %rsp
+ 1479 0cbb 48897DD8 		movq	%rdi, -40(%rbp)
+ 1480 0cbf 89F0     		movl	%esi, %eax
+ 1481 0cc1 488955C8 		movq	%rdx, -56(%rbp)
+ 1482 0cc5 48894DC0 		movq	%rcx, -64(%rbp)
+ 1483 0cc9 4C8945B8 		movq	%r8, -72(%rbp)
+ 1484 0ccd 8845D4   		movb	%al, -44(%rbp)
+ 1485              		.loc 1 344 1
+ 1486 0cd0 64488B04 		movq	%fs:40, %rax
+ 1486      25280000 
+ 1486      00
+ 1487 0cd9 488945F8 		movq	%rax, -8(%rbp)
+ 1488 0cdd 31C0     		xorl	%eax, %eax
+ 345:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS, fStatus;
+ 1489              		.loc 1 345 11
+ 1490 0cdf C745EC00 		movl	$0, -20(%rbp)
+ 1490      000000
+ 346:libfpgalink.c **** 	uint8 command[3];
+ 347:libfpgalink.c **** 	USBStatus uStatus;
+ 348:libfpgalink.c **** 	CHECK_STATUS(
+ 1491              		.loc 1 348 2
+ 1492 0ce6 48837DC8 		cmpq	$0, -56(%rbp)
+ 1492      00
+ 1493 0ceb 7522     		jne	.L95
+ 1494              		.loc 1 348 2 is_stmt 0 discriminator 1
+ 1495 0ced 488B45B8 		movq	-72(%rbp), %rax
+ 1496 0cf1 488D1500 		leaq	.LC15(%rip), %rdx
+ 1496      000000
+ 1497 0cf8 4889D6   		movq	%rdx, %rsi
+ 1498 0cfb 4889C7   		movq	%rax, %rdi
+ 1499 0cfe E8000000 		call	errPrefix@PLT
+ 1499      00
+ 1500 0d03 C745EC03 		movl	$3, -20(%rbp)
+ 1500      000000
+ 1501 0d0a E9990100 		jmp	.L96
+ 1501      00
+ 1502              	.L95:
+ 349:libfpgalink.c **** 		count == 0, FL_PROTOCOL_ERR, cleanup,
+ 350:libfpgalink.c **** 		"flWriteChannelAsync(): Zero-length writes are illegal!");
+ 351:libfpgalink.c **** 	CHECK_STATUS(
+ 1503              		.loc 1 351 2 is_stmt 1
+ 1504 0d0f 488B45D8 		movq	-40(%rbp), %rax
+ 1505 0d13 0FB64008 		movzbl	8(%rax), %eax
+ 1506 0d17 83F001   		xorl	$1, %eax
+ 1507 0d1a 84C0     		testb	%al, %al
+ 1508 0d1c 7422     		je	.L97
+ 1509              		.loc 1 351 2 is_stmt 0 discriminator 1
+ 1510 0d1e 488B45B8 		movq	-72(%rbp), %rax
+ 1511 0d22 488D1500 		leaq	.LC16(%rip), %rdx
+ 1511      000000
+ 1512 0d29 4889D6   		movq	%rdx, %rsi
+ 1513 0d2c 4889C7   		movq	%rax, %rdi
+ 1514 0d2f E8000000 		call	errPrefix@PLT
+ 1514      00
+ 1515 0d34 C745EC03 		movl	$3, -20(%rbp)
+ 1515      000000
+ 1516 0d3b E9680100 		jmp	.L96
+ 1516      00
+ 1517              	.L97:
+ 352:libfpgalink.c **** 		!handle->isCommCapable, FL_PROTOCOL_ERR, cleanup,
+ 353:libfpgalink.c **** 		"flWriteChannelAsync(): This device does not support CommFPGA");
+ 354:libfpgalink.c **** 	command[0] = chan & 0x7F;
+ 1518              		.loc 1 354 20 is_stmt 1
+ 1519 0d40 0FB645D4 		movzbl	-44(%rbp), %eax
+ 1520 0d44 83E07F   		andl	$127, %eax
+ 1521              		.loc 1 354 13
+ 1522 0d47 8845F5   		movb	%al, -11(%rbp)
+ 355:libfpgalink.c **** 	command[1] = 0x00;
+ 1523              		.loc 1 355 13
+ 1524 0d4a C645F600 		movb	$0, -10(%rbp)
+ 356:libfpgalink.c **** 	command[2] = 0x00;
+ 1525              		.loc 1 356 13
+ 1526 0d4e C645F700 		movb	$0, -9(%rbp)
+ 357:libfpgalink.c **** 	while ( count >= 0x10000 ) {
+ 1527              		.loc 1 357 8
+ 1528 0d52 E99C0000 		jmp	.L98
+ 1528      00
+ 1529              	.L101:
+ 358:libfpgalink.c **** 		fStatus = bufferAppend(handle, command, 3, error);
+ 1530              		.loc 1 358 13
+ 1531 0d57 488B55B8 		movq	-72(%rbp), %rdx
+ 1532 0d5b 488D75F5 		leaq	-11(%rbp), %rsi
+ 1533 0d5f 488B45D8 		movq	-40(%rbp), %rax
+ 1534 0d63 4889D1   		movq	%rdx, %rcx
+ 1535 0d66 BA030000 		movl	$3, %edx
+ 1535      00
+ 1536 0d6b 4889C7   		movq	%rax, %rdi
+ 1537 0d6e E898F8FF 		call	bufferAppend
+ 1537      FF
+ 1538 0d73 8945F0   		movl	%eax, -16(%rbp)
+ 359:libfpgalink.c **** 		CHECK_STATUS(fStatus, fStatus, cleanup, "flWriteChannelAsync()");
+ 1539              		.loc 1 359 3
+ 1540 0d76 837DF000 		cmpl	$0, -16(%rbp)
+ 1541 0d7a 7421     		je	.L99
+ 1542              		.loc 1 359 3 is_stmt 0 discriminator 1
+ 1543 0d7c 488B45B8 		movq	-72(%rbp), %rax
+ 1544 0d80 488D1500 		leaq	.LC17(%rip), %rdx
+ 1544      000000
+ 1545 0d87 4889D6   		movq	%rdx, %rsi
+ 1546 0d8a 4889C7   		movq	%rax, %rdi
+ 1547 0d8d E8000000 		call	errPrefix@PLT
+ 1547      00
+ 1548 0d92 8B45F0   		movl	-16(%rbp), %eax
+ 1549 0d95 8945EC   		movl	%eax, -20(%rbp)
+ 1550 0d98 E90B0100 		jmp	.L96
+ 1550      00
+ 1551              	.L99:
+ 360:libfpgalink.c **** 		fStatus = bufferAppend(handle, data, 0x10000, error);
+ 1552              		.loc 1 360 13 is_stmt 1
+ 1553 0d9d 488B55B8 		movq	-72(%rbp), %rdx
+ 1554 0da1 488B75C0 		movq	-64(%rbp), %rsi
+ 1555 0da5 488B45D8 		movq	-40(%rbp), %rax
+ 1556 0da9 4889D1   		movq	%rdx, %rcx
+ 1557 0dac BA000001 		movl	$65536, %edx
+ 1557      00
+ 1558 0db1 4889C7   		movq	%rax, %rdi
+ 1559 0db4 E852F8FF 		call	bufferAppend
+ 1559      FF
+ 1560 0db9 8945F0   		movl	%eax, -16(%rbp)
+ 361:libfpgalink.c **** 		CHECK_STATUS(fStatus, fStatus, cleanup, "flWriteChannelAsync()");
+ 1561              		.loc 1 361 3
+ 1562 0dbc 837DF000 		cmpl	$0, -16(%rbp)
+ 1563 0dc0 7421     		je	.L100
+ 1564              		.loc 1 361 3 is_stmt 0 discriminator 1
+ 1565 0dc2 488B45B8 		movq	-72(%rbp), %rax
+ 1566 0dc6 488D1500 		leaq	.LC17(%rip), %rdx
+ 1566      000000
+ 1567 0dcd 4889D6   		movq	%rdx, %rsi
+ 1568 0dd0 4889C7   		movq	%rax, %rdi
+ 1569 0dd3 E8000000 		call	errPrefix@PLT
+ 1569      00
+ 1570 0dd8 8B45F0   		movl	-16(%rbp), %eax
+ 1571 0ddb 8945EC   		movl	%eax, -20(%rbp)
+ 1572 0dde E9C50000 		jmp	.L96
+ 1572      00
+ 1573              	.L100:
+ 362:libfpgalink.c **** 		count -= 0x10000;
+ 1574              		.loc 1 362 9 is_stmt 1
+ 1575 0de3 48816DC8 		subq	$65536, -56(%rbp)
+ 1575      00000100 
+ 363:libfpgalink.c **** 		data += 0x10000;
+ 1576              		.loc 1 363 8
+ 1577 0deb 488145C0 		addq	$65536, -64(%rbp)
+ 1577      00000100 
+ 1578              	.L98:
+ 357:libfpgalink.c **** 		fStatus = bufferAppend(handle, command, 3, error);
+ 1579              		.loc 1 357 16
+ 1580 0df3 48817DC8 		cmpq	$65535, -56(%rbp)
+ 1580      FFFF0000 
+ 1581 0dfb 0F8756FF 		ja	.L101
+ 1581      FFFF
+ 364:libfpgalink.c **** 	}
+ 365:libfpgalink.c **** 	if ( count ) {
+ 1582              		.loc 1 365 5
+ 1583 0e01 48837DC8 		cmpq	$0, -56(%rbp)
+ 1583      00
+ 1584 0e06 0F849B00 		je	.L105
+ 1584      0000
+ 366:libfpgalink.c **** 		flWriteWord((uint16)count, command+1);
+ 1585              		.loc 1 366 3
+ 1586 0e0c 488D45F5 		leaq	-11(%rbp), %rax
+ 1587 0e10 4883C001 		addq	$1, %rax
+ 1588              		.loc 1 366 15
+ 1589 0e14 488B55C8 		movq	-56(%rbp), %rdx
+ 1590              		.loc 1 366 3
+ 1591 0e18 0FB7D2   		movzwl	%dx, %edx
+ 1592 0e1b 4889C6   		movq	%rax, %rsi
+ 1593 0e1e 89D7     		movl	%edx, %edi
+ 1594 0e20 E8000000 		call	flWriteWord@PLT
+ 1594      00
+ 367:libfpgalink.c **** 		fStatus = bufferAppend(handle, command, 3, error);
+ 1595              		.loc 1 367 13
+ 1596 0e25 488B55B8 		movq	-72(%rbp), %rdx
+ 1597 0e29 488D75F5 		leaq	-11(%rbp), %rsi
+ 1598 0e2d 488B45D8 		movq	-40(%rbp), %rax
+ 1599 0e31 4889D1   		movq	%rdx, %rcx
+ 1600 0e34 BA030000 		movl	$3, %edx
+ 1600      00
+ 1601 0e39 4889C7   		movq	%rax, %rdi
+ 1602 0e3c E8CAF7FF 		call	bufferAppend
+ 1602      FF
+ 1603 0e41 8945F0   		movl	%eax, -16(%rbp)
+ 368:libfpgalink.c **** 		CHECK_STATUS(fStatus, fStatus, cleanup, "flWriteChannelAsync()");
+ 1604              		.loc 1 368 3
+ 1605 0e44 837DF000 		cmpl	$0, -16(%rbp)
+ 1606 0e48 741E     		je	.L102
+ 1607              		.loc 1 368 3 is_stmt 0 discriminator 1
+ 1608 0e4a 488B45B8 		movq	-72(%rbp), %rax
+ 1609 0e4e 488D1500 		leaq	.LC17(%rip), %rdx
+ 1609      000000
+ 1610 0e55 4889D6   		movq	%rdx, %rsi
+ 1611 0e58 4889C7   		movq	%rax, %rdi
+ 1612 0e5b E8000000 		call	errPrefix@PLT
+ 1612      00
+ 1613 0e60 8B45F0   		movl	-16(%rbp), %eax
+ 1614 0e63 8945EC   		movl	%eax, -20(%rbp)
+ 1615 0e66 EB40     		jmp	.L96
+ 1616              	.L102:
+ 369:libfpgalink.c **** 		fStatus = bufferAppend(handle, data, count, error);
+ 1617              		.loc 1 369 13 is_stmt 1
+ 1618 0e68 488B4DB8 		movq	-72(%rbp), %rcx
+ 1619 0e6c 488B55C8 		movq	-56(%rbp), %rdx
+ 1620 0e70 488B75C0 		movq	-64(%rbp), %rsi
+ 1621 0e74 488B45D8 		movq	-40(%rbp), %rax
+ 1622 0e78 4889C7   		movq	%rax, %rdi
+ 1623 0e7b E88BF7FF 		call	bufferAppend
+ 1623      FF
+ 1624 0e80 8945F0   		movl	%eax, -16(%rbp)
+ 370:libfpgalink.c **** 		CHECK_STATUS(fStatus, fStatus, cleanup, "flWriteChannelAsync()");
+ 1625              		.loc 1 370 3
+ 1626 0e83 837DF000 		cmpl	$0, -16(%rbp)
+ 1627 0e87 741E     		je	.L105
+ 1628              		.loc 1 370 3 is_stmt 0 discriminator 1
+ 1629 0e89 488B45B8 		movq	-72(%rbp), %rax
+ 1630 0e8d 488D1500 		leaq	.LC17(%rip), %rdx
+ 1630      000000
+ 1631 0e94 4889D6   		movq	%rdx, %rsi
+ 1632 0e97 4889C7   		movq	%rax, %rdi
+ 1633 0e9a E8000000 		call	errPrefix@PLT
+ 1633      00
+ 1634 0e9f 8B45F0   		movl	-16(%rbp), %eax
+ 1635 0ea2 8945EC   		movl	%eax, -20(%rbp)
+ 1636 0ea5 EB01     		jmp	.L96
+ 1637              	.L105:
+ 371:libfpgalink.c **** 	}
+ 372:libfpgalink.c **** cleanup:
+ 1638              		.loc 1 372 1 is_stmt 1
+ 1639 0ea7 90       		nop
+ 1640              	.L96:
+ 373:libfpgalink.c **** 	return retVal;
+ 1641              		.loc 1 373 9
+ 1642 0ea8 8B45EC   		movl	-20(%rbp), %eax
+ 374:libfpgalink.c **** }
+ 1643              		.loc 1 374 1
+ 1644 0eab 488B55F8 		movq	-8(%rbp), %rdx
+ 1645 0eaf 64482B14 		subq	%fs:40, %rdx
+ 1645      25280000 
+ 1645      00
+ 1646 0eb8 7405     		je	.L104
+ 1647 0eba E8000000 		call	__stack_chk_fail@PLT
+ 1647      00
+ 1648              	.L104:
+ 1649 0ebf C9       		leave
+ 1650              		.cfi_def_cfa 7, 8
+ 1651 0ec0 C3       		ret
+ 1652              		.cfi_endproc
+ 1653              	.LFE20:
+ 1655              		.section	.rodata
+ 1656 02a3 00000000 		.align 8
+ 1656      00
+ 1657              	.LC18:
+ 1658 02a8 666C5265 		.string	"flReadChannel(): Zero-length reads are illegal!"
+ 1658      61644368 
+ 1658      616E6E65 
+ 1658      6C28293A 
+ 1658      205A6572 
+ 1659              		.align 8
+ 1660              	.LC19:
+ 1661 02d8 666C5265 		.string	"flReadChannel(): This device does not support CommFPGA"
+ 1661      61644368 
+ 1661      616E6E65 
+ 1661      6C28293A 
+ 1661      20546869 
+ 1662              	.LC20:
+ 1663 030f 666C5265 		.string	"flReadChannel()"
+ 1663      61644368 
+ 1663      616E6E65 
+ 1663      6C282900 
+ 1664              		.text
+ 1665              		.globl	flReadChannel
+ 1667              	flReadChannel:
+ 1668              	.LFB21:
+ 375:libfpgalink.c **** 
+ 376:libfpgalink.c **** // Read some bytes from the specified channel, synchronously.
+ 377:libfpgalink.c **** // TODO: Deal with early-termination properly - it should not be treated like an error.
+ 378:libfpgalink.c **** //       This will require changes in usbBulkRead(). Async API is already correct.
+ 379:libfpgalink.c **** //
+ 380:libfpgalink.c **** DLLEXPORT(FLStatus) flReadChannel(
+ 381:libfpgalink.c **** 	struct FLContext *handle, uint8 chan, size_t count, uint8 *buffer,
+ 382:libfpgalink.c **** 	const char **error)
+ 383:libfpgalink.c **** {
+ 1669              		.loc 1 383 1
+ 1670              		.cfi_startproc
+ 1671 0ec1 F30F1EFA 		endbr64
+ 1672 0ec5 55       		pushq	%rbp
+ 1673              		.cfi_def_cfa_offset 16
+ 1674              		.cfi_offset 6, -16
+ 1675 0ec6 4889E5   		movq	%rsp, %rbp
+ 1676              		.cfi_def_cfa_register 6
+ 1677 0ec9 4883EC50 		subq	$80, %rsp
+ 1678 0ecd 48897DD8 		movq	%rdi, -40(%rbp)
+ 1679 0ed1 89F0     		movl	%esi, %eax
+ 1680 0ed3 488955C8 		movq	%rdx, -56(%rbp)
+ 1681 0ed7 48894DC0 		movq	%rcx, -64(%rbp)
+ 1682 0edb 4C8945B8 		movq	%r8, -72(%rbp)
+ 1683 0edf 8845D4   		movb	%al, -44(%rbp)
+ 1684              		.loc 1 383 1
+ 1685 0ee2 64488B04 		movq	%fs:40, %rax
+ 1685      25280000 
+ 1685      00
+ 1686 0eeb 488945F8 		movq	%rax, -8(%rbp)
+ 1687 0eef 31C0     		xorl	%eax, %eax
+ 384:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS, fStatus;
+ 1688              		.loc 1 384 11
+ 1689 0ef1 C745E800 		movl	$0, -24(%rbp)
+ 1689      000000
+ 385:libfpgalink.c **** 	const uint8 *data;
+ 386:libfpgalink.c **** 	uint32 requestLength, actualLength;
+ 387:libfpgalink.c **** 	CHECK_STATUS(
+ 1690              		.loc 1 387 2
+ 1691 0ef8 48837DC8 		cmpq	$0, -56(%rbp)
+ 1691      00
+ 1692 0efd 7522     		jne	.L107
+ 1693              		.loc 1 387 2 is_stmt 0 discriminator 1
+ 1694 0eff 488B45B8 		movq	-72(%rbp), %rax
+ 1695 0f03 488D1500 		leaq	.LC18(%rip), %rdx
+ 1695      000000
+ 1696 0f0a 4889D6   		movq	%rdx, %rsi
+ 1697 0f0d 4889C7   		movq	%rax, %rdi
+ 1698 0f10 E8000000 		call	errPrefix@PLT
+ 1698      00
+ 1699 0f15 C745E803 		movl	$3, -24(%rbp)
+ 1699      000000
+ 1700 0f1c E90E0300 		jmp	.L108
+ 1700      00
+ 1701              	.L107:
+ 388:libfpgalink.c **** 		count == 0, FL_PROTOCOL_ERR, cleanup,
+ 389:libfpgalink.c **** 		"flReadChannel(): Zero-length reads are illegal!");
+ 390:libfpgalink.c **** 	CHECK_STATUS(
+ 1702              		.loc 1 390 2 is_stmt 1
+ 1703 0f21 488B45D8 		movq	-40(%rbp), %rax
+ 1704 0f25 0FB64008 		movzbl	8(%rax), %eax
+ 1705 0f29 83F001   		xorl	$1, %eax
+ 1706 0f2c 84C0     		testb	%al, %al
+ 1707 0f2e 7422     		je	.L109
+ 1708              		.loc 1 390 2 is_stmt 0 discriminator 1
+ 1709 0f30 488B45B8 		movq	-72(%rbp), %rax
+ 1710 0f34 488D1500 		leaq	.LC19(%rip), %rdx
+ 1710      000000
+ 1711 0f3b 4889D6   		movq	%rdx, %rsi
+ 1712 0f3e 4889C7   		movq	%rax, %rdi
+ 1713 0f41 E8000000 		call	errPrefix@PLT
+ 1713      00
+ 1714 0f46 C745E803 		movl	$3, -24(%rbp)
+ 1714      000000
+ 1715 0f4d E9DD0200 		jmp	.L108
+ 1715      00
+ 1716              	.L109:
+ 391:libfpgalink.c **** 		!handle->isCommCapable, FL_PROTOCOL_ERR, cleanup,
+ 392:libfpgalink.c **** 		"flReadChannel(): This device does not support CommFPGA");
+ 393:libfpgalink.c **** 	if ( count >= 0x10000 ) {
+ 1717              		.loc 1 393 5 is_stmt 1
+ 1718 0f52 48817DC8 		cmpq	$65535, -56(%rbp)
+ 1718      FFFF0000 
+ 1719 0f5a 0F861202 		jbe	.L110
+ 1719      0000
+ 394:libfpgalink.c **** 		fStatus = flReadChannelAsyncSubmit(handle, chan, 0x10000, buffer, error);
+ 1720              		.loc 1 394 13
+ 1721 0f60 0FB675D4 		movzbl	-44(%rbp), %esi
+ 1722 0f64 488B4DB8 		movq	-72(%rbp), %rcx
+ 1723 0f68 488B55C0 		movq	-64(%rbp), %rdx
+ 1724 0f6c 488B45D8 		movq	-40(%rbp), %rax
+ 1725 0f70 4989C8   		movq	%rcx, %r8
+ 1726 0f73 4889D1   		movq	%rdx, %rcx
+ 1727 0f76 BA000001 		movl	$65536, %edx
+ 1727      00
+ 1728 0f7b 4889C7   		movq	%rax, %rdi
+ 1729 0f7e E8000000 		call	flReadChannelAsyncSubmit@PLT
+ 1729      00
+ 1730 0f83 8945EC   		movl	%eax, -20(%rbp)
+ 395:libfpgalink.c **** 		CHECK_STATUS(fStatus, fStatus, cleanup, "flReadChannel()");
+ 1731              		.loc 1 395 3
+ 1732 0f86 837DEC00 		cmpl	$0, -20(%rbp)
+ 1733 0f8a 7421     		je	.L111
+ 1734              		.loc 1 395 3 is_stmt 0 discriminator 1
+ 1735 0f8c 488B45B8 		movq	-72(%rbp), %rax
+ 1736 0f90 488D1500 		leaq	.LC20(%rip), %rdx
+ 1736      000000
+ 1737 0f97 4889D6   		movq	%rdx, %rsi
+ 1738 0f9a 4889C7   		movq	%rax, %rdi
+ 1739 0f9d E8000000 		call	errPrefix@PLT
+ 1739      00
+ 1740 0fa2 8B45EC   		movl	-20(%rbp), %eax
+ 1741 0fa5 8945E8   		movl	%eax, -24(%rbp)
+ 1742 0fa8 E9820200 		jmp	.L108
+ 1742      00
+ 1743              	.L111:
+ 396:libfpgalink.c **** 		count -= 0x10000;
+ 1744              		.loc 1 396 9 is_stmt 1
+ 1745 0fad 48816DC8 		subq	$65536, -56(%rbp)
+ 1745      00000100 
+ 397:libfpgalink.c **** 		buffer += 0x10000;
+ 1746              		.loc 1 397 10
+ 1747 0fb5 488145C0 		addq	$65536, -64(%rbp)
+ 1747      00000100 
+ 398:libfpgalink.c **** 		while ( count >= 0x10000 ) {
+ 1748              		.loc 1 398 9
+ 1749 0fbd E9D20000 		jmp	.L112
+ 1749      00
+ 1750              	.L115:
+ 399:libfpgalink.c **** 			fStatus = flReadChannelAsyncSubmit(handle, chan, 0x10000, buffer, error);
+ 1751              		.loc 1 399 14
+ 1752 0fc2 0FB675D4 		movzbl	-44(%rbp), %esi
+ 1753 0fc6 488B4DB8 		movq	-72(%rbp), %rcx
+ 1754 0fca 488B55C0 		movq	-64(%rbp), %rdx
+ 1755 0fce 488B45D8 		movq	-40(%rbp), %rax
+ 1756 0fd2 4989C8   		movq	%rcx, %r8
+ 1757 0fd5 4889D1   		movq	%rdx, %rcx
+ 1758 0fd8 BA000001 		movl	$65536, %edx
+ 1758      00
+ 1759 0fdd 4889C7   		movq	%rax, %rdi
+ 1760 0fe0 E8000000 		call	flReadChannelAsyncSubmit@PLT
+ 1760      00
+ 1761 0fe5 8945EC   		movl	%eax, -20(%rbp)
+ 400:libfpgalink.c **** 			CHECK_STATUS(fStatus, fStatus, cleanup, "flReadChannel()");
+ 1762              		.loc 1 400 4
+ 1763 0fe8 837DEC00 		cmpl	$0, -20(%rbp)
+ 1764 0fec 7421     		je	.L113
+ 1765              		.loc 1 400 4 is_stmt 0 discriminator 1
+ 1766 0fee 488B45B8 		movq	-72(%rbp), %rax
+ 1767 0ff2 488D1500 		leaq	.LC20(%rip), %rdx
+ 1767      000000
+ 1768 0ff9 4889D6   		movq	%rdx, %rsi
+ 1769 0ffc 4889C7   		movq	%rax, %rdi
+ 1770 0fff E8000000 		call	errPrefix@PLT
+ 1770      00
+ 1771 1004 8B45EC   		movl	-20(%rbp), %eax
+ 1772 1007 8945E8   		movl	%eax, -24(%rbp)
+ 1773 100a E9200200 		jmp	.L108
+ 1773      00
+ 1774              	.L113:
+ 401:libfpgalink.c **** 			count -= 0x10000;
+ 1775              		.loc 1 401 10 is_stmt 1
+ 1776 100f 48816DC8 		subq	$65536, -56(%rbp)
+ 1776      00000100 
+ 402:libfpgalink.c **** 			buffer += 0x10000;
+ 1777              		.loc 1 402 11
+ 1778 1017 488145C0 		addq	$65536, -64(%rbp)
+ 1778      00000100 
+ 403:libfpgalink.c **** 			fStatus = flReadChannelAsyncAwait(handle, &data, &requestLength, &actualLength, error);
+ 1779              		.loc 1 403 14
+ 1780 101f 488B7DB8 		movq	-72(%rbp), %rdi
+ 1781 1023 488D4DE4 		leaq	-28(%rbp), %rcx
+ 1782 1027 488D55E0 		leaq	-32(%rbp), %rdx
+ 1783 102b 488D75F0 		leaq	-16(%rbp), %rsi
+ 1784 102f 488B45D8 		movq	-40(%rbp), %rax
+ 1785 1033 4989F8   		movq	%rdi, %r8
+ 1786 1036 4889C7   		movq	%rax, %rdi
+ 1787 1039 E8000000 		call	flReadChannelAsyncAwait@PLT
+ 1787      00
+ 1788 103e 8945EC   		movl	%eax, -20(%rbp)
+ 404:libfpgalink.c **** 			CHECK_STATUS(fStatus, fStatus, cleanup, "flReadChannel()");
+ 1789              		.loc 1 404 4
+ 1790 1041 837DEC00 		cmpl	$0, -20(%rbp)
+ 1791 1045 7421     		je	.L114
+ 1792              		.loc 1 404 4 is_stmt 0 discriminator 1
+ 1793 1047 488B45B8 		movq	-72(%rbp), %rax
+ 1794 104b 488D1500 		leaq	.LC20(%rip), %rdx
+ 1794      000000
+ 1795 1052 4889D6   		movq	%rdx, %rsi
+ 1796 1055 4889C7   		movq	%rax, %rdi
+ 1797 1058 E8000000 		call	errPrefix@PLT
+ 1797      00
+ 1798 105d 8B45EC   		movl	-20(%rbp), %eax
+ 1799 1060 8945E8   		movl	%eax, -24(%rbp)
+ 1800 1063 E9C70100 		jmp	.L108
+ 1800      00
+ 1801              	.L114:
+ 405:libfpgalink.c **** 			CHECK_STATUS(
+ 1802              		.loc 1 405 4 is_stmt 1
+ 1803 1068 8B55E4   		movl	-28(%rbp), %edx
+ 1804 106b 8B45E0   		movl	-32(%rbp), %eax
+ 1805 106e 39C2     		cmpl	%eax, %edx
+ 1806 1070 7422     		je	.L112
+ 1807              		.loc 1 405 4 is_stmt 0 discriminator 1
+ 1808 1072 488B45B8 		movq	-72(%rbp), %rax
+ 1809 1076 488D1500 		leaq	.LC20(%rip), %rdx
+ 1809      000000
+ 1810 107d 4889D6   		movq	%rdx, %rsi
+ 1811 1080 4889C7   		movq	%rax, %rdi
+ 1812 1083 E8000000 		call	errPrefix@PLT
+ 1812      00
+ 1813 1088 C745E804 		movl	$4, -24(%rbp)
+ 1813      000000
+ 1814 108f E99B0100 		jmp	.L108
+ 1814      00
+ 1815              	.L112:
+ 398:libfpgalink.c **** 			fStatus = flReadChannelAsyncSubmit(handle, chan, 0x10000, buffer, error);
+ 1816              		.loc 1 398 17 is_stmt 1
+ 1817 1094 48817DC8 		cmpq	$65535, -56(%rbp)
+ 1817      FFFF0000 
+ 1818 109c 0F8720FF 		ja	.L115
+ 1818      FFFF
+ 406:libfpgalink.c **** 				actualLength != requestLength,
+ 407:libfpgalink.c **** 				FL_EARLY_TERM, cleanup, "flReadChannel()");
+ 408:libfpgalink.c **** 		}
+ 409:libfpgalink.c **** 		if ( count ) {
+ 1819              		.loc 1 409 6
+ 1820 10a2 48837DC8 		cmpq	$0, -56(%rbp)
+ 1820      00
+ 1821 10a7 0F841201 		je	.L116
+ 1821      0000
+ 410:libfpgalink.c **** 			fStatus = flReadChannelAsyncSubmit(handle, chan, (uint32)count, buffer, error);
+ 1822              		.loc 1 410 14
+ 1823 10ad 488B45C8 		movq	-56(%rbp), %rax
+ 1824 10b1 89C7     		movl	%eax, %edi
+ 1825 10b3 0FB675D4 		movzbl	-44(%rbp), %esi
+ 1826 10b7 488B4DB8 		movq	-72(%rbp), %rcx
+ 1827 10bb 488B55C0 		movq	-64(%rbp), %rdx
+ 1828 10bf 488B45D8 		movq	-40(%rbp), %rax
+ 1829 10c3 4989C8   		movq	%rcx, %r8
+ 1830 10c6 4889D1   		movq	%rdx, %rcx
+ 1831 10c9 89FA     		movl	%edi, %edx
+ 1832 10cb 4889C7   		movq	%rax, %rdi
+ 1833 10ce E8000000 		call	flReadChannelAsyncSubmit@PLT
+ 1833      00
+ 1834 10d3 8945EC   		movl	%eax, -20(%rbp)
+ 411:libfpgalink.c **** 			CHECK_STATUS(fStatus, fStatus, cleanup, "flReadChannel()");
+ 1835              		.loc 1 411 4
+ 1836 10d6 837DEC00 		cmpl	$0, -20(%rbp)
+ 1837 10da 7421     		je	.L117
+ 1838              		.loc 1 411 4 is_stmt 0 discriminator 1
+ 1839 10dc 488B45B8 		movq	-72(%rbp), %rax
+ 1840 10e0 488D1500 		leaq	.LC20(%rip), %rdx
+ 1840      000000
+ 1841 10e7 4889D6   		movq	%rdx, %rsi
+ 1842 10ea 4889C7   		movq	%rax, %rdi
+ 1843 10ed E8000000 		call	errPrefix@PLT
+ 1843      00
+ 1844 10f2 8B45EC   		movl	-20(%rbp), %eax
+ 1845 10f5 8945E8   		movl	%eax, -24(%rbp)
+ 1846 10f8 E9320100 		jmp	.L108
+ 1846      00
+ 1847              	.L117:
+ 412:libfpgalink.c **** 			fStatus = flReadChannelAsyncAwait(handle, &data, &requestLength, &actualLength, error);
+ 1848              		.loc 1 412 14 is_stmt 1
+ 1849 10fd 488B7DB8 		movq	-72(%rbp), %rdi
+ 1850 1101 488D4DE4 		leaq	-28(%rbp), %rcx
+ 1851 1105 488D55E0 		leaq	-32(%rbp), %rdx
+ 1852 1109 488D75F0 		leaq	-16(%rbp), %rsi
+ 1853 110d 488B45D8 		movq	-40(%rbp), %rax
+ 1854 1111 4989F8   		movq	%rdi, %r8
+ 1855 1114 4889C7   		movq	%rax, %rdi
+ 1856 1117 E8000000 		call	flReadChannelAsyncAwait@PLT
+ 1856      00
+ 1857 111c 8945EC   		movl	%eax, -20(%rbp)
+ 413:libfpgalink.c **** 			CHECK_STATUS(fStatus, fStatus, cleanup, "flReadChannel()");
+ 1858              		.loc 1 413 4
+ 1859 111f 837DEC00 		cmpl	$0, -20(%rbp)
+ 1860 1123 7421     		je	.L118
+ 1861              		.loc 1 413 4 is_stmt 0 discriminator 1
+ 1862 1125 488B45B8 		movq	-72(%rbp), %rax
+ 1863 1129 488D1500 		leaq	.LC20(%rip), %rdx
+ 1863      000000
+ 1864 1130 4889D6   		movq	%rdx, %rsi
+ 1865 1133 4889C7   		movq	%rax, %rdi
+ 1866 1136 E8000000 		call	errPrefix@PLT
+ 1866      00
+ 1867 113b 8B45EC   		movl	-20(%rbp), %eax
+ 1868 113e 8945E8   		movl	%eax, -24(%rbp)
+ 1869 1141 E9E90000 		jmp	.L108
+ 1869      00
+ 1870              	.L118:
+ 414:libfpgalink.c **** 			CHECK_STATUS(
+ 1871              		.loc 1 414 4 is_stmt 1
+ 1872 1146 8B55E4   		movl	-28(%rbp), %edx
+ 1873 1149 8B45E0   		movl	-32(%rbp), %eax
+ 1874 114c 39C2     		cmpl	%eax, %edx
+ 1875 114e 746F     		je	.L116
+ 1876              		.loc 1 414 4 is_stmt 0 discriminator 1
+ 1877 1150 488B45B8 		movq	-72(%rbp), %rax
+ 1878 1154 488D1500 		leaq	.LC20(%rip), %rdx
+ 1878      000000
+ 1879 115b 4889D6   		movq	%rdx, %rsi
+ 1880 115e 4889C7   		movq	%rax, %rdi
+ 1881 1161 E8000000 		call	errPrefix@PLT
+ 1881      00
+ 1882 1166 C745E804 		movl	$4, -24(%rbp)
+ 1882      000000
+ 1883 116d E9BD0000 		jmp	.L108
+ 1883      00
+ 1884              	.L110:
+ 415:libfpgalink.c **** 				actualLength != requestLength,
+ 416:libfpgalink.c **** 				FL_EARLY_TERM, cleanup, "flReadChannel()");
+ 417:libfpgalink.c **** 		}
+ 418:libfpgalink.c **** 	} else {
+ 419:libfpgalink.c **** 		fStatus = flReadChannelAsyncSubmit(handle, chan, (uint32)count, buffer, error);
+ 1885              		.loc 1 419 13 is_stmt 1
+ 1886 1172 488B45C8 		movq	-56(%rbp), %rax
+ 1887 1176 89C7     		movl	%eax, %edi
+ 1888 1178 0FB675D4 		movzbl	-44(%rbp), %esi
+ 1889 117c 488B4DB8 		movq	-72(%rbp), %rcx
+ 1890 1180 488B55C0 		movq	-64(%rbp), %rdx
+ 1891 1184 488B45D8 		movq	-40(%rbp), %rax
+ 1892 1188 4989C8   		movq	%rcx, %r8
+ 1893 118b 4889D1   		movq	%rdx, %rcx
+ 1894 118e 89FA     		movl	%edi, %edx
+ 1895 1190 4889C7   		movq	%rax, %rdi
+ 1896 1193 E8000000 		call	flReadChannelAsyncSubmit@PLT
+ 1896      00
+ 1897 1198 8945EC   		movl	%eax, -20(%rbp)
+ 420:libfpgalink.c **** 		CHECK_STATUS(fStatus, fStatus, cleanup, "flReadChannel()");
+ 1898              		.loc 1 420 3
+ 1899 119b 837DEC00 		cmpl	$0, -20(%rbp)
+ 1900 119f 741E     		je	.L116
+ 1901              		.loc 1 420 3 is_stmt 0 discriminator 1
+ 1902 11a1 488B45B8 		movq	-72(%rbp), %rax
+ 1903 11a5 488D1500 		leaq	.LC20(%rip), %rdx
+ 1903      000000
+ 1904 11ac 4889D6   		movq	%rdx, %rsi
+ 1905 11af 4889C7   		movq	%rax, %rdi
+ 1906 11b2 E8000000 		call	errPrefix@PLT
+ 1906      00
+ 1907 11b7 8B45EC   		movl	-20(%rbp), %eax
+ 1908 11ba 8945E8   		movl	%eax, -24(%rbp)
+ 1909 11bd EB70     		jmp	.L108
+ 1910              	.L116:
+ 421:libfpgalink.c **** 	}
+ 422:libfpgalink.c **** 	fStatus = flReadChannelAsyncAwait(handle, &data, &requestLength, &actualLength, error);
+ 1911              		.loc 1 422 12 is_stmt 1
+ 1912 11bf 488B7DB8 		movq	-72(%rbp), %rdi
+ 1913 11c3 488D4DE4 		leaq	-28(%rbp), %rcx
+ 1914 11c7 488D55E0 		leaq	-32(%rbp), %rdx
+ 1915 11cb 488D75F0 		leaq	-16(%rbp), %rsi
+ 1916 11cf 488B45D8 		movq	-40(%rbp), %rax
+ 1917 11d3 4989F8   		movq	%rdi, %r8
+ 1918 11d6 4889C7   		movq	%rax, %rdi
+ 1919 11d9 E8000000 		call	flReadChannelAsyncAwait@PLT
+ 1919      00
+ 1920 11de 8945EC   		movl	%eax, -20(%rbp)
+ 423:libfpgalink.c **** 	CHECK_STATUS(fStatus, fStatus, cleanup, "flReadChannel()");
+ 1921              		.loc 1 423 2
+ 1922 11e1 837DEC00 		cmpl	$0, -20(%rbp)
+ 1923 11e5 741E     		je	.L119
+ 1924              		.loc 1 423 2 is_stmt 0 discriminator 1
+ 1925 11e7 488B45B8 		movq	-72(%rbp), %rax
+ 1926 11eb 488D1500 		leaq	.LC20(%rip), %rdx
+ 1926      000000
+ 1927 11f2 4889D6   		movq	%rdx, %rsi
+ 1928 11f5 4889C7   		movq	%rax, %rdi
+ 1929 11f8 E8000000 		call	errPrefix@PLT
+ 1929      00
+ 1930 11fd 8B45EC   		movl	-20(%rbp), %eax
+ 1931 1200 8945E8   		movl	%eax, -24(%rbp)
+ 1932 1203 EB2A     		jmp	.L108
+ 1933              	.L119:
+ 424:libfpgalink.c **** 	CHECK_STATUS(
+ 1934              		.loc 1 424 2 is_stmt 1
+ 1935 1205 8B55E4   		movl	-28(%rbp), %edx
+ 1936 1208 8B45E0   		movl	-32(%rbp), %eax
+ 1937 120b 39C2     		cmpl	%eax, %edx
+ 1938 120d 741F     		je	.L122
+ 1939              		.loc 1 424 2 is_stmt 0 discriminator 1
+ 1940 120f 488B45B8 		movq	-72(%rbp), %rax
+ 1941 1213 488D1500 		leaq	.LC20(%rip), %rdx
+ 1941      000000
+ 1942 121a 4889D6   		movq	%rdx, %rsi
+ 1943 121d 4889C7   		movq	%rax, %rdi
+ 1944 1220 E8000000 		call	errPrefix@PLT
+ 1944      00
+ 1945 1225 C745E804 		movl	$4, -24(%rbp)
+ 1945      000000
+ 1946 122c EB01     		jmp	.L108
+ 1947              	.L122:
+ 425:libfpgalink.c **** 		actualLength != requestLength,
+ 426:libfpgalink.c **** 		FL_EARLY_TERM, cleanup, "flReadChannel()");
+ 427:libfpgalink.c **** cleanup:
+ 1948              		.loc 1 427 1 is_stmt 1
+ 1949 122e 90       		nop
+ 1950              	.L108:
+ 428:libfpgalink.c **** 	return retVal;
+ 1951              		.loc 1 428 9
+ 1952 122f 8B45E8   		movl	-24(%rbp), %eax
+ 429:libfpgalink.c **** }
+ 1953              		.loc 1 429 1
+ 1954 1232 488B55F8 		movq	-8(%rbp), %rdx
+ 1955 1236 64482B14 		subq	%fs:40, %rdx
+ 1955      25280000 
+ 1955      00
+ 1956 123f 7405     		je	.L121
+ 1957 1241 E8000000 		call	__stack_chk_fail@PLT
+ 1957      00
+ 1958              	.L121:
+ 1959 1246 C9       		leave
+ 1960              		.cfi_def_cfa 7, 8
+ 1961 1247 C3       		ret
+ 1962              		.cfi_endproc
+ 1963              	.LFE21:
+ 1965              		.section	.rodata
+ 1966 031f 00       		.align 8
+ 1967              	.LC21:
+ 1968 0320 666C5265 		.string	"flReadChannelAsyncSubmit(): This device does not support CommFPGA"
+ 1968      61644368 
+ 1968      616E6E65 
+ 1968      6C417379 
+ 1968      6E635375 
+ 1969 0362 00000000 		.align 8
+ 1969      0000
+ 1970              	.LC22:
+ 1971 0368 666C5265 		.string	"flReadChannelAsyncSubmit(): Zero-length reads are illegal!"
+ 1971      61644368 
+ 1971      616E6E65 
+ 1971      6C417379 
+ 1971      6E635375 
+ 1972 03a3 00000000 		.align 8
+ 1972      00
+ 1973              	.LC23:
+ 1974 03a8 666C5265 		.string	"flReadChannelAsyncSubmit(): Transfer length exceeds 0x10000"
+ 1974      61644368 
+ 1974      616E6E65 
+ 1974      6C417379 
+ 1974      6E635375 
+ 1975              	.LC24:
+ 1976 03e4 666C5265 		.string	"flReadChannelAsyncSubmit()"
+ 1976      61644368 
+ 1976      616E6E65 
+ 1976      6C417379 
+ 1976      6E635375 
+ 1977              		.text
+ 1978              		.globl	flReadChannelAsyncSubmit
+ 1980              	flReadChannelAsyncSubmit:
+ 1981              	.LFB22:
+ 430:libfpgalink.c **** 
+ 431:libfpgalink.c **** // Read bytes asynchronously from the specified channel (1 <= count <= 0x10000).
+ 432:libfpgalink.c **** //
+ 433:libfpgalink.c **** DLLEXPORT(FLStatus) flReadChannelAsyncSubmit(
+ 434:libfpgalink.c **** 	struct FLContext *handle, uint8 chan, uint32 count, uint8 *buffer, const char **error)
+ 435:libfpgalink.c **** {
+ 1982              		.loc 1 435 1
+ 1983              		.cfi_startproc
+ 1984 1248 F30F1EFA 		endbr64
+ 1985 124c 55       		pushq	%rbp
+ 1986              		.cfi_def_cfa_offset 16
+ 1987              		.cfi_offset 6, -16
+ 1988 124d 4889E5   		movq	%rsp, %rbp
+ 1989              		.cfi_def_cfa_register 6
+ 1990 1250 4883EC50 		subq	$80, %rsp
+ 1991 1254 48897DC8 		movq	%rdi, -56(%rbp)
+ 1992 1258 89F0     		movl	%esi, %eax
+ 1993 125a 8955C0   		movl	%edx, -64(%rbp)
+ 1994 125d 48894DB8 		movq	%rcx, -72(%rbp)
+ 1995 1261 4C8945B0 		movq	%r8, -80(%rbp)
+ 1996 1265 8845C4   		movb	%al, -60(%rbp)
+ 1997              		.loc 1 435 1
+ 1998 1268 64488B04 		movq	%fs:40, %rax
+ 1998      25280000 
+ 1998      00
+ 1999 1271 488945F8 		movq	%rax, -8(%rbp)
+ 2000 1275 31C0     		xorl	%eax, %eax
+ 436:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS, fStatus;
+ 2001              		.loc 1 436 11
+ 2002 1277 C745DC00 		movl	$0, -36(%rbp)
+ 2002      000000
+ 437:libfpgalink.c **** 	uint8 command[3];
+ 438:libfpgalink.c **** 	USBStatus uStatus;
+ 439:libfpgalink.c **** 	size_t queueDepth;
+ 440:libfpgalink.c **** 	const uint16 count16 = (count == 0x10000) ? 0x0000 : (uint16)count;
+ 2003              		.loc 1 440 15
+ 2004 127e 817DC000 		cmpl	$65536, -64(%rbp)
+ 2004      000100
+ 2005 1285 7405     		je	.L124
+ 2006              		.loc 1 440 15 is_stmt 0 discriminator 1
+ 2007 1287 8B45C0   		movl	-64(%rbp), %eax
+ 2008 128a EB05     		jmp	.L125
+ 2009              	.L124:
+ 2010              		.loc 1 440 15 discriminator 2
+ 2011 128c B8000000 		movl	$0, %eax
+ 2011      00
+ 2012              	.L125:
+ 2013              		.loc 1 440 15 discriminator 4
+ 2014 1291 668945DA 		movw	%ax, -38(%rbp)
+ 441:libfpgalink.c **** 	CHECK_STATUS(
+ 2015              		.loc 1 441 2 is_stmt 1 discriminator 4
+ 2016 1295 488B45C8 		movq	-56(%rbp), %rax
+ 2017 1299 0FB64008 		movzbl	8(%rax), %eax
+ 2018 129d 83F001   		xorl	$1, %eax
+ 2019 12a0 84C0     		testb	%al, %al
+ 2020 12a2 7422     		je	.L126
+ 2021              		.loc 1 441 2 is_stmt 0 discriminator 1
+ 2022 12a4 488B45B0 		movq	-80(%rbp), %rax
+ 2023 12a8 488D1500 		leaq	.LC21(%rip), %rdx
+ 2023      000000
+ 2024 12af 4889D6   		movq	%rdx, %rsi
+ 2025 12b2 4889C7   		movq	%rax, %rdi
+ 2026 12b5 E8000000 		call	errPrefix@PLT
+ 2026      00
+ 2027 12ba C745DC03 		movl	$3, -36(%rbp)
+ 2027      000000
+ 2028 12c1 E9C30100 		jmp	.L127
+ 2028      00
+ 2029              	.L126:
+ 442:libfpgalink.c **** 		!handle->isCommCapable, FL_PROTOCOL_ERR, cleanup,
+ 443:libfpgalink.c **** 		"flReadChannelAsyncSubmit(): This device does not support CommFPGA");
+ 444:libfpgalink.c **** 	CHECK_STATUS(
+ 2030              		.loc 1 444 2 is_stmt 1
+ 2031 12c6 837DC000 		cmpl	$0, -64(%rbp)
+ 2032 12ca 7522     		jne	.L128
+ 2033              		.loc 1 444 2 is_stmt 0 discriminator 1
+ 2034 12cc 488B45B0 		movq	-80(%rbp), %rax
+ 2035 12d0 488D1500 		leaq	.LC22(%rip), %rdx
+ 2035      000000
+ 2036 12d7 4889D6   		movq	%rdx, %rsi
+ 2037 12da 4889C7   		movq	%rax, %rdi
+ 2038 12dd E8000000 		call	errPrefix@PLT
+ 2038      00
+ 2039 12e2 C745DC03 		movl	$3, -36(%rbp)
+ 2039      000000
+ 2040 12e9 E99B0100 		jmp	.L127
+ 2040      00
+ 2041              	.L128:
+ 445:libfpgalink.c **** 		count == 0, FL_PROTOCOL_ERR, cleanup,
+ 446:libfpgalink.c **** 		"flReadChannelAsyncSubmit(): Zero-length reads are illegal!");
+ 447:libfpgalink.c **** 	CHECK_STATUS(
+ 2042              		.loc 1 447 2 is_stmt 1
+ 2043 12ee 817DC000 		cmpl	$65536, -64(%rbp)
+ 2043      000100
+ 2044 12f5 7622     		jbe	.L129
+ 2045              		.loc 1 447 2 is_stmt 0 discriminator 1
+ 2046 12f7 488B45B0 		movq	-80(%rbp), %rax
+ 2047 12fb 488D1500 		leaq	.LC23(%rip), %rdx
+ 2047      000000
+ 2048 1302 4889D6   		movq	%rdx, %rsi
+ 2049 1305 4889C7   		movq	%rax, %rdi
+ 2050 1308 E8000000 		call	errPrefix@PLT
+ 2050      00
+ 2051 130d C745DC03 		movl	$3, -36(%rbp)
+ 2051      000000
+ 2052 1314 E9700100 		jmp	.L127
+ 2052      00
+ 2053              	.L129:
+ 448:libfpgalink.c **** 		count > 0x10000, FL_PROTOCOL_ERR, cleanup,
+ 449:libfpgalink.c **** 		"flReadChannelAsyncSubmit(): Transfer length exceeds 0x10000");
+ 450:libfpgalink.c **** 
+ 451:libfpgalink.c **** 	// Write command
+ 452:libfpgalink.c **** 	command[0] = chan | 0x80;
+ 2054              		.loc 1 452 13 is_stmt 1
+ 2055 1319 0FB645C4 		movzbl	-60(%rbp), %eax
+ 2056 131d 83C880   		orl	$-128, %eax
+ 2057 1320 8845F5   		movb	%al, -11(%rbp)
+ 453:libfpgalink.c **** 	flWriteWord(count16, command+1);
+ 2058              		.loc 1 453 2
+ 2059 1323 488D45F5 		leaq	-11(%rbp), %rax
+ 2060 1327 4883C001 		addq	$1, %rax
+ 2061 132b 0FB755DA 		movzwl	-38(%rbp), %edx
+ 2062 132f 4889C6   		movq	%rax, %rsi
+ 2063 1332 89D7     		movl	%edx, %edi
+ 2064 1334 E8000000 		call	flWriteWord@PLT
+ 2064      00
+ 454:libfpgalink.c **** 	fStatus = bufferAppend(handle, command, 3, error);
+ 2065              		.loc 1 454 12
+ 2066 1339 488B55B0 		movq	-80(%rbp), %rdx
+ 2067 133d 488D75F5 		leaq	-11(%rbp), %rsi
+ 2068 1341 488B45C8 		movq	-56(%rbp), %rax
+ 2069 1345 4889D1   		movq	%rdx, %rcx
+ 2070 1348 BA030000 		movl	$3, %edx
+ 2070      00
+ 2071 134d 4889C7   		movq	%rax, %rdi
+ 2072 1350 E8B6F2FF 		call	bufferAppend
+ 2072      FF
+ 2073 1355 8945E0   		movl	%eax, -32(%rbp)
+ 455:libfpgalink.c **** 	CHECK_STATUS(fStatus, fStatus, cleanup, "flReadChannelAsyncSubmit()");
+ 2074              		.loc 1 455 2
+ 2075 1358 837DE000 		cmpl	$0, -32(%rbp)
+ 2076 135c 7421     		je	.L130
+ 2077              		.loc 1 455 2 is_stmt 0 discriminator 1
+ 2078 135e 488B45B0 		movq	-80(%rbp), %rax
+ 2079 1362 488D1500 		leaq	.LC24(%rip), %rdx
+ 2079      000000
+ 2080 1369 4889D6   		movq	%rdx, %rsi
+ 2081 136c 4889C7   		movq	%rax, %rdi
+ 2082 136f E8000000 		call	errPrefix@PLT
+ 2082      00
+ 2083 1374 8B45E0   		movl	-32(%rbp), %eax
+ 2084 1377 8945DC   		movl	%eax, -36(%rbp)
+ 2085 137a E90A0100 		jmp	.L127
+ 2085      00
+ 2086              	.L130:
+ 456:libfpgalink.c **** 
+ 457:libfpgalink.c **** 	// Flush outstanding async writes
+ 458:libfpgalink.c **** 	fStatus = flFlushAsyncWrites(handle, error);
+ 2087              		.loc 1 458 12 is_stmt 1
+ 2088 137f 488B55B0 		movq	-80(%rbp), %rdx
+ 2089 1383 488B45C8 		movq	-56(%rbp), %rax
+ 2090 1387 4889D6   		movq	%rdx, %rsi
+ 2091 138a 4889C7   		movq	%rax, %rdi
+ 2092 138d E8000000 		call	flFlushAsyncWrites@PLT
+ 2092      00
+ 2093 1392 8945E0   		movl	%eax, -32(%rbp)
+ 459:libfpgalink.c **** 	CHECK_STATUS(fStatus, fStatus, cleanup, "flReadChannelAsyncSubmit()");
+ 2094              		.loc 1 459 2
+ 2095 1395 837DE000 		cmpl	$0, -32(%rbp)
+ 2096 1399 7421     		je	.L131
+ 2097              		.loc 1 459 2 is_stmt 0 discriminator 1
+ 2098 139b 488B45B0 		movq	-80(%rbp), %rax
+ 2099 139f 488D1500 		leaq	.LC24(%rip), %rdx
+ 2099      000000
+ 2100 13a6 4889D6   		movq	%rdx, %rsi
+ 2101 13a9 4889C7   		movq	%rax, %rdi
+ 2102 13ac E8000000 		call	errPrefix@PLT
+ 2102      00
+ 2103 13b1 8B45E0   		movl	-32(%rbp), %eax
+ 2104 13b4 8945DC   		movl	%eax, -36(%rbp)
+ 2105 13b7 E9CD0000 		jmp	.L127
+ 2105      00
+ 2106              	.L131:
+ 460:libfpgalink.c **** 
+ 461:libfpgalink.c **** 	// Maybe do a few awaits, to keep things balanced
+ 462:libfpgalink.c **** 	queueDepth = usbNumOutstandingRequests(handle->device);
+ 2107              		.loc 1 462 15 is_stmt 1
+ 2108 13bc 488B45C8 		movq	-56(%rbp), %rax
+ 2109 13c0 488B00   		movq	(%rax), %rax
+ 2110 13c3 4889C7   		movq	%rax, %rdi
+ 2111 13c6 E8000000 		call	usbNumOutstandingRequests@PLT
+ 2111      00
+ 2112 13cb 488945E8 		movq	%rax, -24(%rbp)
+ 463:libfpgalink.c **** 	while ( queueDepth > 2 && !handle->completionReport.flags.isRead ) {
+ 2113              		.loc 1 463 8
+ 2114 13cf EB4B     		jmp	.L132
+ 2115              	.L135:
+ 464:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 2116              		.loc 1 464 13
+ 2117 13d1 488B45C8 		movq	-56(%rbp), %rax
+ 2118 13d5 488D4820 		leaq	32(%rax), %rcx
+ 2119 13d9 488B45C8 		movq	-56(%rbp), %rax
+ 2120 13dd 488B00   		movq	(%rax), %rax
+ 2121 13e0 488B55B0 		movq	-80(%rbp), %rdx
+ 2122 13e4 4889CE   		movq	%rcx, %rsi
+ 2123 13e7 4889C7   		movq	%rax, %rdi
+ 2124 13ea E8000000 		call	usbBulkAwaitCompletion@PLT
+ 2124      00
+ 2125 13ef 8945E4   		movl	%eax, -28(%rbp)
+ 465:libfpgalink.c **** 			handle->device, &handle->completionReport, error
+ 466:libfpgalink.c **** 		);
+ 467:libfpgalink.c **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flReadChannelAsyncSubmit()");
+ 2126              		.loc 1 467 3
+ 2127 13f2 837DE400 		cmpl	$0, -28(%rbp)
+ 2128 13f6 741F     		je	.L133
+ 2129              		.loc 1 467 3 is_stmt 0 discriminator 1
+ 2130 13f8 488B45B0 		movq	-80(%rbp), %rax
+ 2131 13fc 488D1500 		leaq	.LC24(%rip), %rdx
+ 2131      000000
+ 2132 1403 4889D6   		movq	%rdx, %rsi
+ 2133 1406 4889C7   		movq	%rax, %rdi
+ 2134 1409 E8000000 		call	errPrefix@PLT
+ 2134      00
+ 2135 140e C745DC02 		movl	$2, -36(%rbp)
+ 2135      000000
+ 2136 1415 EB72     		jmp	.L127
+ 2137              	.L133:
+ 468:libfpgalink.c **** 		queueDepth--;
+ 2138              		.loc 1 468 13 is_stmt 1
+ 2139 1417 48836DE8 		subq	$1, -24(%rbp)
+ 2139      01
+ 2140              	.L132:
+ 463:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 2141              		.loc 1 463 25
+ 2142 141c 48837DE8 		cmpq	$2, -24(%rbp)
+ 2142      02
+ 2143 1421 760F     		jbe	.L134
+ 463:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 2144              		.loc 1 463 28 discriminator 1
+ 2145 1423 488B45C8 		movq	-56(%rbp), %rax
+ 2146 1427 0FB64030 		movzbl	48(%rax), %eax
+ 2147 142b 83E001   		andl	$1, %eax
+ 463:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 2148              		.loc 1 463 25 discriminator 1
+ 2149 142e 84C0     		testb	%al, %al
+ 2150 1430 749F     		je	.L135
+ 2151              	.L134:
+ 469:libfpgalink.c **** 	}
+ 470:libfpgalink.c **** 
+ 471:libfpgalink.c **** 	// Then request the data
+ 472:libfpgalink.c **** 	uStatus = usbBulkReadAsync(
+ 473:libfpgalink.c **** 		handle->device,
+ 474:libfpgalink.c **** 		handle->commInEP,   // endpoint to read
+ 2152              		.loc 1 474 9
+ 2153 1432 488B45C8 		movq	-56(%rbp), %rax
+ 2154 1436 0FB6400A 		movzbl	10(%rax), %eax
+ 472:libfpgalink.c **** 		handle->device,
+ 2155              		.loc 1 472 12
+ 2156 143a 0FB6F0   		movzbl	%al, %esi
+ 2157 143d 488B45C8 		movq	-56(%rbp), %rax
+ 2158 1441 488B00   		movq	(%rax), %rax
+ 2159 1444 488B7DB0 		movq	-80(%rbp), %rdi
+ 2160 1448 8B4DC0   		movl	-64(%rbp), %ecx
+ 2161 144b 488B55B8 		movq	-72(%rbp), %rdx
+ 2162 144f 4989F9   		movq	%rdi, %r9
+ 2163 1452 41B8FFFF 		movl	$-1, %r8d
+ 2163      FFFF
+ 2164 1458 4889C7   		movq	%rax, %rdi
+ 2165 145b E8000000 		call	usbBulkReadAsync@PLT
+ 2165      00
+ 2166 1460 8945E4   		movl	%eax, -28(%rbp)
+ 475:libfpgalink.c **** 		buffer,             // pointer to buffer, or null
+ 476:libfpgalink.c **** 		count,              // number of data bytes
+ 477:libfpgalink.c **** 		U32MAX,             // max timeout: 49 days
+ 478:libfpgalink.c **** 		error
+ 479:libfpgalink.c **** 	);
+ 480:libfpgalink.c **** 	CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flReadChannelAsyncSubmit()");
+ 2167              		.loc 1 480 2
+ 2168 1463 837DE400 		cmpl	$0, -28(%rbp)
+ 2169 1467 741F     		je	.L138
+ 2170              		.loc 1 480 2 is_stmt 0 discriminator 1
+ 2171 1469 488B45B0 		movq	-80(%rbp), %rax
+ 2172 146d 488D1500 		leaq	.LC24(%rip), %rdx
+ 2172      000000
+ 2173 1474 4889D6   		movq	%rdx, %rsi
+ 2174 1477 4889C7   		movq	%rax, %rdi
+ 2175 147a E8000000 		call	errPrefix@PLT
+ 2175      00
+ 2176 147f C745DC02 		movl	$2, -36(%rbp)
+ 2176      000000
+ 2177 1486 EB01     		jmp	.L127
+ 2178              	.L138:
+ 481:libfpgalink.c **** cleanup:
+ 2179              		.loc 1 481 1 is_stmt 1
+ 2180 1488 90       		nop
+ 2181              	.L127:
+ 482:libfpgalink.c **** 	return retVal;
+ 2182              		.loc 1 482 9
+ 2183 1489 8B45DC   		movl	-36(%rbp), %eax
+ 483:libfpgalink.c **** }
+ 2184              		.loc 1 483 1
+ 2185 148c 488B55F8 		movq	-8(%rbp), %rdx
+ 2186 1490 64482B14 		subq	%fs:40, %rdx
+ 2186      25280000 
+ 2186      00
+ 2187 1499 7405     		je	.L137
+ 2188 149b E8000000 		call	__stack_chk_fail@PLT
+ 2188      00
+ 2189              	.L137:
+ 2190 14a0 C9       		leave
+ 2191              		.cfi_def_cfa 7, 8
+ 2192 14a1 C3       		ret
+ 2193              		.cfi_endproc
+ 2194              	.LFE22:
+ 2196              		.section	.rodata
+ 2197              	.LC25:
+ 2198 03ff 666C5265 		.string	"flReadChannelAsyncAwait()"
+ 2198      61644368 
+ 2198      616E6E65 
+ 2198      6C417379 
+ 2198      6E634177 
+ 2199              		.text
+ 2200              		.globl	flReadChannelAsyncAwait
+ 2202              	flReadChannelAsyncAwait:
+ 2203              	.LFB23:
+ 484:libfpgalink.c **** 
+ 485:libfpgalink.c **** // Await a previously-submitted async read.
+ 486:libfpgalink.c **** //
+ 487:libfpgalink.c **** DLLEXPORT(FLStatus) flReadChannelAsyncAwait(
+ 488:libfpgalink.c **** 	struct FLContext *handle, const uint8 **data, uint32 *requestLength, uint32 *actualLength,
+ 489:libfpgalink.c **** 	const char **error)
+ 490:libfpgalink.c **** {
+ 2204              		.loc 1 490 1
+ 2205              		.cfi_startproc
+ 2206 14a2 F30F1EFA 		endbr64
+ 2207 14a6 55       		pushq	%rbp
+ 2208              		.cfi_def_cfa_offset 16
+ 2209              		.cfi_offset 6, -16
+ 2210 14a7 4889E5   		movq	%rsp, %rbp
+ 2211              		.cfi_def_cfa_register 6
+ 2212 14aa 4883EC40 		subq	$64, %rsp
+ 2213 14ae 48897DE8 		movq	%rdi, -24(%rbp)
+ 2214 14b2 488975E0 		movq	%rsi, -32(%rbp)
+ 2215 14b6 488955D8 		movq	%rdx, -40(%rbp)
+ 2216 14ba 48894DD0 		movq	%rcx, -48(%rbp)
+ 2217 14be 4C8945C8 		movq	%r8, -56(%rbp)
+ 491:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS;
+ 2218              		.loc 1 491 11
+ 2219 14c2 C745F800 		movl	$0, -8(%rbp)
+ 2219      000000
+ 492:libfpgalink.c **** 	USBStatus uStatus;
+ 493:libfpgalink.c **** 	while ( !handle->completionReport.flags.isRead ) {
+ 2220              		.loc 1 493 8
+ 2221 14c9 EB46     		jmp	.L140
+ 2222              	.L142:
+ 494:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 2223              		.loc 1 494 13
+ 2224 14cb 488B45E8 		movq	-24(%rbp), %rax
+ 2225 14cf 488D4820 		leaq	32(%rax), %rcx
+ 2226 14d3 488B45E8 		movq	-24(%rbp), %rax
+ 2227 14d7 488B00   		movq	(%rax), %rax
+ 2228 14da 488B55C8 		movq	-56(%rbp), %rdx
+ 2229 14de 4889CE   		movq	%rcx, %rsi
+ 2230 14e1 4889C7   		movq	%rax, %rdi
+ 2231 14e4 E8000000 		call	usbBulkAwaitCompletion@PLT
+ 2231      00
+ 2232 14e9 8945FC   		movl	%eax, -4(%rbp)
+ 495:libfpgalink.c **** 			handle->device, &handle->completionReport, error
+ 496:libfpgalink.c **** 		);
+ 497:libfpgalink.c **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flReadChannelAsyncAwait()");
+ 2233              		.loc 1 497 3
+ 2234 14ec 837DFC00 		cmpl	$0, -4(%rbp)
+ 2235 14f0 741F     		je	.L140
+ 2236              		.loc 1 497 3 is_stmt 0 discriminator 1
+ 2237 14f2 488B45C8 		movq	-56(%rbp), %rax
+ 2238 14f6 488D1500 		leaq	.LC25(%rip), %rdx
+ 2238      000000
+ 2239 14fd 4889D6   		movq	%rdx, %rsi
+ 2240 1500 4889C7   		movq	%rax, %rdi
+ 2241 1503 E8000000 		call	errPrefix@PLT
+ 2241      00
+ 2242 1508 C745F802 		movl	$2, -8(%rbp)
+ 2242      000000
+ 2243 150f EB52     		jmp	.L141
+ 2244              	.L140:
+ 493:libfpgalink.c **** 		uStatus = usbBulkAwaitCompletion(
+ 2245              		.loc 1 493 10 is_stmt 1
+ 2246 1511 488B45E8 		movq	-24(%rbp), %rax
+ 2247 1515 0FB64030 		movzbl	48(%rax), %eax
+ 2248 1519 83E001   		andl	$1, %eax
+ 2249 151c 84C0     		testb	%al, %al
+ 2250 151e 74AB     		je	.L142
+ 498:libfpgalink.c **** 	}
+ 499:libfpgalink.c **** 	*data = handle->completionReport.buffer;
+ 2251              		.loc 1 499 34
+ 2252 1520 488B45E8 		movq	-24(%rbp), %rax
+ 2253 1524 488B5020 		movq	32(%rax), %rdx
+ 2254              		.loc 1 499 8
+ 2255 1528 488B45E0 		movq	-32(%rbp), %rax
+ 2256 152c 488910   		movq	%rdx, (%rax)
+ 500:libfpgalink.c **** 	*requestLength = handle->completionReport.requestLength;
+ 2257              		.loc 1 500 43
+ 2258 152f 488B45E8 		movq	-24(%rbp), %rax
+ 2259 1533 8B5028   		movl	40(%rax), %edx
+ 2260              		.loc 1 500 17
+ 2261 1536 488B45D8 		movq	-40(%rbp), %rax
+ 2262 153a 8910     		movl	%edx, (%rax)
+ 501:libfpgalink.c **** 	*actualLength = handle->completionReport.actualLength;
+ 2263              		.loc 1 501 42
+ 2264 153c 488B45E8 		movq	-24(%rbp), %rax
+ 2265 1540 8B502C   		movl	44(%rax), %edx
+ 2266              		.loc 1 501 16
+ 2267 1543 488B45D0 		movq	-48(%rbp), %rax
+ 2268 1547 8910     		movl	%edx, (%rax)
+ 502:libfpgalink.c **** 	memset(&handle->completionReport, 0, sizeof(struct CompletionReport));
+ 2269              		.loc 1 502 9
+ 2270 1549 488B45E8 		movq	-24(%rbp), %rax
+ 2271 154d 4883C020 		addq	$32, %rax
+ 2272              		.loc 1 502 2
+ 2273 1551 BA180000 		movl	$24, %edx
+ 2273      00
+ 2274 1556 BE000000 		movl	$0, %esi
+ 2274      00
+ 2275 155b 4889C7   		movq	%rax, %rdi
+ 2276 155e E8000000 		call	memset@PLT
+ 2276      00
+ 2277              	.L141:
+ 503:libfpgalink.c **** cleanup:
+ 504:libfpgalink.c **** 	return retVal;
+ 2278              		.loc 1 504 9
+ 2279 1563 8B45F8   		movl	-8(%rbp), %eax
+ 505:libfpgalink.c **** }
+ 2280              		.loc 1 505 1
+ 2281 1566 C9       		leave
+ 2282              		.cfi_def_cfa 7, 8
+ 2283 1567 C3       		ret
+ 2284              		.cfi_endproc
+ 2285              	.LFE23:
+ 2287              		.section	.rodata
+ 2288              	.LC26:
+ 2289 0419 666C5265 		.string	"flResetToggle()"
+ 2289      73657454 
+ 2289      6F67676C 
+ 2289      65282900 
+ 2290              		.text
+ 2291              		.globl	flResetToggle
+ 2293              	flResetToggle:
+ 2294              	.LFB24:
+ 506:libfpgalink.c **** 
+ 507:libfpgalink.c **** // Reset the USB toggle on the device by explicitly calling SET_INTERFACE. This is a dirty hack
+ 508:libfpgalink.c **** // that appears to be necessary when running FPGALink on a Linux VM running on a Windows host.
+ 509:libfpgalink.c **** //
+ 510:libfpgalink.c **** DLLEXPORT(FLStatus) flResetToggle(
+ 511:libfpgalink.c **** 	struct FLContext *handle, const char **error)
+ 512:libfpgalink.c **** {
+ 2295              		.loc 1 512 1
+ 2296              		.cfi_startproc
+ 2297 1568 F30F1EFA 		endbr64
+ 2298 156c 55       		pushq	%rbp
+ 2299              		.cfi_def_cfa_offset 16
+ 2300              		.cfi_offset 6, -16
+ 2301 156d 4889E5   		movq	%rsp, %rbp
+ 2302              		.cfi_def_cfa_register 6
+ 2303 1570 4883EC20 		subq	$32, %rsp
+ 2304 1574 48897DE8 		movq	%rdi, -24(%rbp)
+ 2305 1578 488975E0 		movq	%rsi, -32(%rbp)
+ 513:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS;
+ 2306              		.loc 1 513 11
+ 2307 157c C745F800 		movl	$0, -8(%rbp)
+ 2307      000000
+ 514:libfpgalink.c **** 	USBStatus uStatus = usbControlWrite(
+ 2308              		.loc 1 514 22
+ 2309 1583 488B45E8 		movq	-24(%rbp), %rax
+ 2310 1587 488B00   		movq	(%rax), %rax
+ 2311 158a FF75E0   		pushq	-32(%rbp)
+ 2312 158d 68E80300 		pushq	$1000
+ 2312      00
+ 2313 1592 41B90000 		movl	$0, %r9d
+ 2313      0000
+ 2314 1598 41B80000 		movl	$0, %r8d
+ 2314      0000
+ 2315 159e B9000000 		movl	$0, %ecx
+ 2315      00
+ 2316 15a3 BA000000 		movl	$0, %edx
+ 2316      00
+ 2317 15a8 BE0B0000 		movl	$11, %esi
+ 2317      00
+ 2318 15ad 4889C7   		movq	%rax, %rdi
+ 2319 15b0 E8000000 		call	usbControlWrite@PLT
+ 2319      00
+ 2320 15b5 4883C410 		addq	$16, %rsp
+ 2321 15b9 8945FC   		movl	%eax, -4(%rbp)
+ 515:libfpgalink.c **** 		handle->device,
+ 516:libfpgalink.c **** 		0x0B,            // bRequest
+ 517:libfpgalink.c **** 		0x0000,          // wValue
+ 518:libfpgalink.c **** 		0x0000,          // wIndex
+ 519:libfpgalink.c **** 		NULL,            // buffer to write
+ 520:libfpgalink.c **** 		0,               // wLength
+ 521:libfpgalink.c **** 		1000,            // timeout (ms)
+ 522:libfpgalink.c **** 		error
+ 523:libfpgalink.c **** 	);
+ 524:libfpgalink.c **** 	CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flResetToggle()");
+ 2322              		.loc 1 524 2
+ 2323 15bc 837DFC00 		cmpl	$0, -4(%rbp)
+ 2324 15c0 741F     		je	.L147
+ 2325              		.loc 1 524 2 is_stmt 0 discriminator 1
+ 2326 15c2 488B45E0 		movq	-32(%rbp), %rax
+ 2327 15c6 488D1500 		leaq	.LC26(%rip), %rdx
+ 2327      000000
+ 2328 15cd 4889D6   		movq	%rdx, %rsi
+ 2329 15d0 4889C7   		movq	%rax, %rdi
+ 2330 15d3 E8000000 		call	errPrefix@PLT
+ 2330      00
+ 2331 15d8 C745F802 		movl	$2, -8(%rbp)
+ 2331      000000
+ 2332 15df EB01     		jmp	.L145
+ 2333              	.L147:
+ 525:libfpgalink.c **** cleanup:
+ 2334              		.loc 1 525 1 is_stmt 1
+ 2335 15e1 90       		nop
+ 2336              	.L145:
+ 526:libfpgalink.c **** 	return retVal;
+ 2337              		.loc 1 526 9
+ 2338 15e2 8B45F8   		movl	-8(%rbp), %eax
+ 527:libfpgalink.c **** }
+ 2339              		.loc 1 527 1
+ 2340 15e5 C9       		leave
+ 2341              		.cfi_def_cfa 7, 8
+ 2342 15e6 C3       		ret
+ 2343              		.cfi_endproc
+ 2344              	.LFE24:
+ 2346              		.globl	flReadWord
+ 2348              	flReadWord:
+ 2349              	.LFB25:
+ 528:libfpgalink.c **** 
+ 529:libfpgalink.c **** uint16 flReadWord(const uint8 *p) {
+ 2350              		.loc 1 529 35
+ 2351              		.cfi_startproc
+ 2352 15e7 F30F1EFA 		endbr64
+ 2353 15eb 55       		pushq	%rbp
+ 2354              		.cfi_def_cfa_offset 16
+ 2355              		.cfi_offset 6, -16
+ 2356 15ec 4889E5   		movq	%rsp, %rbp
+ 2357              		.cfi_def_cfa_register 6
+ 2358 15ef 48897DE8 		movq	%rdi, -24(%rbp)
+ 530:libfpgalink.c **** 	uint16 value = *p++;
+ 2359              		.loc 1 530 19
+ 2360 15f3 488B45E8 		movq	-24(%rbp), %rax
+ 2361 15f7 488D5001 		leaq	1(%rax), %rdx
+ 2362 15fb 488955E8 		movq	%rdx, -24(%rbp)
+ 2363              		.loc 1 530 17
+ 2364 15ff 0FB600   		movzbl	(%rax), %eax
+ 2365              		.loc 1 530 9
+ 2366 1602 0FB6C0   		movzbl	%al, %eax
+ 2367 1605 668945FE 		movw	%ax, -2(%rbp)
+ 531:libfpgalink.c **** 	return (uint16)((value << 8) | *p);
+ 2368              		.loc 1 531 25
+ 2369 1609 0FB745FE 		movzwl	-2(%rbp), %eax
+ 2370 160d C1E008   		sall	$8, %eax
+ 2371              		.loc 1 531 31
+ 2372 1610 89C2     		movl	%eax, %edx
+ 2373              		.loc 1 531 33
+ 2374 1612 488B45E8 		movq	-24(%rbp), %rax
+ 2375 1616 0FB600   		movzbl	(%rax), %eax
+ 2376 1619 0FB6C0   		movzbl	%al, %eax
+ 2377              		.loc 1 531 31
+ 2378 161c 09D0     		orl	%edx, %eax
+ 532:libfpgalink.c **** }
+ 2379              		.loc 1 532 1
+ 2380 161e 5D       		popq	%rbp
+ 2381              		.cfi_def_cfa 7, 8
+ 2382 161f C3       		ret
+ 2383              		.cfi_endproc
+ 2384              	.LFE25:
+ 2386              		.globl	flReadLong
+ 2388              	flReadLong:
+ 2389              	.LFB26:
+ 533:libfpgalink.c **** 
+ 534:libfpgalink.c **** uint32 flReadLong(const uint8 *p) {
+ 2390              		.loc 1 534 35
+ 2391              		.cfi_startproc
+ 2392 1620 F30F1EFA 		endbr64
+ 2393 1624 55       		pushq	%rbp
+ 2394              		.cfi_def_cfa_offset 16
+ 2395              		.cfi_offset 6, -16
+ 2396 1625 4889E5   		movq	%rsp, %rbp
+ 2397              		.cfi_def_cfa_register 6
+ 2398 1628 48897DE8 		movq	%rdi, -24(%rbp)
+ 535:libfpgalink.c **** 	uint32 value = *p++;
+ 2399              		.loc 1 535 19
+ 2400 162c 488B45E8 		movq	-24(%rbp), %rax
+ 2401 1630 488D5001 		leaq	1(%rax), %rdx
+ 2402 1634 488955E8 		movq	%rdx, -24(%rbp)
+ 2403              		.loc 1 535 17
+ 2404 1638 0FB600   		movzbl	(%rax), %eax
+ 2405              		.loc 1 535 9
+ 2406 163b 0FB6C0   		movzbl	%al, %eax
+ 2407 163e 8945FC   		movl	%eax, -4(%rbp)
+ 536:libfpgalink.c **** 	value <<= 8;
+ 2408              		.loc 1 536 8
+ 2409 1641 C165FC08 		sall	$8, -4(%rbp)
+ 537:libfpgalink.c ****     value |= *p++;
+ 2410              		.loc 1 537 16
+ 2411 1645 488B45E8 		movq	-24(%rbp), %rax
+ 2412 1649 488D5001 		leaq	1(%rax), %rdx
+ 2413 164d 488955E8 		movq	%rdx, -24(%rbp)
+ 2414              		.loc 1 537 14
+ 2415 1651 0FB600   		movzbl	(%rax), %eax
+ 2416 1654 0FB6C0   		movzbl	%al, %eax
+ 2417              		.loc 1 537 11
+ 2418 1657 0945FC   		orl	%eax, -4(%rbp)
+ 538:libfpgalink.c ****     value <<= 8;
+ 2419              		.loc 1 538 11
+ 2420 165a C165FC08 		sall	$8, -4(%rbp)
+ 539:libfpgalink.c ****     value |= *p++;
+ 2421              		.loc 1 539 16
+ 2422 165e 488B45E8 		movq	-24(%rbp), %rax
+ 2423 1662 488D5001 		leaq	1(%rax), %rdx
+ 2424 1666 488955E8 		movq	%rdx, -24(%rbp)
+ 2425              		.loc 1 539 14
+ 2426 166a 0FB600   		movzbl	(%rax), %eax
+ 2427 166d 0FB6C0   		movzbl	%al, %eax
+ 2428              		.loc 1 539 11
+ 2429 1670 0945FC   		orl	%eax, -4(%rbp)
+ 540:libfpgalink.c ****     value <<= 8;
+ 2430              		.loc 1 540 11
+ 2431 1673 C165FC08 		sall	$8, -4(%rbp)
+ 541:libfpgalink.c ****     value |= *p;
+ 2432              		.loc 1 541 14
+ 2433 1677 488B45E8 		movq	-24(%rbp), %rax
+ 2434 167b 0FB600   		movzbl	(%rax), %eax
+ 2435 167e 0FB6C0   		movzbl	%al, %eax
+ 2436              		.loc 1 541 11
+ 2437 1681 0945FC   		orl	%eax, -4(%rbp)
+ 542:libfpgalink.c **** 	return value;
+ 2438              		.loc 1 542 9
+ 2439 1684 8B45FC   		movl	-4(%rbp), %eax
+ 543:libfpgalink.c **** }
+ 2440              		.loc 1 543 1
+ 2441 1687 5D       		popq	%rbp
+ 2442              		.cfi_def_cfa 7, 8
+ 2443 1688 C3       		ret
+ 2444              		.cfi_endproc
+ 2445              	.LFE26:
+ 2447              		.globl	flWriteWord
+ 2449              	flWriteWord:
+ 2450              	.LFB27:
+ 544:libfpgalink.c **** 
+ 545:libfpgalink.c **** void flWriteWord(uint16 value, uint8 *p) {
+ 2451              		.loc 1 545 42
+ 2452              		.cfi_startproc
+ 2453 1689 F30F1EFA 		endbr64
+ 2454 168d 55       		pushq	%rbp
+ 2455              		.cfi_def_cfa_offset 16
+ 2456              		.cfi_offset 6, -16
+ 2457 168e 4889E5   		movq	%rsp, %rbp
+ 2458              		.cfi_def_cfa_register 6
+ 2459 1691 89F8     		movl	%edi, %eax
+ 2460 1693 488975F0 		movq	%rsi, -16(%rbp)
+ 2461 1697 668945FC 		movw	%ax, -4(%rbp)
+ 546:libfpgalink.c **** 	p[1] = (uint8)(value & 0xFF);
+ 2462              		.loc 1 546 3
+ 2463 169b 488B45F0 		movq	-16(%rbp), %rax
+ 2464 169f 4883C001 		addq	$1, %rax
+ 2465              		.loc 1 546 9
+ 2466 16a3 0FB755FC 		movzwl	-4(%rbp), %edx
+ 2467              		.loc 1 546 7
+ 2468 16a7 8810     		movb	%dl, (%rax)
+ 547:libfpgalink.c **** 	value >>= 8;
+ 2469              		.loc 1 547 8
+ 2470 16a9 66C16DFC 		shrw	$8, -4(%rbp)
+ 2470      08
+ 548:libfpgalink.c **** 	p[0] = (uint8)(value & 0xFF);
+ 2471              		.loc 1 548 9
+ 2472 16ae 0FB745FC 		movzwl	-4(%rbp), %eax
+ 2473 16b2 89C2     		movl	%eax, %edx
+ 2474              		.loc 1 548 7
+ 2475 16b4 488B45F0 		movq	-16(%rbp), %rax
+ 2476 16b8 8810     		movb	%dl, (%rax)
+ 549:libfpgalink.c **** }
+ 2477              		.loc 1 549 1
+ 2478 16ba 90       		nop
+ 2479 16bb 5D       		popq	%rbp
+ 2480              		.cfi_def_cfa 7, 8
+ 2481 16bc C3       		ret
+ 2482              		.cfi_endproc
+ 2483              	.LFE27:
+ 2485              		.globl	flWriteLong
+ 2487              	flWriteLong:
+ 2488              	.LFB28:
+ 550:libfpgalink.c **** 
+ 551:libfpgalink.c **** void flWriteLong(uint32 value, uint8 *p) {
+ 2489              		.loc 1 551 42
+ 2490              		.cfi_startproc
+ 2491 16bd F30F1EFA 		endbr64
+ 2492 16c1 55       		pushq	%rbp
+ 2493              		.cfi_def_cfa_offset 16
+ 2494              		.cfi_offset 6, -16
+ 2495 16c2 4889E5   		movq	%rsp, %rbp
+ 2496              		.cfi_def_cfa_register 6
+ 2497 16c5 897DFC   		movl	%edi, -4(%rbp)
+ 2498 16c8 488975F0 		movq	%rsi, -16(%rbp)
+ 552:libfpgalink.c **** 	p[3] = value & 0x000000FF;
+ 2499              		.loc 1 552 3
+ 2500 16cc 488B45F0 		movq	-16(%rbp), %rax
+ 2501 16d0 4883C003 		addq	$3, %rax
+ 2502              		.loc 1 552 7
+ 2503 16d4 8B55FC   		movl	-4(%rbp), %edx
+ 2504 16d7 8810     		movb	%dl, (%rax)
+ 553:libfpgalink.c **** 	value >>= 8;
+ 2505              		.loc 1 553 8
+ 2506 16d9 C16DFC08 		shrl	$8, -4(%rbp)
+ 554:libfpgalink.c **** 	p[2] = value & 0x000000FF;
+ 2507              		.loc 1 554 3
+ 2508 16dd 488B45F0 		movq	-16(%rbp), %rax
+ 2509 16e1 4883C002 		addq	$2, %rax
+ 2510              		.loc 1 554 7
+ 2511 16e5 8B55FC   		movl	-4(%rbp), %edx
+ 2512 16e8 8810     		movb	%dl, (%rax)
+ 555:libfpgalink.c **** 	value >>= 8;
+ 2513              		.loc 1 555 8
+ 2514 16ea C16DFC08 		shrl	$8, -4(%rbp)
+ 556:libfpgalink.c **** 	p[1] = value & 0x000000FF;
+ 2515              		.loc 1 556 3
+ 2516 16ee 488B45F0 		movq	-16(%rbp), %rax
+ 2517 16f2 4883C001 		addq	$1, %rax
+ 2518              		.loc 1 556 7
+ 2519 16f6 8B55FC   		movl	-4(%rbp), %edx
+ 2520 16f9 8810     		movb	%dl, (%rax)
+ 557:libfpgalink.c **** 	value >>= 8;
+ 2521              		.loc 1 557 8
+ 2522 16fb C16DFC08 		shrl	$8, -4(%rbp)
+ 558:libfpgalink.c **** 	p[0] = value & 0x000000FF;
+ 2523              		.loc 1 558 7
+ 2524 16ff 8B45FC   		movl	-4(%rbp), %eax
+ 2525 1702 89C2     		movl	%eax, %edx
+ 2526 1704 488B45F0 		movq	-16(%rbp), %rax
+ 2527 1708 8810     		movb	%dl, (%rax)
+ 559:libfpgalink.c **** }
+ 2528              		.loc 1 559 1
+ 2529 170a 90       		nop
+ 2530 170b 5D       		popq	%rbp
+ 2531              		.cfi_def_cfa 7, 8
+ 2532 170c C3       		ret
+ 2533              		.cfi_endproc
+ 2534              	.LFE28:
+ 2536              		.section	.rodata
+ 2537              	.LC27:
+ 2538 0429 67657453 		.string	"getStatus()"
+ 2538      74617475 
+ 2538      73282900 
+ 2539              		.text
+ 2541              	getStatus:
+ 2542              	.LFB29:
+ 560:libfpgalink.c **** 
+ 561:libfpgalink.c **** static FLStatus getStatus(struct FLContext *handle, uint8 *statusBuffer, const char **error) {
+ 2543              		.loc 1 561 94
+ 2544              		.cfi_startproc
+ 2545 170d F30F1EFA 		endbr64
+ 2546 1711 55       		pushq	%rbp
+ 2547              		.cfi_def_cfa_offset 16
+ 2548              		.cfi_offset 6, -16
+ 2549 1712 4889E5   		movq	%rsp, %rbp
+ 2550              		.cfi_def_cfa_register 6
+ 2551 1715 4883EC30 		subq	$48, %rsp
+ 2552 1719 48897DE8 		movq	%rdi, -24(%rbp)
+ 2553 171d 488975E0 		movq	%rsi, -32(%rbp)
+ 2554 1721 488955D8 		movq	%rdx, -40(%rbp)
+ 562:libfpgalink.c **** 	FLStatus retVal = FL_SUCCESS;
+ 2555              		.loc 1 562 11
+ 2556 1725 C745F800 		movl	$0, -8(%rbp)
+ 2556      000000
+ 563:libfpgalink.c **** 	USBStatus uStatus = usbControlRead(
+ 2557              		.loc 1 563 22
+ 2558 172c 488B45E8 		movq	-24(%rbp), %rax
+ 2559 1730 488B00   		movq	(%rax), %rax
+ 2560 1733 488B55E0 		movq	-32(%rbp), %rdx
+ 2561 1737 FF75D8   		pushq	-40(%rbp)
+ 2562 173a 68E80300 		pushq	$1000
+ 2562      00
+ 2563 173f 41B91000 		movl	$16, %r9d
+ 2563      0000
+ 2564 1745 4989D0   		movq	%rdx, %r8
+ 2565 1748 B9000000 		movl	$0, %ecx
+ 2565      00
+ 2566 174d BA000000 		movl	$0, %edx
+ 2566      00
+ 2567 1752 BE800000 		movl	$128, %esi
+ 2567      00
+ 2568 1757 4889C7   		movq	%rax, %rdi
+ 2569 175a E8000000 		call	usbControlRead@PLT
+ 2569      00
+ 2570 175f 4883C410 		addq	$16, %rsp
+ 2571 1763 8945FC   		movl	%eax, -4(%rbp)
+ 564:libfpgalink.c **** 		handle->device,
+ 565:libfpgalink.c **** 		CMD_MODE_STATUS,          // bRequest
+ 566:libfpgalink.c **** 		0x0000,                   // wValue : off
+ 567:libfpgalink.c **** 		0x0000,                   // wMask
+ 568:libfpgalink.c **** 		statusBuffer,
+ 569:libfpgalink.c **** 		16,                       // wLength
+ 570:libfpgalink.c **** 		1000,                     // timeout (ms)
+ 571:libfpgalink.c **** 		error
+ 572:libfpgalink.c **** 	);
+ 573:libfpgalink.c **** 	CHECK_STATUS(uStatus, FL_PROTOCOL_ERR, cleanup, "getStatus()");
+ 2572              		.loc 1 573 2
+ 2573 1766 837DFC00 		cmpl	$0, -4(%rbp)
+ 2574 176a 741F     		je	.L157
+ 2575              		.loc 1 573 2 is_stmt 0 discriminator 1
+ 2576 176c 488B45D8 		movq	-40(%rbp), %rax
+ 2577 1770 488D1500 		leaq	.LC27(%rip), %rdx
+ 2577      000000
+ 2578 1777 4889D6   		movq	%rdx, %rsi
+ 2579 177a 4889C7   		movq	%rax, %rdi
+ 2580 177d E8000000 		call	errPrefix@PLT
+ 2580      00
+ 2581 1782 C745F803 		movl	$3, -8(%rbp)
+ 2581      000000
+ 2582 1789 EB01     		jmp	.L155
+ 2583              	.L157:
+ 574:libfpgalink.c **** cleanup:
+ 2584              		.loc 1 574 1 is_stmt 1
+ 2585 178b 90       		nop
+ 2586              	.L155:
+ 575:libfpgalink.c **** 	return retVal;
+ 2587              		.loc 1 575 9
+ 2588 178c 8B45F8   		movl	-8(%rbp), %eax
+ 576:libfpgalink.c **** }
+ 2589              		.loc 1 576 1
+ 2590 178f C9       		leave
+ 2591              		.cfi_def_cfa 7, 8
+ 2592 1790 C3       		ret
+ 2593              		.cfi_endproc
+ 2594              	.LFE29:
+ 2596              		.globl	progGetPort
+ 2598              	progGetPort:
+ 2599              	.LFB30:
+ 577:libfpgalink.c **** 
+ 578:libfpgalink.c **** DLLEXPORT(uint8) progGetPort(struct FLContext *handle, uint8 logicalPort) {
+ 2600              		.loc 1 578 75
+ 2601              		.cfi_startproc
+ 2602 1791 F30F1EFA 		endbr64
+ 2603 1795 55       		pushq	%rbp
+ 2604              		.cfi_def_cfa_offset 16
+ 2605              		.cfi_offset 6, -16
+ 2606 1796 4889E5   		movq	%rsp, %rbp
+ 2607              		.cfi_def_cfa_register 6
+ 2608 1799 48897DF8 		movq	%rdi, -8(%rbp)
+ 2609 179d 89F0     		movl	%esi, %eax
+ 2610 179f 8845F4   		movb	%al, -12(%rbp)
+ 579:libfpgalink.c **** 	switch ( logicalPort ) {
+ 2611              		.loc 1 579 2
+ 2612 17a2 0FB645F4 		movzbl	-12(%rbp), %eax
+ 2613 17a6 83F804   		cmpl	$4, %eax
+ 2614 17a9 7439     		je	.L159
+ 2615 17ab 83F804   		cmpl	$4, %eax
+ 2616 17ae 7F3E     		jg	.L160
+ 2617 17b0 83F803   		cmpl	$3, %eax
+ 2618 17b3 7425     		je	.L161
+ 2619 17b5 83F803   		cmpl	$3, %eax
+ 2620 17b8 7F34     		jg	.L160
+ 2621 17ba 83F801   		cmpl	$1, %eax
+ 2622 17bd 7407     		je	.L162
+ 2623 17bf 83F802   		cmpl	$2, %eax
+ 2624 17c2 740C     		je	.L163
+ 2625 17c4 EB28     		jmp	.L160
+ 2626              	.L162:
+ 580:libfpgalink.c **** 	case LP_MISO:
+ 581:libfpgalink.c **** 		return handle->misoPort;
+ 2627              		.loc 1 581 16
+ 2628 17c6 488B45F8 		movq	-8(%rbp), %rax
+ 2629 17ca 0FB64017 		movzbl	23(%rax), %eax
+ 2630 17ce EB23     		jmp	.L164
+ 2631              	.L163:
+ 582:libfpgalink.c **** 	case LP_MOSI:
+ 583:libfpgalink.c **** 		return handle->mosiPort;
+ 2632              		.loc 1 583 16
+ 2633 17d0 488B45F8 		movq	-8(%rbp), %rax
+ 2634 17d4 0FB64019 		movzbl	25(%rax), %eax
+ 2635 17d8 EB19     		jmp	.L164
+ 2636              	.L161:
+ 584:libfpgalink.c **** 	case LP_SS:
+ 585:libfpgalink.c **** 		return handle->ssPort;
+ 2637              		.loc 1 585 16
+ 2638 17da 488B45F8 		movq	-8(%rbp), %rax
+ 2639 17de 0FB6401B 		movzbl	27(%rax), %eax
+ 2640 17e2 EB0F     		jmp	.L164
+ 2641              	.L159:
+ 586:libfpgalink.c **** 	case LP_SCK:
+ 587:libfpgalink.c **** 		return handle->sckPort;
+ 2642              		.loc 1 587 16
+ 2643 17e4 488B45F8 		movq	-8(%rbp), %rax
+ 2644 17e8 0FB6401D 		movzbl	29(%rax), %eax
+ 2645 17ec EB05     		jmp	.L164
+ 2646              	.L160:
+ 588:libfpgalink.c **** 	case LP_CHOOSE:
+ 589:libfpgalink.c **** 	case LP_D8:
+ 590:libfpgalink.c **** 	default:
+ 591:libfpgalink.c **** 		return 0xFF;
+ 2647              		.loc 1 591 10
+ 2648 17ee B8FFFFFF 		movl	$-1, %eax
+ 2648      FF
+ 2649              	.L164:
+ 592:libfpgalink.c **** 	}
+ 593:libfpgalink.c **** }
+ 2650              		.loc 1 593 1
+ 2651 17f3 5D       		popq	%rbp
+ 2652              		.cfi_def_cfa 7, 8
+ 2653 17f4 C3       		ret
+ 2654              		.cfi_endproc
+ 2655              	.LFE30:
+ 2657              		.globl	progGetBit
+ 2659              	progGetBit:
+ 2660              	.LFB31:
+ 594:libfpgalink.c **** 
+ 595:libfpgalink.c **** DLLEXPORT(uint8) progGetBit(struct FLContext *handle, uint8 logicalPort) {
+ 2661              		.loc 1 595 74
+ 2662              		.cfi_startproc
+ 2663 17f5 F30F1EFA 		endbr64
+ 2664 17f9 55       		pushq	%rbp
+ 2665              		.cfi_def_cfa_offset 16
+ 2666              		.cfi_offset 6, -16
+ 2667 17fa 4889E5   		movq	%rsp, %rbp
+ 2668              		.cfi_def_cfa_register 6
+ 2669 17fd 48897DF8 		movq	%rdi, -8(%rbp)
+ 2670 1801 89F0     		movl	%esi, %eax
+ 2671 1803 8845F4   		movb	%al, -12(%rbp)
+ 596:libfpgalink.c **** 	switch ( logicalPort ) {
+ 2672              		.loc 1 596 2
+ 2673 1806 0FB645F4 		movzbl	-12(%rbp), %eax
+ 2674 180a 83F804   		cmpl	$4, %eax
+ 2675 180d 7439     		je	.L166
+ 2676 180f 83F804   		cmpl	$4, %eax
+ 2677 1812 7F3E     		jg	.L167
+ 2678 1814 83F803   		cmpl	$3, %eax
+ 2679 1817 7425     		je	.L168
+ 2680 1819 83F803   		cmpl	$3, %eax
+ 2681 181c 7F34     		jg	.L167
+ 2682 181e 83F801   		cmpl	$1, %eax
+ 2683 1821 7407     		je	.L169
+ 2684 1823 83F802   		cmpl	$2, %eax
+ 2685 1826 740C     		je	.L170
+ 2686 1828 EB28     		jmp	.L167
+ 2687              	.L169:
+ 597:libfpgalink.c **** 	case LP_MISO:
+ 598:libfpgalink.c **** 		return handle->misoBit;
+ 2688              		.loc 1 598 16
+ 2689 182a 488B45F8 		movq	-8(%rbp), %rax
+ 2690 182e 0FB64018 		movzbl	24(%rax), %eax
+ 2691 1832 EB23     		jmp	.L171
+ 2692              	.L170:
+ 599:libfpgalink.c **** 	case LP_MOSI:
+ 600:libfpgalink.c **** 		return handle->mosiBit;
+ 2693              		.loc 1 600 16
+ 2694 1834 488B45F8 		movq	-8(%rbp), %rax
+ 2695 1838 0FB6401A 		movzbl	26(%rax), %eax
+ 2696 183c EB19     		jmp	.L171
+ 2697              	.L168:
+ 601:libfpgalink.c **** 	case LP_SS:
+ 602:libfpgalink.c **** 		return handle->ssBit;
+ 2698              		.loc 1 602 16
+ 2699 183e 488B45F8 		movq	-8(%rbp), %rax
+ 2700 1842 0FB6401C 		movzbl	28(%rax), %eax
+ 2701 1846 EB0F     		jmp	.L171
+ 2702              	.L166:
+ 603:libfpgalink.c **** 	case LP_SCK:
+ 604:libfpgalink.c **** 		return handle->sckBit;
+ 2703              		.loc 1 604 16
+ 2704 1848 488B45F8 		movq	-8(%rbp), %rax
+ 2705 184c 0FB6401E 		movzbl	30(%rax), %eax
+ 2706 1850 EB05     		jmp	.L171
+ 2707              	.L167:
+ 605:libfpgalink.c **** 	case LP_CHOOSE:
+ 606:libfpgalink.c **** 	case LP_D8:
+ 607:libfpgalink.c **** 	default:
+ 608:libfpgalink.c **** 		return 0xFF;
+ 2708              		.loc 1 608 10
+ 2709 1852 B8FFFFFF 		movl	$-1, %eax
+ 2709      FF
+ 2710              	.L171:
+ 609:libfpgalink.c **** 	}
+ 610:libfpgalink.c **** }
+ 2711              		.loc 1 610 1
+ 2712 1857 5D       		popq	%rbp
+ 2713              		.cfi_def_cfa 7, 8
+ 2714 1858 C3       		ret
+ 2715              		.cfi_endproc
+ 2716              	.LFE31:
+ 2718              	.Letext0:
+ 2719              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+ 2720              		.file 3 "/home/pong/FPGALink/makestuff/common/makestuff.h"
+ 2721              		.file 4 "/home/pong/FPGALink/makestuff/libs/libusbwrap/libusbwrap.h"
+ 2722              		.file 5 "libfpgalink.h"
+ 2723              		.file 6 "private.h"
+ 2724              		.file 7 "/usr/include/string.h"
+ 2725              		.file 8 "/usr/include/stdlib.h"
+ 2726              		.file 9 "/home/pong/FPGALink/makestuff/libs/liberror/liberror.h"
+ 5970              		.section	.note.gnu.property,"a"
+ 5971              		.align 8
+ 5972 0000 04000000 		.long	1f - 0f
+ 5973 0004 10000000 		.long	4f - 1f
+ 5974 0008 05000000 		.long	5
+ 5975              	0:
+ 5976 000c 474E5500 		.string	"GNU"
+ 5977              	1:
+ 5978              		.align 8
+ 5979 0010 020000C0 		.long	0xc0000002
+ 5980 0014 04000000 		.long	3f - 2f
+ 5981              	2:
+ 5982 0018 03000000 		.long	0x3
+ 5983              	3:
+ 5984 001c 00000000 		.align 8
+ 5985              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 libfpgalink.c
+     /tmp/ccn4n2HI.s:11     .text:0000000000000000 flInitialise
+     /tmp/ccn4n2HI.s:60     .text:0000000000000059 flFreeError
+     /tmp/ccn4n2HI.s:90     .text:0000000000000078 flIsDeviceAvailable
+     /tmp/ccn4n2HI.s:163    .text:000000000000010a flOpen
+     /tmp/ccn4n2HI.s:2541   .text:000000000000170d getStatus
+     /tmp/ccn4n2HI.s:438    .text:00000000000003c0 flClose
+     /tmp/ccn4n2HI.s:1154   .text:00000000000009f7 flFlushAsyncWrites
+     /tmp/ccn4n2HI.s:517    .text:0000000000000475 flIsNeroCapable
+     /tmp/ccn4n2HI.s:540    .text:000000000000048b flIsCommCapable
+     /tmp/ccn4n2HI.s:565    .text:00000000000004a6 flGetFirmwareID
+     /tmp/ccn4n2HI.s:588    .text:00000000000004bc flGetFirmwareVersion
+     /tmp/ccn4n2HI.s:615    .text:00000000000004d1 flSelectConduit
+     /tmp/ccn4n2HI.s:680    .text:0000000000000556 flIsFPGARunning
+     /tmp/ccn4n2HI.s:760    .text:000000000000060b bufferAppend
+     /tmp/ccn4n2HI.s:1092   .text:0000000000000986 flSetAsyncWriteChunkSize
+     /tmp/ccn4n2HI.s:1272   .text:0000000000000b07 flAwaitAsyncWrites
+     /tmp/ccn4n2HI.s:1382   .text:0000000000000c01 flWriteChannel
+     /tmp/ccn4n2HI.s:1468   .text:0000000000000caf flWriteChannelAsync
+     /tmp/ccn4n2HI.s:2449   .text:0000000000001689 flWriteWord
+     /tmp/ccn4n2HI.s:1667   .text:0000000000000ec1 flReadChannel
+     /tmp/ccn4n2HI.s:1980   .text:0000000000001248 flReadChannelAsyncSubmit
+     /tmp/ccn4n2HI.s:2202   .text:00000000000014a2 flReadChannelAsyncAwait
+     /tmp/ccn4n2HI.s:2293   .text:0000000000001568 flResetToggle
+     /tmp/ccn4n2HI.s:2348   .text:00000000000015e7 flReadWord
+     /tmp/ccn4n2HI.s:2388   .text:0000000000001620 flReadLong
+     /tmp/ccn4n2HI.s:2487   .text:00000000000016bd flWriteLong
+     /tmp/ccn4n2HI.s:2598   .text:0000000000001791 progGetPort
+     /tmp/ccn4n2HI.s:2659   .text:00000000000017f5 progGetBit
+
+UNDEFINED SYMBOLS
+usbInitialise
+errPrefix
+errFree
+usbIsDeviceAvailable
+__stack_chk_fail
+calloc
+usbOpenDevice
+errRender
+usbCloseDevice
+free
+usbNumOutstandingRequests
+usbBulkAwaitCompletion
+usbControlWrite
+usbBulkWriteAsyncPrepare
+memcpy
+usbBulkWriteAsyncSubmit
+usbBulkReadAsync
+memset
+usbControlRead

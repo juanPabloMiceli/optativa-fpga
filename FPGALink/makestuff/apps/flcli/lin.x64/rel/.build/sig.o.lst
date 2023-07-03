@@ -1,0 +1,119 @@
+   1              		.file	"sig.c"
+   2              		.text
+   3              		.p2align 4
+   5              	sigHandler:
+   6              	.LFB5:
+   7              		.cfi_startproc
+   8 0000 F30F1EFA 		endbr64
+   9 0004 C6050000 		movb	$1, m_sigint(%rip)
+   9      000001
+  10 000b C3       		ret
+  11              		.cfi_endproc
+  12              	.LFE5:
+  14 000c 0F1F4000 		.p2align 4
+  15              		.globl	sigIsRaised
+  17              	sigIsRaised:
+  18              	.LFB4:
+  19              		.cfi_startproc
+  20 0010 F30F1EFA 		endbr64
+  21 0014 0FB60500 		movzbl	m_sigint(%rip), %eax
+  21      000000
+  22 001b C3       		ret
+  23              		.cfi_endproc
+  24              	.LFE4:
+  26 001c 0F1F4000 		.p2align 4
+  27              		.globl	sigRegisterHandler
+  29              	sigRegisterHandler:
+  30              	.LFB6:
+  31              		.cfi_startproc
+  32 0020 F30F1EFA 		endbr64
+  33 0024 55       		pushq	%rbp
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 6, -16
+  36 0025 4881EC40 		subq	$320, %rsp
+  36      010000
+  37              		.cfi_def_cfa_offset 336
+  38 002c 64488B04 		movq	%fs:40, %rax
+  38      25280000 
+  38      00
+  39 0035 48898424 		movq	%rax, 312(%rsp)
+  39      38010000 
+  40 003d 488D05BC 		leaq	sigHandler(%rip), %rax
+  40      FFFFFF
+  41 0044 488D7C24 		leaq	8(%rsp), %rdi
+  41      08
+  42 0049 48890424 		movq	%rax, (%rsp)
+  43 004d E8000000 		call	sigemptyset@PLT
+  43      00
+  44 0052 31F6     		xorl	%esi, %esi
+  45 0054 BF020000 		movl	$2, %edi
+  45      00
+  46 0059 488D9424 		leaq	160(%rsp), %rdx
+  46      A0000000 
+  47 0061 C7842488 		movl	$0, 136(%rsp)
+  47      00000000 
+  47      000000
+  48 006c E8000000 		call	sigaction@PLT
+  48      00
+  49 0071 4883BC24 		cmpq	$1, 160(%rsp)
+  49      A0000000 
+  49      01
+  50 007a 7412     		je	.L4
+  51 007c 4889E5   		movq	%rsp, %rbp
+  52 007f 31D2     		xorl	%edx, %edx
+  53 0081 BF020000 		movl	$2, %edi
+  53      00
+  54 0086 4889EE   		movq	%rbp, %rsi
+  55 0089 E8000000 		call	sigaction@PLT
+  55      00
+  56              	.L4:
+  57 008e 488B8424 		movq	312(%rsp), %rax
+  57      38010000 
+  58 0096 64482B04 		subq	%fs:40, %rax
+  58      25280000 
+  58      00
+  59 009f 7509     		jne	.L8
+  60 00a1 4881C440 		addq	$320, %rsp
+  60      010000
+  61              		.cfi_remember_state
+  62              		.cfi_def_cfa_offset 16
+  63 00a8 5D       		popq	%rbp
+  64              		.cfi_def_cfa_offset 8
+  65 00a9 C3       		ret
+  66              	.L8:
+  67              		.cfi_restore_state
+  68 00aa E8000000 		call	__stack_chk_fail@PLT
+  68      00
+  69              		.cfi_endproc
+  70              	.LFE6:
+  72              		.local	m_sigint
+  73              		.comm	m_sigint,1,1
+  74              		.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+  75              		.section	.note.GNU-stack,"",@progbits
+  76              		.section	.note.gnu.property,"a"
+  77              		.align 8
+  78 0000 04000000 		.long	1f - 0f
+  79 0004 10000000 		.long	4f - 1f
+  80 0008 05000000 		.long	5
+  81              	0:
+  82 000c 474E5500 		.string	"GNU"
+  83              	1:
+  84              		.align 8
+  85 0010 020000C0 		.long	0xc0000002
+  86 0014 04000000 		.long	3f - 2f
+  87              	2:
+  88 0018 03000000 		.long	0x3
+  89              	3:
+  90 001c 00000000 		.align 8
+  91              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 sig.c
+     /tmp/ccOJB5aO.s:5      .text:0000000000000000 sigHandler
+                             .bss:0000000000000000 m_sigint
+     /tmp/ccOJB5aO.s:17     .text:0000000000000010 sigIsRaised
+     /tmp/ccOJB5aO.s:29     .text:0000000000000020 sigRegisterHandler
+
+UNDEFINED SYMBOLS
+sigemptyset
+sigaction
+__stack_chk_fail

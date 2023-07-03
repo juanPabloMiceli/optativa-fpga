@@ -1,0 +1,788 @@
+   1              		.file	"arg_dbl.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libargtable2" "arg_dbl.c"
+   6              	resetfn:
+   7              	.LFB0:
+   8              		.file 1 "arg_dbl.c"
+   1:arg_dbl.c     **** /*********************************************************************
+   2:arg_dbl.c     **** This file is part of the argtable2 library.
+   3:arg_dbl.c     **** Copyright (C) 1998-2001,2003-2011 Stewart Heitmann
+   4:arg_dbl.c     **** sheitmann@users.sourceforge.net
+   5:arg_dbl.c     **** 
+   6:arg_dbl.c     **** The argtable2 library is free software; you can redistribute it and/or
+   7:arg_dbl.c     **** modify it under the terms of the GNU Library General Public License as
+   8:arg_dbl.c     **** published by the Free Software Foundation; either version 2 of the
+   9:arg_dbl.c     **** License, or (at your option) any later version.
+  10:arg_dbl.c     **** 
+  11:arg_dbl.c     **** This software is distributed in the hope that it will be useful,
+  12:arg_dbl.c     **** but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:arg_dbl.c     **** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  14:arg_dbl.c     **** Library General Public License for more details.
+  15:arg_dbl.c     **** 
+  16:arg_dbl.c     **** You should have received a copy of the GNU Library General Public
+  17:arg_dbl.c     **** License along with this library; if not, write to the Free Software
+  18:arg_dbl.c     **** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+  19:arg_dbl.c     **** USA.
+  20:arg_dbl.c     **** **********************************************************************/
+  21:arg_dbl.c     **** 
+  22:arg_dbl.c     **** /* config.h must be included before anything else */
+  23:arg_dbl.c     **** #ifdef HAVE_CONFIG_H
+  24:arg_dbl.c     **** #include "config.h"
+  25:arg_dbl.c     **** #endif
+  26:arg_dbl.c     **** 
+  27:arg_dbl.c     **** #ifdef HAVE_STDLIB_H
+  28:arg_dbl.c     **** #include <stdlib.h>
+  29:arg_dbl.c     **** #endif
+  30:arg_dbl.c     **** 
+  31:arg_dbl.c     **** #include "argtable2.h"
+  32:arg_dbl.c     **** 
+  33:arg_dbl.c     **** /* local error codes */
+  34:arg_dbl.c     **** enum {EMINCOUNT=1,EMAXCOUNT,EBADDOUBLE};
+  35:arg_dbl.c     **** 
+  36:arg_dbl.c     **** static void resetfn(struct arg_dbl *parent)
+  37:arg_dbl.c     ****     {
+   9              		.loc 1 37 5
+  10              		.cfi_startproc
+  11 0000 F30F1EFA 		endbr64
+  12 0004 55       		pushq	%rbp
+  13              		.cfi_def_cfa_offset 16
+  14              		.cfi_offset 6, -16
+  15 0005 4889E5   		movq	%rsp, %rbp
+  16              		.cfi_def_cfa_register 6
+  17 0008 48897DF8 		movq	%rdi, -8(%rbp)
+  38:arg_dbl.c     ****     /*printf("%s:resetfn(%p)\n",__FILE__,parent);*/
+  39:arg_dbl.c     ****     parent->count=0;
+  18              		.loc 1 39 18
+  19 000c 488B45F8 		movq	-8(%rbp), %rax
+  20 0010 C7406000 		movl	$0, 96(%rax)
+  20      000000
+  40:arg_dbl.c     ****     }
+  21              		.loc 1 40 5
+  22 0017 90       		nop
+  23 0018 5D       		popq	%rbp
+  24              		.cfi_def_cfa 7, 8
+  25 0019 C3       		ret
+  26              		.cfi_endproc
+  27              	.LFE0:
+  30              	scanfn:
+  31              	.LFB1:
+  41:arg_dbl.c     **** 
+  42:arg_dbl.c     **** static int scanfn(struct arg_dbl *parent, const char *argval)
+  43:arg_dbl.c     ****     {
+  32              		.loc 1 43 5
+  33              		.cfi_startproc
+  34 001a F30F1EFA 		endbr64
+  35 001e 55       		pushq	%rbp
+  36              		.cfi_def_cfa_offset 16
+  37              		.cfi_offset 6, -16
+  38 001f 4889E5   		movq	%rsp, %rbp
+  39              		.cfi_def_cfa_register 6
+  40 0022 4883EC30 		subq	$48, %rsp
+  41 0026 48897DD8 		movq	%rdi, -40(%rbp)
+  42 002a 488975D0 		movq	%rsi, -48(%rbp)
+  43              		.loc 1 43 5
+  44 002e 64488B04 		movq	%fs:40, %rax
+  44      25280000 
+  44      00
+  45 0037 488945F8 		movq	%rax, -8(%rbp)
+  46 003b 31C0     		xorl	%eax, %eax
+  44:arg_dbl.c     ****     int errorcode = 0;
+  47              		.loc 1 44 9
+  48 003d C745E400 		movl	$0, -28(%rbp)
+  48      000000
+  45:arg_dbl.c     **** 
+  46:arg_dbl.c     ****     if (parent->count == parent->hdr.maxcount)
+  49              		.loc 1 46 15
+  50 0044 488B45D8 		movq	-40(%rbp), %rax
+  51 0048 8B5060   		movl	96(%rax), %edx
+  52              		.loc 1 46 37
+  53 004b 488B45D8 		movq	-40(%rbp), %rax
+  54 004f 8B402C   		movl	44(%rax), %eax
+  55              		.loc 1 46 8
+  56 0052 39C2     		cmpl	%eax, %edx
+  57 0054 7509     		jne	.L3
+  47:arg_dbl.c     ****         {
+  48:arg_dbl.c     ****         /* maximum number of arguments exceeded */
+  49:arg_dbl.c     ****         errorcode = EMAXCOUNT;
+  58              		.loc 1 49 19
+  59 0056 C745E402 		movl	$2, -28(%rbp)
+  59      000000
+  60 005d EB75     		jmp	.L4
+  61              	.L3:
+  50:arg_dbl.c     ****         }
+  51:arg_dbl.c     ****     else if (!argval)
+  62              		.loc 1 51 13
+  63 005f 48837DD0 		cmpq	$0, -48(%rbp)
+  63      00
+  64 0064 7513     		jne	.L5
+  52:arg_dbl.c     ****         {
+  53:arg_dbl.c     ****         /* a valid argument with no argument value was given. */
+  54:arg_dbl.c     ****         /* This happens when an optional argument value was invoked. */
+  55:arg_dbl.c     ****         /* leave parent arguiment value unaltered but still count the argument. */
+  56:arg_dbl.c     ****         parent->count++;
+  65              		.loc 1 56 15
+  66 0066 488B45D8 		movq	-40(%rbp), %rax
+  67 006a 8B4060   		movl	96(%rax), %eax
+  68              		.loc 1 56 22
+  69 006d 8D5001   		leal	1(%rax), %edx
+  70 0070 488B45D8 		movq	-40(%rbp), %rax
+  71 0074 895060   		movl	%edx, 96(%rax)
+  72 0077 EB5B     		jmp	.L4
+  73              	.L5:
+  74              	.LBB2:
+  57:arg_dbl.c     ****         }
+  58:arg_dbl.c     ****     else
+  59:arg_dbl.c     ****         {
+  60:arg_dbl.c     ****         double val;
+  61:arg_dbl.c     ****         char *end;
+  62:arg_dbl.c     **** 
+  63:arg_dbl.c     ****         /* extract double from argval into val */
+  64:arg_dbl.c     ****         val = strtod(argval,&end);
+  75              		.loc 1 64 15
+  76 0079 488D55E8 		leaq	-24(%rbp), %rdx
+  77 007d 488B45D0 		movq	-48(%rbp), %rax
+  78 0081 4889D6   		movq	%rdx, %rsi
+  79 0084 4889C7   		movq	%rax, %rdi
+  80 0087 E8000000 		call	strtod@PLT
+  80      00
+  81 008c 66480F7E 		movq	%xmm0, %rax
+  81      C0
+  82 0091 488945F0 		movq	%rax, -16(%rbp)
+  65:arg_dbl.c     **** 
+  66:arg_dbl.c     ****         /* if success then store result in parent->dval[] array otherwise return error*/
+  67:arg_dbl.c     ****         if (*end==0)
+  83              		.loc 1 67 13
+  84 0095 488B45E8 		movq	-24(%rbp), %rax
+  85 0099 0FB600   		movzbl	(%rax), %eax
+  86              		.loc 1 67 12
+  87 009c 84C0     		testb	%al, %al
+  88 009e 752D     		jne	.L6
+  68:arg_dbl.c     ****             parent->dval[parent->count++] = val;
+  89              		.loc 1 68 19
+  90 00a0 488B45D8 		movq	-40(%rbp), %rax
+  91 00a4 488B7068 		movq	104(%rax), %rsi
+  92              		.loc 1 68 32
+  93 00a8 488B45D8 		movq	-40(%rbp), %rax
+  94 00ac 8B4060   		movl	96(%rax), %eax
+  95              		.loc 1 68 39
+  96 00af 8D4801   		leal	1(%rax), %ecx
+  97 00b2 488B55D8 		movq	-40(%rbp), %rdx
+  98 00b6 894A60   		movl	%ecx, 96(%rdx)
+  99 00b9 4898     		cltq
+ 100              		.loc 1 68 25
+ 101 00bb 48C1E003 		salq	$3, %rax
+ 102 00bf 4801F0   		addq	%rsi, %rax
+ 103              		.loc 1 68 43
+ 104 00c2 F20F1045 		movsd	-16(%rbp), %xmm0
+ 104      F0
+ 105 00c7 F20F1100 		movsd	%xmm0, (%rax)
+ 106 00cb EB07     		jmp	.L4
+ 107              	.L6:
+  69:arg_dbl.c     ****         else
+  70:arg_dbl.c     ****             errorcode = EBADDOUBLE;
+ 108              		.loc 1 70 23
+ 109 00cd C745E403 		movl	$3, -28(%rbp)
+ 109      000000
+ 110              	.L4:
+ 111              	.LBE2:
+  71:arg_dbl.c     ****         }
+  72:arg_dbl.c     **** 
+  73:arg_dbl.c     ****     /*printf("%s:scanfn(%p) returns %d\n",__FILE__,parent,errorcode);*/
+  74:arg_dbl.c     ****     return errorcode;
+ 112              		.loc 1 74 12
+ 113 00d4 8B45E4   		movl	-28(%rbp), %eax
+  75:arg_dbl.c     ****     }
+ 114              		.loc 1 75 5
+ 115 00d7 488B55F8 		movq	-8(%rbp), %rdx
+ 116 00db 64482B14 		subq	%fs:40, %rdx
+ 116      25280000 
+ 116      00
+ 117 00e4 7405     		je	.L9
+ 118 00e6 E8000000 		call	__stack_chk_fail@PLT
+ 118      00
+ 119              	.L9:
+ 120 00eb C9       		leave
+ 121              		.cfi_def_cfa 7, 8
+ 122 00ec C3       		ret
+ 123              		.cfi_endproc
+ 124              	.LFE1:
+ 127              	checkfn:
+ 128              	.LFB2:
+  76:arg_dbl.c     **** 
+  77:arg_dbl.c     **** static int checkfn(struct arg_dbl *parent)
+  78:arg_dbl.c     ****     {
+ 129              		.loc 1 78 5
+ 130              		.cfi_startproc
+ 131 00ed F30F1EFA 		endbr64
+ 132 00f1 55       		pushq	%rbp
+ 133              		.cfi_def_cfa_offset 16
+ 134              		.cfi_offset 6, -16
+ 135 00f2 4889E5   		movq	%rsp, %rbp
+ 136              		.cfi_def_cfa_register 6
+ 137 00f5 48897DE8 		movq	%rdi, -24(%rbp)
+  79:arg_dbl.c     ****     int errorcode = (parent->count < parent->hdr.mincount) ? EMINCOUNT : 0;
+ 138              		.loc 1 79 28
+ 139 00f9 488B45E8 		movq	-24(%rbp), %rax
+ 140 00fd 8B5060   		movl	96(%rax), %edx
+ 141              		.loc 1 79 49
+ 142 0100 488B45E8 		movq	-24(%rbp), %rax
+ 143 0104 8B4028   		movl	40(%rax), %eax
+ 144              		.loc 1 79 72
+ 145 0107 39C2     		cmpl	%eax, %edx
+ 146 0109 0F9CC0   		setl	%al
+ 147              		.loc 1 79 9
+ 148 010c 0FB6C0   		movzbl	%al, %eax
+ 149 010f 8945FC   		movl	%eax, -4(%rbp)
+  80:arg_dbl.c     ****     /*printf("%s:checkfn(%p) returns %d\n",__FILE__,parent,errorcode);*/
+  81:arg_dbl.c     ****     return errorcode;
+ 150              		.loc 1 81 12
+ 151 0112 8B45FC   		movl	-4(%rbp), %eax
+  82:arg_dbl.c     ****     }
+ 152              		.loc 1 82 5
+ 153 0115 5D       		popq	%rbp
+ 154              		.cfi_def_cfa 7, 8
+ 155 0116 C3       		ret
+ 156              		.cfi_endproc
+ 157              	.LFE2:
+ 159              		.section	.rodata
+ 160              	.LC0:
+ 161 0000 00       		.string	""
+ 162              	.LC1:
+ 163 0001 25733A20 		.string	"%s: "
+ 163      00
+ 164              	.LC2:
+ 165 0006 6D697373 		.string	"missing option "
+ 165      696E6720 
+ 165      6F707469 
+ 165      6F6E2000 
+ 166              	.LC3:
+ 167 0016 0A00     		.string	"\n"
+ 168              	.LC4:
+ 169 0018 65786365 		.string	"excess option "
+ 169      7373206F 
+ 169      7074696F 
+ 169      6E2000
+ 170 0027 00       		.align 8
+ 171              	.LC5:
+ 172 0028 696E7661 		.string	"invalid argument \"%s\" to option "
+ 172      6C696420 
+ 172      61726775 
+ 172      6D656E74 
+ 172      20222573 
+ 173              		.text
+ 175              	errorfn:
+ 176              	.LFB3:
+  83:arg_dbl.c     **** 
+  84:arg_dbl.c     **** static void errorfn(struct arg_dbl *parent, FILE *fp, int errorcode, const char *argval, const char
+  85:arg_dbl.c     ****     {
+ 177              		.loc 1 85 5
+ 178              		.cfi_startproc
+ 179 0117 F30F1EFA 		endbr64
+ 180 011b 55       		pushq	%rbp
+ 181              		.cfi_def_cfa_offset 16
+ 182              		.cfi_offset 6, -16
+ 183 011c 4889E5   		movq	%rsp, %rbp
+ 184              		.cfi_def_cfa_register 6
+ 185 011f 4883EC50 		subq	$80, %rsp
+ 186 0123 48897DD8 		movq	%rdi, -40(%rbp)
+ 187 0127 488975D0 		movq	%rsi, -48(%rbp)
+ 188 012b 8955CC   		movl	%edx, -52(%rbp)
+ 189 012e 48894DC0 		movq	%rcx, -64(%rbp)
+ 190 0132 4C8945B8 		movq	%r8, -72(%rbp)
+  86:arg_dbl.c     ****     const char *shortopts = parent->hdr.shortopts;
+ 191              		.loc 1 86 17
+ 192 0136 488B45D8 		movq	-40(%rbp), %rax
+ 193 013a 488B4008 		movq	8(%rax), %rax
+ 194 013e 488945E8 		movq	%rax, -24(%rbp)
+  87:arg_dbl.c     ****     const char *longopts  = parent->hdr.longopts;
+ 195              		.loc 1 87 17
+ 196 0142 488B45D8 		movq	-40(%rbp), %rax
+ 197 0146 488B4010 		movq	16(%rax), %rax
+ 198 014a 488945F0 		movq	%rax, -16(%rbp)
+  88:arg_dbl.c     ****     const char *datatype  = parent->hdr.datatype;
+ 199              		.loc 1 88 17
+ 200 014e 488B45D8 		movq	-40(%rbp), %rax
+ 201 0152 488B4018 		movq	24(%rax), %rax
+ 202 0156 488945F8 		movq	%rax, -8(%rbp)
+  89:arg_dbl.c     **** 
+  90:arg_dbl.c     ****     /* make argval NULL safe */
+  91:arg_dbl.c     ****     argval = argval ? argval : "";
+ 203              		.loc 1 91 30
+ 204 015a 48837DC0 		cmpq	$0, -64(%rbp)
+ 204      00
+ 205 015f 7406     		je	.L13
+ 206              		.loc 1 91 30 is_stmt 0 discriminator 1
+ 207 0161 488B45C0 		movq	-64(%rbp), %rax
+ 208 0165 EB07     		jmp	.L14
+ 209              	.L13:
+ 210              		.loc 1 91 30 discriminator 2
+ 211 0167 488D0500 		leaq	.LC0(%rip), %rax
+ 211      000000
+ 212              	.L14:
+ 213              		.loc 1 91 12 is_stmt 1 discriminator 4
+ 214 016e 488945C0 		movq	%rax, -64(%rbp)
+  92:arg_dbl.c     **** 
+  93:arg_dbl.c     ****     fprintf(fp,"%s: ",progname);
+ 215              		.loc 1 93 5 discriminator 4
+ 216 0172 488B55B8 		movq	-72(%rbp), %rdx
+ 217 0176 488B45D0 		movq	-48(%rbp), %rax
+ 218 017a 488D0D00 		leaq	.LC1(%rip), %rcx
+ 218      000000
+ 219 0181 4889CE   		movq	%rcx, %rsi
+ 220 0184 4889C7   		movq	%rax, %rdi
+ 221 0187 B8000000 		movl	$0, %eax
+ 221      00
+ 222 018c E8000000 		call	fprintf@PLT
+ 222      00
+  94:arg_dbl.c     ****     switch(errorcode)
+ 223              		.loc 1 94 5 discriminator 4
+ 224 0191 837DCC03 		cmpl	$3, -52(%rbp)
+ 225 0195 0F84A000 		je	.L15
+ 225      0000
+ 226              		.loc 1 94 5 is_stmt 0
+ 227 019b 837DCC03 		cmpl	$3, -52(%rbp)
+ 228 019f 0F8FD500 		jg	.L19
+ 228      0000
+ 229 01a5 837DCC01 		cmpl	$1, -52(%rbp)
+ 230 01a9 740B     		je	.L17
+ 231 01ab 837DCC02 		cmpl	$2, -52(%rbp)
+ 232 01af 7449     		je	.L18
+  95:arg_dbl.c     ****         {
+  96:arg_dbl.c     ****         case EMINCOUNT:
+  97:arg_dbl.c     ****             fputs("missing option ",fp);
+  98:arg_dbl.c     ****             arg_print_option(fp,shortopts,longopts,datatype,"\n");
+  99:arg_dbl.c     ****             break;
+ 100:arg_dbl.c     **** 
+ 101:arg_dbl.c     ****         case EMAXCOUNT:
+ 102:arg_dbl.c     ****             fputs("excess option ",fp);
+ 103:arg_dbl.c     ****             arg_print_option(fp,shortopts,longopts,argval,"\n");
+ 104:arg_dbl.c     ****             break;
+ 105:arg_dbl.c     **** 
+ 106:arg_dbl.c     ****         case EBADDOUBLE:
+ 107:arg_dbl.c     ****             fprintf(fp,"invalid argument \"%s\" to option ",argval);
+ 108:arg_dbl.c     ****             arg_print_option(fp,shortopts,longopts,datatype,"\n");
+ 109:arg_dbl.c     ****             break;
+ 110:arg_dbl.c     ****         }
+ 111:arg_dbl.c     ****     }
+ 233              		.loc 1 111 5 is_stmt 1
+ 234 01b1 E9C40000 		jmp	.L19
+ 234      00
+ 235              	.L17:
+  97:arg_dbl.c     ****             arg_print_option(fp,shortopts,longopts,datatype,"\n");
+ 236              		.loc 1 97 13
+ 237 01b6 488B45D0 		movq	-48(%rbp), %rax
+ 238 01ba 4889C1   		movq	%rax, %rcx
+ 239 01bd BA0F0000 		movl	$15, %edx
+ 239      00
+ 240 01c2 BE010000 		movl	$1, %esi
+ 240      00
+ 241 01c7 488D0500 		leaq	.LC2(%rip), %rax
+ 241      000000
+ 242 01ce 4889C7   		movq	%rax, %rdi
+ 243 01d1 E8000000 		call	fwrite@PLT
+ 243      00
+  98:arg_dbl.c     ****             break;
+ 244              		.loc 1 98 13
+ 245 01d6 488B4DF8 		movq	-8(%rbp), %rcx
+ 246 01da 488B55F0 		movq	-16(%rbp), %rdx
+ 247 01de 488B75E8 		movq	-24(%rbp), %rsi
+ 248 01e2 488B45D0 		movq	-48(%rbp), %rax
+ 249 01e6 4C8D0500 		leaq	.LC3(%rip), %r8
+ 249      000000
+ 250 01ed 4889C7   		movq	%rax, %rdi
+ 251 01f0 E8000000 		call	arg_print_option@PLT
+ 251      00
+  99:arg_dbl.c     **** 
+ 252              		.loc 1 99 13
+ 253 01f5 E9800000 		jmp	.L16
+ 253      00
+ 254              	.L18:
+ 102:arg_dbl.c     ****             arg_print_option(fp,shortopts,longopts,argval,"\n");
+ 255              		.loc 1 102 13
+ 256 01fa 488B45D0 		movq	-48(%rbp), %rax
+ 257 01fe 4889C1   		movq	%rax, %rcx
+ 258 0201 BA0E0000 		movl	$14, %edx
+ 258      00
+ 259 0206 BE010000 		movl	$1, %esi
+ 259      00
+ 260 020b 488D0500 		leaq	.LC4(%rip), %rax
+ 260      000000
+ 261 0212 4889C7   		movq	%rax, %rdi
+ 262 0215 E8000000 		call	fwrite@PLT
+ 262      00
+ 103:arg_dbl.c     ****             break;
+ 263              		.loc 1 103 13
+ 264 021a 488B4DC0 		movq	-64(%rbp), %rcx
+ 265 021e 488B55F0 		movq	-16(%rbp), %rdx
+ 266 0222 488B75E8 		movq	-24(%rbp), %rsi
+ 267 0226 488B45D0 		movq	-48(%rbp), %rax
+ 268 022a 4C8D0500 		leaq	.LC3(%rip), %r8
+ 268      000000
+ 269 0231 4889C7   		movq	%rax, %rdi
+ 270 0234 E8000000 		call	arg_print_option@PLT
+ 270      00
+ 104:arg_dbl.c     **** 
+ 271              		.loc 1 104 13
+ 272 0239 EB3F     		jmp	.L16
+ 273              	.L15:
+ 107:arg_dbl.c     ****             arg_print_option(fp,shortopts,longopts,datatype,"\n");
+ 274              		.loc 1 107 13
+ 275 023b 488B55C0 		movq	-64(%rbp), %rdx
+ 276 023f 488B45D0 		movq	-48(%rbp), %rax
+ 277 0243 488D0D00 		leaq	.LC5(%rip), %rcx
+ 277      000000
+ 278 024a 4889CE   		movq	%rcx, %rsi
+ 279 024d 4889C7   		movq	%rax, %rdi
+ 280 0250 B8000000 		movl	$0, %eax
+ 280      00
+ 281 0255 E8000000 		call	fprintf@PLT
+ 281      00
+ 108:arg_dbl.c     ****             break;
+ 282              		.loc 1 108 13
+ 283 025a 488B4DF8 		movq	-8(%rbp), %rcx
+ 284 025e 488B55F0 		movq	-16(%rbp), %rdx
+ 285 0262 488B75E8 		movq	-24(%rbp), %rsi
+ 286 0266 488B45D0 		movq	-48(%rbp), %rax
+ 287 026a 4C8D0500 		leaq	.LC3(%rip), %r8
+ 287      000000
+ 288 0271 4889C7   		movq	%rax, %rdi
+ 289 0274 E8000000 		call	arg_print_option@PLT
+ 289      00
+ 109:arg_dbl.c     ****         }
+ 290              		.loc 1 109 13
+ 291 0279 90       		nop
+ 292              	.L16:
+ 293              	.L19:
+ 294              		.loc 1 111 5
+ 295 027a 90       		nop
+ 296 027b C9       		leave
+ 297              		.cfi_def_cfa 7, 8
+ 298 027c C3       		ret
+ 299              		.cfi_endproc
+ 300              	.LFE3:
+ 302              		.globl	arg_dbl0
+ 304              	arg_dbl0:
+ 305              	.LFB4:
+ 112:arg_dbl.c     **** 
+ 113:arg_dbl.c     **** 
+ 114:arg_dbl.c     **** struct arg_dbl* arg_dbl0(const char* shortopts,
+ 115:arg_dbl.c     ****                                const char* longopts,
+ 116:arg_dbl.c     ****                                const char *datatype,
+ 117:arg_dbl.c     ****                                const char *glossary)
+ 118:arg_dbl.c     ****     {
+ 306              		.loc 1 118 5
+ 307              		.cfi_startproc
+ 308 027d F30F1EFA 		endbr64
+ 309 0281 55       		pushq	%rbp
+ 310              		.cfi_def_cfa_offset 16
+ 311              		.cfi_offset 6, -16
+ 312 0282 4889E5   		movq	%rsp, %rbp
+ 313              		.cfi_def_cfa_register 6
+ 314 0285 4883EC20 		subq	$32, %rsp
+ 315 0289 48897DF8 		movq	%rdi, -8(%rbp)
+ 316 028d 488975F0 		movq	%rsi, -16(%rbp)
+ 317 0291 488955E8 		movq	%rdx, -24(%rbp)
+ 318 0295 48894DE0 		movq	%rcx, -32(%rbp)
+ 119:arg_dbl.c     ****     return arg_dbln(shortopts,longopts,datatype,0,1,glossary);
+ 319              		.loc 1 119 12
+ 320 0299 488B4DE0 		movq	-32(%rbp), %rcx
+ 321 029d 488B55E8 		movq	-24(%rbp), %rdx
+ 322 02a1 488B75F0 		movq	-16(%rbp), %rsi
+ 323 02a5 488B45F8 		movq	-8(%rbp), %rax
+ 324 02a9 4989C9   		movq	%rcx, %r9
+ 325 02ac 41B80100 		movl	$1, %r8d
+ 325      0000
+ 326 02b2 B9000000 		movl	$0, %ecx
+ 326      00
+ 327 02b7 4889C7   		movq	%rax, %rdi
+ 328 02ba E8000000 		call	arg_dbln@PLT
+ 328      00
+ 120:arg_dbl.c     ****     }
+ 329              		.loc 1 120 5
+ 330 02bf C9       		leave
+ 331              		.cfi_def_cfa 7, 8
+ 332 02c0 C3       		ret
+ 333              		.cfi_endproc
+ 334              	.LFE4:
+ 336              		.globl	arg_dbl1
+ 338              	arg_dbl1:
+ 339              	.LFB5:
+ 121:arg_dbl.c     **** 
+ 122:arg_dbl.c     **** struct arg_dbl* arg_dbl1(const char* shortopts,
+ 123:arg_dbl.c     ****                                const char* longopts,
+ 124:arg_dbl.c     ****                                const char *datatype,
+ 125:arg_dbl.c     ****                                const char *glossary)
+ 126:arg_dbl.c     ****     {
+ 340              		.loc 1 126 5
+ 341              		.cfi_startproc
+ 342 02c1 F30F1EFA 		endbr64
+ 343 02c5 55       		pushq	%rbp
+ 344              		.cfi_def_cfa_offset 16
+ 345              		.cfi_offset 6, -16
+ 346 02c6 4889E5   		movq	%rsp, %rbp
+ 347              		.cfi_def_cfa_register 6
+ 348 02c9 4883EC20 		subq	$32, %rsp
+ 349 02cd 48897DF8 		movq	%rdi, -8(%rbp)
+ 350 02d1 488975F0 		movq	%rsi, -16(%rbp)
+ 351 02d5 488955E8 		movq	%rdx, -24(%rbp)
+ 352 02d9 48894DE0 		movq	%rcx, -32(%rbp)
+ 127:arg_dbl.c     ****     return arg_dbln(shortopts,longopts,datatype,1,1,glossary);
+ 353              		.loc 1 127 12
+ 354 02dd 488B4DE0 		movq	-32(%rbp), %rcx
+ 355 02e1 488B55E8 		movq	-24(%rbp), %rdx
+ 356 02e5 488B75F0 		movq	-16(%rbp), %rsi
+ 357 02e9 488B45F8 		movq	-8(%rbp), %rax
+ 358 02ed 4989C9   		movq	%rcx, %r9
+ 359 02f0 41B80100 		movl	$1, %r8d
+ 359      0000
+ 360 02f6 B9010000 		movl	$1, %ecx
+ 360      00
+ 361 02fb 4889C7   		movq	%rax, %rdi
+ 362 02fe E8000000 		call	arg_dbln@PLT
+ 362      00
+ 128:arg_dbl.c     ****     }
+ 363              		.loc 1 128 5
+ 364 0303 C9       		leave
+ 365              		.cfi_def_cfa 7, 8
+ 366 0304 C3       		ret
+ 367              		.cfi_endproc
+ 368              	.LFE5:
+ 370              		.section	.rodata
+ 371              	.LC6:
+ 372 0049 3C646F75 		.string	"<double>"
+ 372      626C653E 
+ 372      00
+ 373              		.text
+ 374              		.globl	arg_dbln
+ 376              	arg_dbln:
+ 377              	.LFB6:
+ 129:arg_dbl.c     **** 
+ 130:arg_dbl.c     **** 
+ 131:arg_dbl.c     **** struct arg_dbl* arg_dbln(const char* shortopts,
+ 132:arg_dbl.c     ****                                const char* longopts,
+ 133:arg_dbl.c     ****                                const char *datatype,
+ 134:arg_dbl.c     ****                                int mincount,
+ 135:arg_dbl.c     ****                                int maxcount,
+ 136:arg_dbl.c     ****                                const char *glossary)
+ 137:arg_dbl.c     ****     {
+ 378              		.loc 1 137 5
+ 379              		.cfi_startproc
+ 380 0305 F30F1EFA 		endbr64
+ 381 0309 55       		pushq	%rbp
+ 382              		.cfi_def_cfa_offset 16
+ 383              		.cfi_offset 6, -16
+ 384 030a 4889E5   		movq	%rsp, %rbp
+ 385              		.cfi_def_cfa_register 6
+ 386 030d 4883EC50 		subq	$80, %rsp
+ 387 0311 48897DD8 		movq	%rdi, -40(%rbp)
+ 388 0315 488975D0 		movq	%rsi, -48(%rbp)
+ 389 0319 488955C8 		movq	%rdx, -56(%rbp)
+ 390 031d 894DC4   		movl	%ecx, -60(%rbp)
+ 391 0320 448945C0 		movl	%r8d, -64(%rbp)
+ 392 0324 4C894DB8 		movq	%r9, -72(%rbp)
+ 138:arg_dbl.c     ****     size_t nbytes;
+ 139:arg_dbl.c     ****     struct arg_dbl *result;
+ 140:arg_dbl.c     **** 
+ 141:arg_dbl.c     **** 	/* foolproof things by ensuring maxcount is not less than mincount */
+ 142:arg_dbl.c     **** 	maxcount = (maxcount<mincount) ? mincount : maxcount;
+ 393              		.loc 1 142 11
+ 394 0328 8B55C0   		movl	-64(%rbp), %edx
+ 395 032b 8B45C4   		movl	-60(%rbp), %eax
+ 396 032e 39C2     		cmpl	%eax, %edx
+ 397 0330 0F4DC2   		cmovge	%edx, %eax
+ 398 0333 8945C0   		movl	%eax, -64(%rbp)
+ 143:arg_dbl.c     **** 
+ 144:arg_dbl.c     ****     nbytes = sizeof(struct arg_dbl)     /* storage for struct arg_dbl */
+ 145:arg_dbl.c     ****            + (maxcount+1) * sizeof(double);  /* storage for dval[maxcount] array plus one extra for
+ 399              		.loc 1 145 23
+ 400 0336 8B45C0   		movl	-64(%rbp), %eax
+ 401 0339 83C001   		addl	$1, %eax
+ 402 033c 4898     		cltq
+ 403              		.loc 1 145 12
+ 404 033e 4883C00E 		addq	$14, %rax
+ 144:arg_dbl.c     ****            + (maxcount+1) * sizeof(double);  /* storage for dval[maxcount] array plus one extra for
+ 405              		.loc 1 144 12
+ 406 0342 48C1E003 		salq	$3, %rax
+ 407 0346 488945E0 		movq	%rax, -32(%rbp)
+ 146:arg_dbl.c     **** 
+ 147:arg_dbl.c     ****     result = (struct arg_dbl*)malloc(nbytes);
+ 408              		.loc 1 147 31
+ 409 034a 488B45E0 		movq	-32(%rbp), %rax
+ 410 034e 4889C7   		movq	%rax, %rdi
+ 411 0351 E8000000 		call	malloc@PLT
+ 411      00
+ 412 0356 488945E8 		movq	%rax, -24(%rbp)
+ 148:arg_dbl.c     ****     if (result)
+ 413              		.loc 1 148 8
+ 414 035a 48837DE8 		cmpq	$0, -24(%rbp)
+ 414      00
+ 415 035f 0F84DC00 		je	.L25
+ 415      0000
+ 416              	.LBB3:
+ 149:arg_dbl.c     ****         {
+ 150:arg_dbl.c     ****         size_t addr;
+ 151:arg_dbl.c     ****         size_t rem;
+ 152:arg_dbl.c     **** 
+ 153:arg_dbl.c     ****         /* init the arg_hdr struct */
+ 154:arg_dbl.c     ****         result->hdr.flag      = ARG_HASVALUE;
+ 417              		.loc 1 154 31
+ 418 0365 488B45E8 		movq	-24(%rbp), %rax
+ 419 0369 C60002   		movb	$2, (%rax)
+ 155:arg_dbl.c     ****         result->hdr.shortopts = shortopts;
+ 420              		.loc 1 155 31
+ 421 036c 488B45E8 		movq	-24(%rbp), %rax
+ 422 0370 488B55D8 		movq	-40(%rbp), %rdx
+ 423 0374 48895008 		movq	%rdx, 8(%rax)
+ 156:arg_dbl.c     ****         result->hdr.longopts  = longopts;
+ 424              		.loc 1 156 31
+ 425 0378 488B45E8 		movq	-24(%rbp), %rax
+ 426 037c 488B55D0 		movq	-48(%rbp), %rdx
+ 427 0380 48895010 		movq	%rdx, 16(%rax)
+ 157:arg_dbl.c     ****         result->hdr.datatype  = datatype ? datatype : "<double>";
+ 428              		.loc 1 157 53
+ 429 0384 48837DC8 		cmpq	$0, -56(%rbp)
+ 429      00
+ 430 0389 7406     		je	.L26
+ 431              		.loc 1 157 53 is_stmt 0 discriminator 1
+ 432 038b 488B45C8 		movq	-56(%rbp), %rax
+ 433 038f EB07     		jmp	.L27
+ 434              	.L26:
+ 435              		.loc 1 157 53 discriminator 2
+ 436 0391 488D0500 		leaq	.LC6(%rip), %rax
+ 436      000000
+ 437              	.L27:
+ 438              		.loc 1 157 31 is_stmt 1 discriminator 4
+ 439 0398 488B55E8 		movq	-24(%rbp), %rdx
+ 440 039c 48894218 		movq	%rax, 24(%rdx)
+ 158:arg_dbl.c     ****         result->hdr.glossary  = glossary;
+ 441              		.loc 1 158 31 discriminator 4
+ 442 03a0 488B45E8 		movq	-24(%rbp), %rax
+ 443 03a4 488B55B8 		movq	-72(%rbp), %rdx
+ 444 03a8 48895020 		movq	%rdx, 32(%rax)
+ 159:arg_dbl.c     ****         result->hdr.mincount  = mincount;
+ 445              		.loc 1 159 31 discriminator 4
+ 446 03ac 488B45E8 		movq	-24(%rbp), %rax
+ 447 03b0 8B55C4   		movl	-60(%rbp), %edx
+ 448 03b3 895028   		movl	%edx, 40(%rax)
+ 160:arg_dbl.c     ****         result->hdr.maxcount  = maxcount;
+ 449              		.loc 1 160 31 discriminator 4
+ 450 03b6 488B45E8 		movq	-24(%rbp), %rax
+ 451 03ba 8B55C0   		movl	-64(%rbp), %edx
+ 452 03bd 89502C   		movl	%edx, 44(%rax)
+ 161:arg_dbl.c     ****         result->hdr.parent    = result;
+ 453              		.loc 1 161 31 discriminator 4
+ 454 03c0 488B45E8 		movq	-24(%rbp), %rax
+ 455 03c4 488B55E8 		movq	-24(%rbp), %rdx
+ 456 03c8 48895030 		movq	%rdx, 48(%rax)
+ 162:arg_dbl.c     ****         result->hdr.resetfn   = (arg_resetfn*)resetfn;
+ 457              		.loc 1 162 31 discriminator 4
+ 458 03cc 488B45E8 		movq	-24(%rbp), %rax
+ 459 03d0 488D1529 		leaq	resetfn(%rip), %rdx
+ 459      FCFFFF
+ 460 03d7 48895038 		movq	%rdx, 56(%rax)
+ 163:arg_dbl.c     ****         result->hdr.scanfn    = (arg_scanfn*)scanfn;
+ 461              		.loc 1 163 31 discriminator 4
+ 462 03db 488B45E8 		movq	-24(%rbp), %rax
+ 463 03df 488D1534 		leaq	scanfn(%rip), %rdx
+ 463      FCFFFF
+ 464 03e6 48895040 		movq	%rdx, 64(%rax)
+ 164:arg_dbl.c     ****         result->hdr.checkfn   = (arg_checkfn*)checkfn;
+ 465              		.loc 1 164 31 discriminator 4
+ 466 03ea 488B45E8 		movq	-24(%rbp), %rax
+ 467 03ee 488D15F8 		leaq	checkfn(%rip), %rdx
+ 467      FCFFFF
+ 468 03f5 48895048 		movq	%rdx, 72(%rax)
+ 165:arg_dbl.c     ****         result->hdr.errorfn   = (arg_errorfn*)errorfn;
+ 469              		.loc 1 165 31 discriminator 4
+ 470 03f9 488B45E8 		movq	-24(%rbp), %rax
+ 471 03fd 488D1513 		leaq	errorfn(%rip), %rdx
+ 471      FDFFFF
+ 472 0404 48895050 		movq	%rdx, 80(%rax)
+ 166:arg_dbl.c     **** 
+ 167:arg_dbl.c     ****         /* Store the dval[maxcount] array on the first double boundary that immediately follows the
+ 168:arg_dbl.c     ****         /* We do the memory alignment purely for SPARC and Motorola systems. They require floats an
+ 169:arg_dbl.c     ****         /* aligned on natural boundaries */
+ 170:arg_dbl.c     ****         addr = (size_t)(result+1);
+ 473              		.loc 1 170 31 discriminator 4
+ 474 0408 488B45E8 		movq	-24(%rbp), %rax
+ 475 040c 4883C070 		addq	$112, %rax
+ 476              		.loc 1 170 14 discriminator 4
+ 477 0410 488945F0 		movq	%rax, -16(%rbp)
+ 171:arg_dbl.c     ****         rem  = addr % sizeof(double);
+ 478              		.loc 1 171 14 discriminator 4
+ 479 0414 488B45F0 		movq	-16(%rbp), %rax
+ 480 0418 83E007   		andl	$7, %eax
+ 481 041b 488945F8 		movq	%rax, -8(%rbp)
+ 172:arg_dbl.c     ****         result->dval  = (double*)(addr + sizeof(double) - rem);
+ 482              		.loc 1 172 57 discriminator 4
+ 483 041f 488B45F0 		movq	-16(%rbp), %rax
+ 484 0423 482B45F8 		subq	-8(%rbp), %rax
+ 485 0427 4883C008 		addq	$8, %rax
+ 486              		.loc 1 172 25 discriminator 4
+ 487 042b 4889C2   		movq	%rax, %rdx
+ 488              		.loc 1 172 23 discriminator 4
+ 489 042e 488B45E8 		movq	-24(%rbp), %rax
+ 490 0432 48895068 		movq	%rdx, 104(%rax)
+ 173:arg_dbl.c     ****         /* printf("addr=%p, dval=%p, sizeof(double)=%d rem=%d\n", addr, result->dval, (int)sizeof(d
+ 174:arg_dbl.c     **** 
+ 175:arg_dbl.c     ****         result->count = 0;
+ 491              		.loc 1 175 23 discriminator 4
+ 492 0436 488B45E8 		movq	-24(%rbp), %rax
+ 493 043a C7406000 		movl	$0, 96(%rax)
+ 493      000000
+ 494              	.L25:
+ 495              	.LBE3:
+ 176:arg_dbl.c     ****         }
+ 177:arg_dbl.c     ****     /*printf("arg_dbln() returns %p\n",result);*/
+ 178:arg_dbl.c     ****     return result;
+ 496              		.loc 1 178 12
+ 497 0441 488B45E8 		movq	-24(%rbp), %rax
+ 179:arg_dbl.c     ****     }
+ 498              		.loc 1 179 5
+ 499 0445 C9       		leave
+ 500              		.cfi_def_cfa 7, 8
+ 501 0446 C3       		ret
+ 502              		.cfi_endproc
+ 503              	.LFE6:
+ 505              	.Letext0:
+ 506              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+ 507              		.file 3 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 508              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h"
+ 509              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/FILE.h"
+ 510              		.file 6 "argtable2.h"
+ 511              		.file 7 "/usr/include/stdlib.h"
+ 512              		.file 8 "/usr/include/stdio.h"
+ 2218              		.section	.note.gnu.property,"a"
+ 2219              		.align 8
+ 2220 0000 04000000 		.long	1f - 0f
+ 2221 0004 10000000 		.long	4f - 1f
+ 2222 0008 05000000 		.long	5
+ 2223              	0:
+ 2224 000c 474E5500 		.string	"GNU"
+ 2225              	1:
+ 2226              		.align 8
+ 2227 0010 020000C0 		.long	0xc0000002
+ 2228 0014 04000000 		.long	3f - 2f
+ 2229              	2:
+ 2230 0018 03000000 		.long	0x3
+ 2231              	3:
+ 2232 001c 00000000 		.align 8
+ 2233              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arg_dbl.c
+     /tmp/ccbrBGp3.s:6      .text:0000000000000000 resetfn
+     /tmp/ccbrBGp3.s:30     .text:000000000000001a scanfn
+     /tmp/ccbrBGp3.s:127    .text:00000000000000ed checkfn
+     /tmp/ccbrBGp3.s:175    .text:0000000000000117 errorfn
+     /tmp/ccbrBGp3.s:304    .text:000000000000027d arg_dbl0
+     /tmp/ccbrBGp3.s:376    .text:0000000000000305 arg_dbln
+     /tmp/ccbrBGp3.s:338    .text:00000000000002c1 arg_dbl1
+
+UNDEFINED SYMBOLS
+strtod
+__stack_chk_fail
+fprintf
+fwrite
+arg_print_option
+malloc

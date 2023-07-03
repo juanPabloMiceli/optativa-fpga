@@ -1,0 +1,170 @@
+   1              		.file	"arg_rem.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libargtable2" "arg_rem.c"
+   5              		.globl	arg_rem
+   7              	arg_rem:
+   8              	.LFB0:
+   9              		.file 1 "arg_rem.c"
+   1:arg_rem.c     **** /*********************************************************************
+   2:arg_rem.c     **** This file is part of the argtable2 library.
+   3:arg_rem.c     **** Copyright (C) 1998-2001,2003-2011 Stewart Heitmann
+   4:arg_rem.c     **** sheitmann@users.sourceforge.net
+   5:arg_rem.c     **** 
+   6:arg_rem.c     **** The argtable2 library is free software; you can redistribute it and/or
+   7:arg_rem.c     **** modify it under the terms of the GNU Library General Public License as
+   8:arg_rem.c     **** published by the Free Software Foundation; either version 2 of the
+   9:arg_rem.c     **** License, or (at your option) any later version.
+  10:arg_rem.c     **** 
+  11:arg_rem.c     **** This software is distributed in the hope that it will be useful,
+  12:arg_rem.c     **** but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:arg_rem.c     **** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  14:arg_rem.c     **** Library General Public License for more details.
+  15:arg_rem.c     **** 
+  16:arg_rem.c     **** You should have received a copy of the GNU Library General Public
+  17:arg_rem.c     **** License along with this library; if not, write to the Free Software
+  18:arg_rem.c     **** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+  19:arg_rem.c     **** USA.
+  20:arg_rem.c     **** **********************************************************************/
+  21:arg_rem.c     **** 
+  22:arg_rem.c     **** /* config.h must be included before anything else */
+  23:arg_rem.c     **** #ifdef HAVE_CONFIG_H
+  24:arg_rem.c     **** #include "config.h"
+  25:arg_rem.c     **** #endif
+  26:arg_rem.c     **** 
+  27:arg_rem.c     **** /*#ifdef HAVE_STDLIB_H*/
+  28:arg_rem.c     **** #include <stdlib.h>
+  29:arg_rem.c     **** /*#endif*/
+  30:arg_rem.c     **** 
+  31:arg_rem.c     **** #include "argtable2.h"
+  32:arg_rem.c     **** 
+  33:arg_rem.c     **** struct arg_rem* arg_rem(const char *datatype,
+  34:arg_rem.c     ****                         const char *glossary)
+  35:arg_rem.c     ****     {
+  10              		.loc 1 35 5
+  11              		.cfi_startproc
+  12 0000 F30F1EFA 		endbr64
+  13 0004 55       		pushq	%rbp
+  14              		.cfi_def_cfa_offset 16
+  15              		.cfi_offset 6, -16
+  16 0005 4889E5   		movq	%rsp, %rbp
+  17              		.cfi_def_cfa_register 6
+  18 0008 4883EC20 		subq	$32, %rsp
+  19 000c 48897DE8 		movq	%rdi, -24(%rbp)
+  20 0010 488975E0 		movq	%rsi, -32(%rbp)
+  36:arg_rem.c     ****     struct arg_rem *result = (struct arg_rem*)malloc(sizeof(struct arg_rem));
+  21              		.loc 1 36 47
+  22 0014 BF600000 		movl	$96, %edi
+  22      00
+  23 0019 E8000000 		call	malloc@PLT
+  23      00
+  24 001e 488945F8 		movq	%rax, -8(%rbp)
+  37:arg_rem.c     ****     if (result)
+  25              		.loc 1 37 8
+  26 0022 48837DF8 		cmpq	$0, -8(%rbp)
+  26      00
+  27 0027 0F848900 		je	.L2
+  27      0000
+  38:arg_rem.c     ****         {
+  39:arg_rem.c     ****         /* init the arg_hdr struct */
+  40:arg_rem.c     ****         result->hdr.flag      = 0;
+  28              		.loc 1 40 31
+  29 002d 488B45F8 		movq	-8(%rbp), %rax
+  30 0031 C60000   		movb	$0, (%rax)
+  41:arg_rem.c     ****         result->hdr.shortopts = NULL;
+  31              		.loc 1 41 31
+  32 0034 488B45F8 		movq	-8(%rbp), %rax
+  33 0038 48C74008 		movq	$0, 8(%rax)
+  33      00000000 
+  42:arg_rem.c     ****         result->hdr.longopts  = NULL;
+  34              		.loc 1 42 31
+  35 0040 488B45F8 		movq	-8(%rbp), %rax
+  36 0044 48C74010 		movq	$0, 16(%rax)
+  36      00000000 
+  43:arg_rem.c     ****         result->hdr.datatype  = datatype;
+  37              		.loc 1 43 31
+  38 004c 488B45F8 		movq	-8(%rbp), %rax
+  39 0050 488B55E8 		movq	-24(%rbp), %rdx
+  40 0054 48895018 		movq	%rdx, 24(%rax)
+  44:arg_rem.c     ****         result->hdr.glossary  = glossary;
+  41              		.loc 1 44 31
+  42 0058 488B45F8 		movq	-8(%rbp), %rax
+  43 005c 488B55E0 		movq	-32(%rbp), %rdx
+  44 0060 48895020 		movq	%rdx, 32(%rax)
+  45:arg_rem.c     ****         result->hdr.mincount  = 1;
+  45              		.loc 1 45 31
+  46 0064 488B45F8 		movq	-8(%rbp), %rax
+  47 0068 C7402801 		movl	$1, 40(%rax)
+  47      000000
+  46:arg_rem.c     ****         result->hdr.maxcount  = 1;
+  48              		.loc 1 46 31
+  49 006f 488B45F8 		movq	-8(%rbp), %rax
+  50 0073 C7402C01 		movl	$1, 44(%rax)
+  50      000000
+  47:arg_rem.c     ****         result->hdr.parent    = result;
+  51              		.loc 1 47 31
+  52 007a 488B45F8 		movq	-8(%rbp), %rax
+  53 007e 488B55F8 		movq	-8(%rbp), %rdx
+  54 0082 48895030 		movq	%rdx, 48(%rax)
+  48:arg_rem.c     ****         result->hdr.resetfn   = NULL;
+  55              		.loc 1 48 31
+  56 0086 488B45F8 		movq	-8(%rbp), %rax
+  57 008a 48C74038 		movq	$0, 56(%rax)
+  57      00000000 
+  49:arg_rem.c     ****         result->hdr.scanfn    = NULL;
+  58              		.loc 1 49 31
+  59 0092 488B45F8 		movq	-8(%rbp), %rax
+  60 0096 48C74040 		movq	$0, 64(%rax)
+  60      00000000 
+  50:arg_rem.c     ****         result->hdr.checkfn   = NULL;
+  61              		.loc 1 50 31
+  62 009e 488B45F8 		movq	-8(%rbp), %rax
+  63 00a2 48C74048 		movq	$0, 72(%rax)
+  63      00000000 
+  51:arg_rem.c     ****         result->hdr.errorfn   = NULL;
+  64              		.loc 1 51 31
+  65 00aa 488B45F8 		movq	-8(%rbp), %rax
+  66 00ae 48C74050 		movq	$0, 80(%rax)
+  66      00000000 
+  67              	.L2:
+  52:arg_rem.c     ****         }
+  53:arg_rem.c     ****     /*printf("arg_rem() returns %p\n",result);*/
+  54:arg_rem.c     ****     return result;
+  68              		.loc 1 54 12
+  69 00b6 488B45F8 		movq	-8(%rbp), %rax
+  55:arg_rem.c     ****     }
+  70              		.loc 1 55 5
+  71 00ba C9       		leave
+  72              		.cfi_def_cfa 7, 8
+  73 00bb C3       		ret
+  74              		.cfi_endproc
+  75              	.LFE0:
+  77              	.Letext0:
+  78              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+  79              		.file 3 "/usr/include/x86_64-linux-gnu/bits/types.h"
+  80              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h"
+  81              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/FILE.h"
+  82              		.file 6 "argtable2.h"
+  83              		.file 7 "/usr/include/stdlib.h"
+ 1098              		.section	.note.gnu.property,"a"
+ 1099              		.align 8
+ 1100 0000 04000000 		.long	1f - 0f
+ 1101 0004 10000000 		.long	4f - 1f
+ 1102 0008 05000000 		.long	5
+ 1103              	0:
+ 1104 000c 474E5500 		.string	"GNU"
+ 1105              	1:
+ 1106              		.align 8
+ 1107 0010 020000C0 		.long	0xc0000002
+ 1108 0014 04000000 		.long	3f - 2f
+ 1109              	2:
+ 1110 0018 03000000 		.long	0x3
+ 1111              	3:
+ 1112 001c 00000000 		.align 8
+ 1113              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arg_rem.c
+     /tmp/cc5b2QEr.s:7      .text:0000000000000000 arg_rem
+
+UNDEFINED SYMBOLS
+malloc

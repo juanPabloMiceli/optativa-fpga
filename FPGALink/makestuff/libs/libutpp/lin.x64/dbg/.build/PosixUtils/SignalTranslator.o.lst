@@ -1,0 +1,348 @@
+   1              		.file	"SignalTranslator.cpp"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libutpp" "PosixUtils/SignalTranslator.cpp"
+   5              		.globl	_ZN8UnitTest16SignalTranslator12s_jumpTargetE
+   6              		.bss
+   7              		.align 8
+  10              	_ZN8UnitTest16SignalTranslator12s_jumpTargetE:
+  11 0000 00000000 		.zero	8
+  11      00000000 
+  12              		.text
+  14              	_ZN8UnitTest12_GLOBAL__N_113SignalHandlerEi:
+  15              	.LFB0:
+  16              		.file 1 "PosixUtils/SignalTranslator.cpp"
+   1:PosixUtils/SignalTranslator.cpp **** #include "SignalTranslator.h"
+   2:PosixUtils/SignalTranslator.cpp **** 
+   3:PosixUtils/SignalTranslator.cpp **** namespace UnitTest {
+   4:PosixUtils/SignalTranslator.cpp **** 
+   5:PosixUtils/SignalTranslator.cpp **** sigjmp_buf* SignalTranslator::s_jumpTarget = 0;
+   6:PosixUtils/SignalTranslator.cpp **** 
+   7:PosixUtils/SignalTranslator.cpp **** namespace {
+   8:PosixUtils/SignalTranslator.cpp **** 
+   9:PosixUtils/SignalTranslator.cpp **** void SignalHandler(int sig)
+  10:PosixUtils/SignalTranslator.cpp **** {
+  17              		.loc 1 10 1
+  18              		.cfi_startproc
+  19 0000 F30F1EFA 		endbr64
+  20 0004 55       		pushq	%rbp
+  21              		.cfi_def_cfa_offset 16
+  22              		.cfi_offset 6, -16
+  23 0005 4889E5   		movq	%rsp, %rbp
+  24              		.cfi_def_cfa_register 6
+  25 0008 4883EC10 		subq	$16, %rsp
+  26 000c 897DFC   		movl	%edi, -4(%rbp)
+  11:PosixUtils/SignalTranslator.cpp ****     siglongjmp(*SignalTranslator::s_jumpTarget, sig );
+  27              		.loc 1 11 15
+  28 000f 488B0500 		movq	_ZN8UnitTest16SignalTranslator12s_jumpTargetE@GOTPCREL(%rip), %rax
+  28      000000
+  29 0016 488B00   		movq	(%rax), %rax
+  30 0019 8B55FC   		movl	-4(%rbp), %edx
+  31 001c 89D6     		movl	%edx, %esi
+  32 001e 4889C7   		movq	%rax, %rdi
+  33 0021 E8000000 		call	siglongjmp@PLT
+  33      00
+  34              		.cfi_endproc
+  35              	.LFE0:
+  37              		.align 2
+  38              		.globl	_ZN8UnitTest16SignalTranslatorC2Ev
+  40              	_ZN8UnitTest16SignalTranslatorC2Ev:
+  41              	.LFB2:
+  12:PosixUtils/SignalTranslator.cpp **** }
+  13:PosixUtils/SignalTranslator.cpp **** 
+  14:PosixUtils/SignalTranslator.cpp **** }
+  15:PosixUtils/SignalTranslator.cpp **** 
+  16:PosixUtils/SignalTranslator.cpp **** 
+  17:PosixUtils/SignalTranslator.cpp **** SignalTranslator::SignalTranslator()
+  42              		.loc 1 17 1
+  43              		.cfi_startproc
+  44 0026 F30F1EFA 		endbr64
+  45 002a 55       		pushq	%rbp
+  46              		.cfi_def_cfa_offset 16
+  47              		.cfi_offset 6, -16
+  48 002b 4889E5   		movq	%rsp, %rbp
+  49              		.cfi_def_cfa_register 6
+  50 002e 4881ECB0 		subq	$176, %rsp
+  50      000000
+  51 0035 4889BD58 		movq	%rdi, -168(%rbp)
+  51      FFFFFF
+  52              		.loc 1 17 1
+  53 003c 64488B04 		movq	%fs:40, %rax
+  53      25280000 
+  53      00
+  54 0045 488945F8 		movq	%rax, -8(%rbp)
+  55 0049 31C0     		xorl	%eax, %eax
+  56              	.LBB2:
+  57              	.LBB3:
+  18:PosixUtils/SignalTranslator.cpp **** {
+  19:PosixUtils/SignalTranslator.cpp ****     m_oldJumpTarget = s_jumpTarget;
+  58              		.loc 1 19 21
+  59 004b 488B0500 		movq	_ZN8UnitTest16SignalTranslator12s_jumpTargetE@GOTPCREL(%rip), %rax
+  59      000000
+  60 0052 488B10   		movq	(%rax), %rdx
+  61 0055 488B8558 		movq	-168(%rbp), %rax
+  61      FFFFFF
+  62 005c 488990C8 		movq	%rdx, 200(%rax)
+  62      000000
+  20:PosixUtils/SignalTranslator.cpp ****     s_jumpTarget = &m_currentJumpTarget;
+  63              		.loc 1 20 20
+  64 0063 488B9558 		movq	-168(%rbp), %rdx
+  64      FFFFFF
+  65              		.loc 1 20 18
+  66 006a 488B0500 		movq	_ZN8UnitTest16SignalTranslator12s_jumpTargetE@GOTPCREL(%rip), %rax
+  66      000000
+  67 0071 488910   		movq	%rdx, (%rax)
+  21:PosixUtils/SignalTranslator.cpp **** 
+  22:PosixUtils/SignalTranslator.cpp ****     struct sigaction action;
+  23:PosixUtils/SignalTranslator.cpp ****     action.sa_flags = 0;
+  68              		.loc 1 23 21
+  69 0074 C745E800 		movl	$0, -24(%rbp)
+  69      000000
+  24:PosixUtils/SignalTranslator.cpp ****     action.sa_handler = SignalHandler;
+  70              		.loc 1 24 23
+  71 007b 488D057E 		leaq	_ZN8UnitTest12_GLOBAL__N_113SignalHandlerEi(%rip), %rax
+  71      FFFFFF
+  72 0082 48898560 		movq	%rax, -160(%rbp)
+  72      FFFFFF
+  25:PosixUtils/SignalTranslator.cpp ****     sigemptyset( &action.sa_mask );
+  73              		.loc 1 25 16
+  74 0089 488D8560 		leaq	-160(%rbp), %rax
+  74      FFFFFF
+  75 0090 4883C008 		addq	$8, %rax
+  76 0094 4889C7   		movq	%rax, %rdi
+  77 0097 E8000000 		call	sigemptyset@PLT
+  77      00
+  26:PosixUtils/SignalTranslator.cpp **** 
+  27:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGSEGV, &action, &m_old_SIGSEGV_action );
+  78              		.loc 1 27 14
+  79 009c 488B8558 		movq	-168(%rbp), %rax
+  79      FFFFFF
+  80 00a3 488D9000 		leaq	512(%rax), %rdx
+  80      020000
+  81 00aa 488D8560 		leaq	-160(%rbp), %rax
+  81      FFFFFF
+  82 00b1 4889C6   		movq	%rax, %rsi
+  83 00b4 BF0B0000 		movl	$11, %edi
+  83      00
+  84 00b9 E8000000 		call	sigaction@PLT
+  84      00
+  28:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGFPE , &action, &m_old_SIGFPE_action  );
+  85              		.loc 1 28 14
+  86 00be 488B8558 		movq	-168(%rbp), %rax
+  86      FFFFFF
+  87 00c5 488D90D0 		leaq	208(%rax), %rdx
+  87      000000
+  88 00cc 488D8560 		leaq	-160(%rbp), %rax
+  88      FFFFFF
+  89 00d3 4889C6   		movq	%rax, %rsi
+  90 00d6 BF080000 		movl	$8, %edi
+  90      00
+  91 00db E8000000 		call	sigaction@PLT
+  91      00
+  29:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGTRAP, &action, &m_old_SIGTRAP_action );
+  92              		.loc 1 29 14
+  93 00e0 488B8558 		movq	-168(%rbp), %rax
+  93      FFFFFF
+  94 00e7 488D9068 		leaq	360(%rax), %rdx
+  94      010000
+  95 00ee 488D8560 		leaq	-160(%rbp), %rax
+  95      FFFFFF
+  96 00f5 4889C6   		movq	%rax, %rsi
+  97 00f8 BF050000 		movl	$5, %edi
+  97      00
+  98 00fd E8000000 		call	sigaction@PLT
+  98      00
+  30:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGBUS , &action, &m_old_SIGBUS_action  );
+  99              		.loc 1 30 14
+ 100 0102 488B8558 		movq	-168(%rbp), %rax
+ 100      FFFFFF
+ 101 0109 488D9098 		leaq	664(%rax), %rdx
+ 101      020000
+ 102 0110 488D8560 		leaq	-160(%rbp), %rax
+ 102      FFFFFF
+ 103 0117 4889C6   		movq	%rax, %rsi
+ 104 011a BF070000 		movl	$7, %edi
+ 104      00
+ 105 011f E8000000 		call	sigaction@PLT
+ 105      00
+  31:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGILL , &action, &m_old_SIGBUS_action  );
+ 106              		.loc 1 31 14
+ 107 0124 488B8558 		movq	-168(%rbp), %rax
+ 107      FFFFFF
+ 108 012b 488D9098 		leaq	664(%rax), %rdx
+ 108      020000
+ 109 0132 488D8560 		leaq	-160(%rbp), %rax
+ 109      FFFFFF
+ 110 0139 4889C6   		movq	%rax, %rsi
+ 111 013c BF040000 		movl	$4, %edi
+ 111      00
+ 112 0141 E8000000 		call	sigaction@PLT
+ 112      00
+ 113              	.LBE3:
+ 114              	.LBE2:
+  32:PosixUtils/SignalTranslator.cpp **** }
+ 115              		.loc 1 32 1
+ 116 0146 90       		nop
+ 117 0147 488B45F8 		movq	-8(%rbp), %rax
+ 118 014b 64482B04 		subq	%fs:40, %rax
+ 118      25280000 
+ 118      00
+ 119 0154 7405     		je	.L3
+ 120 0156 E8000000 		call	__stack_chk_fail@PLT
+ 120      00
+ 121              	.L3:
+ 122 015b C9       		leave
+ 123              		.cfi_def_cfa 7, 8
+ 124 015c C3       		ret
+ 125              		.cfi_endproc
+ 126              	.LFE2:
+ 128              		.globl	_ZN8UnitTest16SignalTranslatorC1Ev
+ 129              		.set	_ZN8UnitTest16SignalTranslatorC1Ev,_ZN8UnitTest16SignalTranslatorC2Ev
+ 130 015d 90       		.align 2
+ 131              		.globl	_ZN8UnitTest16SignalTranslatorD2Ev
+ 133              	_ZN8UnitTest16SignalTranslatorD2Ev:
+ 134              	.LFB5:
+  33:PosixUtils/SignalTranslator.cpp **** 
+  34:PosixUtils/SignalTranslator.cpp **** SignalTranslator::~SignalTranslator()
+ 135              		.loc 1 34 1
+ 136              		.cfi_startproc
+ 137 015e F30F1EFA 		endbr64
+ 138 0162 55       		pushq	%rbp
+ 139              		.cfi_def_cfa_offset 16
+ 140              		.cfi_offset 6, -16
+ 141 0163 4889E5   		movq	%rsp, %rbp
+ 142              		.cfi_def_cfa_register 6
+ 143 0166 4883EC10 		subq	$16, %rsp
+ 144 016a 48897DF8 		movq	%rdi, -8(%rbp)
+ 145              	.LBB4:
+  35:PosixUtils/SignalTranslator.cpp **** {
+  36:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGILL , &m_old_SIGBUS_action , 0 );
+ 146              		.loc 1 36 25
+ 147 016e 488B45F8 		movq	-8(%rbp), %rax
+ 148 0172 48059802 		addq	$664, %rax
+ 148      0000
+ 149              		.loc 1 36 14
+ 150 0178 BA000000 		movl	$0, %edx
+ 150      00
+ 151 017d 4889C6   		movq	%rax, %rsi
+ 152 0180 BF040000 		movl	$4, %edi
+ 152      00
+ 153 0185 E8000000 		call	sigaction@PLT
+ 153      00
+  37:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGBUS , &m_old_SIGBUS_action , 0 );
+ 154              		.loc 1 37 25
+ 155 018a 488B45F8 		movq	-8(%rbp), %rax
+ 156 018e 48059802 		addq	$664, %rax
+ 156      0000
+ 157              		.loc 1 37 14
+ 158 0194 BA000000 		movl	$0, %edx
+ 158      00
+ 159 0199 4889C6   		movq	%rax, %rsi
+ 160 019c BF070000 		movl	$7, %edi
+ 160      00
+ 161 01a1 E8000000 		call	sigaction@PLT
+ 161      00
+  38:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGTRAP, &m_old_SIGTRAP_action, 0 );
+ 162              		.loc 1 38 25
+ 163 01a6 488B45F8 		movq	-8(%rbp), %rax
+ 164 01aa 48056801 		addq	$360, %rax
+ 164      0000
+ 165              		.loc 1 38 14
+ 166 01b0 BA000000 		movl	$0, %edx
+ 166      00
+ 167 01b5 4889C6   		movq	%rax, %rsi
+ 168 01b8 BF050000 		movl	$5, %edi
+ 168      00
+ 169 01bd E8000000 		call	sigaction@PLT
+ 169      00
+  39:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGFPE , &m_old_SIGFPE_action , 0 );
+ 170              		.loc 1 39 25
+ 171 01c2 488B45F8 		movq	-8(%rbp), %rax
+ 172 01c6 4805D000 		addq	$208, %rax
+ 172      0000
+ 173              		.loc 1 39 14
+ 174 01cc BA000000 		movl	$0, %edx
+ 174      00
+ 175 01d1 4889C6   		movq	%rax, %rsi
+ 176 01d4 BF080000 		movl	$8, %edi
+ 176      00
+ 177 01d9 E8000000 		call	sigaction@PLT
+ 177      00
+  40:PosixUtils/SignalTranslator.cpp ****     sigaction( SIGSEGV, &m_old_SIGSEGV_action, 0 );
+ 178              		.loc 1 40 25
+ 179 01de 488B45F8 		movq	-8(%rbp), %rax
+ 180 01e2 48050002 		addq	$512, %rax
+ 180      0000
+ 181              		.loc 1 40 14
+ 182 01e8 BA000000 		movl	$0, %edx
+ 182      00
+ 183 01ed 4889C6   		movq	%rax, %rsi
+ 184 01f0 BF0B0000 		movl	$11, %edi
+ 184      00
+ 185 01f5 E8000000 		call	sigaction@PLT
+ 185      00
+  41:PosixUtils/SignalTranslator.cpp **** 
+  42:PosixUtils/SignalTranslator.cpp ****     s_jumpTarget = m_oldJumpTarget;
+ 186              		.loc 1 42 20
+ 187 01fa 488B45F8 		movq	-8(%rbp), %rax
+ 188 01fe 488B90C8 		movq	200(%rax), %rdx
+ 188      000000
+ 189              		.loc 1 42 18
+ 190 0205 488B0500 		movq	_ZN8UnitTest16SignalTranslator12s_jumpTargetE@GOTPCREL(%rip), %rax
+ 190      000000
+ 191 020c 488910   		movq	%rdx, (%rax)
+ 192              	.LBE4:
+  43:PosixUtils/SignalTranslator.cpp **** }
+ 193              		.loc 1 43 1
+ 194 020f 90       		nop
+ 195 0210 C9       		leave
+ 196              		.cfi_def_cfa 7, 8
+ 197 0211 C3       		ret
+ 198              		.cfi_endproc
+ 199              	.LFE5:
+ 201              		.globl	_ZN8UnitTest16SignalTranslatorD1Ev
+ 202              		.set	_ZN8UnitTest16SignalTranslatorD1Ev,_ZN8UnitTest16SignalTranslatorD2Ev
+ 203              	.Letext0:
+ 204              		.file 2 "/usr/include/x86_64-linux-gnu/bits/setjmp.h"
+ 205              		.file 3 "/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h"
+ 206              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h"
+ 207              		.file 5 "/usr/include/setjmp.h"
+ 208              		.file 6 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 209              		.file 7 "/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h"
+ 210              		.file 8 "/usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h"
+ 211              		.file 9 "/usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h"
+ 212              		.file 10 "/usr/include/signal.h"
+ 213              		.file 11 "/usr/include/x86_64-linux-gnu/bits/sigaction.h"
+ 214              		.file 12 "PosixUtils/SignalTranslator.h"
+ 215              		.file 13 "/usr/include/x86_64-linux-gnu/bits/confname.h"
+ 3010              		.section	.note.gnu.property,"a"
+ 3011              		.align 8
+ 3012 0000 04000000 		.long	1f - 0f
+ 3013 0004 10000000 		.long	4f - 1f
+ 3014 0008 05000000 		.long	5
+ 3015              	0:
+ 3016 000c 474E5500 		.string	"GNU"
+ 3017              	1:
+ 3018              		.align 8
+ 3019 0010 020000C0 		.long	0xc0000002
+ 3020 0014 04000000 		.long	3f - 2f
+ 3021              	2:
+ 3022 0018 03000000 		.long	0x3
+ 3023              	3:
+ 3024 001c 00000000 		.align 8
+ 3025              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 SignalTranslator.cpp
+     /tmp/ccyncPMS.s:10     .bss:0000000000000000 _ZN8UnitTest16SignalTranslator12s_jumpTargetE
+     /tmp/ccyncPMS.s:14     .text:0000000000000000 _ZN8UnitTest12_GLOBAL__N_113SignalHandlerEi
+     /tmp/ccyncPMS.s:40     .text:0000000000000026 _ZN8UnitTest16SignalTranslatorC2Ev
+     /tmp/ccyncPMS.s:40     .text:0000000000000026 _ZN8UnitTest16SignalTranslatorC1Ev
+     /tmp/ccyncPMS.s:133    .text:000000000000015e _ZN8UnitTest16SignalTranslatorD2Ev
+     /tmp/ccyncPMS.s:133    .text:000000000000015e _ZN8UnitTest16SignalTranslatorD1Ev
+
+UNDEFINED SYMBOLS
+_GLOBAL_OFFSET_TABLE_
+siglongjmp
+sigemptyset
+sigaction
+__stack_chk_fail

@@ -1,0 +1,979 @@
+   1              		.file	"spi.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libfpgalink" "spi.c"
+   6              	littleEndian32:
+   7              	.LFB3:
+   8              		.file 1 "/home/pong/FPGALink/makestuff/common/makestuff.h"
+   1:/home/pong/FPGALink/makestuff/common/makestuff.h **** /*
+   2:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:/home/pong/FPGALink/makestuff/common/makestuff.h ****  *
+   4:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * This program is free software: you can redistribute it and/or modify
+   5:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * the Free Software Foundation, either version 3 of the License, or
+   7:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * (at your option) any later version.
+   8:/home/pong/FPGALink/makestuff/common/makestuff.h ****  *
+   9:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * This program is distributed in the hope that it will be useful,
+  10:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * GNU Lesser General Public License for more details.
+  13:/home/pong/FPGALink/makestuff/common/makestuff.h ****  *
+  14:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * You should have received a copy of the GNU Lesser General Public License
+  15:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:/home/pong/FPGALink/makestuff/common/makestuff.h ****  */
+  17:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  18:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef MAKESTUFF_H
+  19:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define MAKESTUFF_H
+  20:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  21:/home/pong/FPGALink/makestuff/common/makestuff.h **** #include <stddef.h>
+  22:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  23:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  24:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifdef WIN32
+  25:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		typedef char bool;
+  26:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		enum {
+  27:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			false = 0,
+  28:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			true = 1
+  29:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		};
+  30:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#else
+  31:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#include <stdbool.h>
+  32:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  33:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  34:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  35:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifdef WIN32
+  36:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define WARN_UNUSED_RESULT
+  37:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define DLLEXPORT(t) __declspec(dllexport) t __stdcall
+  38:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define PFSZD "%Iu"
+  39:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifdef _WIN64
+  40:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define PFSZH "%016IX"
+  41:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define WORD_LENGTH 64
+  42:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#else
+  43:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define PFSZH "%08IX"
+  44:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define WORD_LENGTH 32
+  45:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  46:/home/pong/FPGALink/makestuff/common/makestuff.h **** #else
+  47:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+  48:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define DLLEXPORT(t) t
+  49:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define PFSZD "%zu"
+  50:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifdef __LP64__
+  51:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define PFSZH "%016zX"
+  52:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define WORD_LENGTH 64
+  53:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#else
+  54:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define PFSZH "%08zX"
+  55:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define WORD_LENGTH 32
+  56:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  57:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  58:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  59:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef NULL
+  60:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define NULL ((void*)0)
+  61:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  62:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  63:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef unsigned char      uint8;
+  64:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef unsigned short     uint16;
+  65:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  66:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifndef SDCC
+  67:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		typedef unsigned long long uint64;
+  68:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  69:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  70:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  71:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef signed char        int8;
+  72:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef signed short       int16;
+  73:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  74:/home/pong/FPGALink/makestuff/common/makestuff.h **** #if (defined __AVR__ && defined __GNUC__) || defined SDCC
+  75:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	// The embedded platforms have sizeof(int) = 2, so use long
+  76:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	typedef signed long    int32;
+  77:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	typedef unsigned long  uint32;
+  78:/home/pong/FPGALink/makestuff/common/makestuff.h **** #else
+  79:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	// The i686 & x86_64 have sizeof(int) = 4
+  80:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	typedef signed int     int32;
+  81:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	typedef unsigned int   uint32;
+  82:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  83:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  84:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  85:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifndef SDCC
+  86:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		typedef signed long long int64;
+  87:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  88:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  89:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  90:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef unsigned int       bitfield;
+  91:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  92:/home/pong/FPGALink/makestuff/common/makestuff.h **** #if defined __GNUC__
+  93:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define swap32(x) __builtin_bswap32(x)
+  94:/home/pong/FPGALink/makestuff/common/makestuff.h **** #elif defined WIN32
+  95:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifdef __cplusplus
+  96:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		extern "C"
+  97:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  98:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	unsigned long  __cdecl _byteswap_ulong(unsigned long);
+  99:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define swap32(x) _byteswap_ulong(x)
+ 100:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifndef __cplusplus
+ 101:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define inline __inline
+ 102:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+ 103:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+ 104:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define swap16(x) ((uint16)((((x) & 0x00FF) << 8) | (((x) >> 8) & 0x00FF)))
+ 105:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 106:/home/pong/FPGALink/makestuff/common/makestuff.h **** // The C standard requires this two-level indirection thing
+ 107:/home/pong/FPGALink/makestuff/common/makestuff.h **** #undef CONCAT
+ 108:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CONCAT_INTERNAL(x, y) x ## y
+ 109:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CONCAT(x, y) CONCAT_INTERNAL(x, y)
+ 110:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 111:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define STR_INTERNAL(x) #x
+ 112:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define STR(x) STR_INTERNAL(x)
+ 113:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 114:/home/pong/FPGALink/makestuff/common/makestuff.h **** // The VA_NARGS() macro - count the number of arguments in a C99 variadic macro
+ 115:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define VA_EXPAND(x) x
+ 116:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define VA_NARGS(...) VA_EXPAND(VA_NARGS_INTERNAL(__VA_ARGS__, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 
+ 117:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define VA_NARGS_INTERNAL(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y
+ 118:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define FAIL(code, label) { retVal = code; goto label; }
+ 119:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 120:/home/pong/FPGALink/makestuff/common/makestuff.h **** // The CHECK_STATUS() macro - if condition is true, set a returnCode and jump to a label (exit,
+ 121:/home/pong/FPGALink/makestuff/common/makestuff.h **** // cleanup etc). If liberror is included you can also give an error message.
+ 122:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CHECK_INTERNAL3(condition, code, label) if ( condition ) { FAIL(code, label); }
+ 123:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CHECK_INTERNAL4(condition, code, label, prefix) LIBERROR_IS_REQUIRED
+ 124:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CHECK_INTERNAL5(condition, code, label, ...) LIBERROR_IS_REQUIRED
+ 125:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CHECK_STATUS(...) VA_EXPAND(CONCAT(CHECK_INTERNAL, VA_NARGS(__VA_ARGS__))(__VA_ARGS__))
+ 126:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 127:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifdef BYTE_ORDER
+ 128:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#if BYTE_ORDER == 1234
+ 129:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		// Little-endian machines
+ 130:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		static inline uint16 bigEndian16(uint16 x) {
+ 131:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			return swap16(x);
+ 132:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		}
+ 133:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		static inline uint32 bigEndian32(uint32 x) {
+ 134:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			return swap32(x);
+ 135:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		}
+ 136:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		static inline uint16 littleEndian16(uint16 x) {
+ 137:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			return x;
+ 138:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		}
+ 139:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		static inline uint32 littleEndian32(uint32 x) {
+   9              		.loc 1 139 49
+  10              		.cfi_startproc
+  11 0000 55       		pushq	%rbp
+  12              		.cfi_def_cfa_offset 16
+  13              		.cfi_offset 6, -16
+  14 0001 4889E5   		movq	%rsp, %rbp
+  15              		.cfi_def_cfa_register 6
+  16 0004 897DFC   		movl	%edi, -4(%rbp)
+ 140:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			return x;
+  17              		.loc 1 140 11
+  18 0007 8B45FC   		movl	-4(%rbp), %eax
+ 141:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		}
+  19              		.loc 1 141 3
+  20 000a 5D       		popq	%rbp
+  21              		.cfi_def_cfa 7, 8
+  22 000b C3       		ret
+  23              		.cfi_endproc
+  24              	.LFE3:
+  26              		.section	.rodata
+  27              		.align 32
+  30              	swapTable:
+  31 0000 00       		.string	""
+  32 0001 8040C020 		.ascii	"\200@\300 \240`\340\020\220P\3200\260p\360\b\210H\310(\250h\350"
+  32      A060E010 
+  32      9050D030 
+  32      B070F008 
+  32      8848C828 
+  33 0018 189858D8 		.ascii	"\030\230X\3308\270x\370\004\204D\304$\244d\344\024\224T\3244"
+  33      38B878F8 
+  33      048444C4 
+  33      24A464E4 
+  33      149454D4 
+  34 002d B474F40C 		.ascii	"\264t\364\f\214L\314,\254l\354\034\234\\\334<\274|\374\002\202"
+  34      8C4CCC2C 
+  34      AC6CEC1C 
+  34      9C5CDC3C 
+  34      BC7CFC02 
+  35 0042 42C222A2 		.ascii	"B\302\"\242b\342\022\222R\3222\262r\362\n\212J\312*\252j\352"
+  35      62E21292 
+  35      52D232B2 
+  35      72F20A8A 
+  35      4ACA2AAA 
+  36 0058 1A9A5ADA 		.ascii	"\032\232Z\332:\272z\372\006\206F\306&\246f\346\026\226V\3266"
+  36      3ABA7AFA 
+  36      068646C6 
+  36      26A666E6 
+  36      169656D6 
+  37 006d B676F60E 		.ascii	"\266v\366\016\216N\316.\256n\356\036\236^\336>\276~\376\001\201"
+  37      8E4ECE2E 
+  37      AE6EEE1E 
+  37      9E5EDE3E 
+  37      BE7EFE01 
+  38 0082 41C121A1 		.ascii	"A\301!\241a\341\021\221Q\3211\261q\361\t\211I\311)\251i\351\031"
+  38      61E11191 
+  38      51D131B1 
+  38      71F10989 
+  38      49C929A9 
+  39 0099 9959D939 		.ascii	"\231Y\3319\271y\371\005\205E\305%\245e\345\025\225U\3255\265"
+  39      B979F905 
+  39      8545C525 
+  39      A565E515 
+  39      9555D535 
+  40 00ae 75F50D8D 		.ascii	"u\365\r\215M\315-\255m\355\035\235]\335=\275}\375\003\203C\303"
+  40      4DCD2DAD 
+  40      6DED1D9D 
+  40      5DDD3DBD 
+  40      7DFD0383 
+  41 00c4 23A363E3 		.ascii	"#\243c\343\023\223S\3233\263s\363\013\213K\313+\253k\353\033"
+  41      139353D3 
+  41      33B373F3 
+  41      0B8B4BCB 
+  41      2BAB6BEB 
+  42 00d9 9B5BDB3B 		.ascii	"\233[\333;\273{\373\007\207G\307'\247g\347\027\227W\3277\267"
+  42      BB7BFB07 
+  42      8747C727 
+  42      A767E717 
+  42      9757D737 
+  43 00ee 77F70F8F 		.ascii	"w\367\017\217O\317/\257o\357\037\237_\337?\277\177\377"
+  43      4FCF2FAF 
+  43      6FEF1F9F 
+  43      5FDF3FBF 
+  43      7FFF
+  44              		.text
+  45              		.globl	spiBitSwap
+  47              	spiBitSwap:
+  48              	.LFB4:
+  49              		.file 2 "spi.c"
+   1:spi.c         **** /*
+   2:spi.c         ****  * Copyright (C) 2013 Chris McClelland
+   3:spi.c         ****  *
+   4:spi.c         ****  * This program is free software: you can redistribute it and/or modify
+   5:spi.c         ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:spi.c         ****  * the Free Software Foundation, either version 3 of the License, or
+   7:spi.c         ****  * (at your option) any later version.
+   8:spi.c         ****  *
+   9:spi.c         ****  * This program is distributed in the hope that it will be useful,
+  10:spi.c         ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:spi.c         ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:spi.c         ****  * GNU Lesser General Public License for more details.
+  13:spi.c         ****  *
+  14:spi.c         ****  * You should have received a copy of the GNU Lesser General Public License
+  15:spi.c         ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:spi.c         ****  */
+  17:spi.c         **** #include <stdlib.h>
+  18:spi.c         **** #include <makestuff.h>
+  19:spi.c         **** #include <libusbwrap.h>
+  20:spi.c         **** #include <liberror.h>
+  21:spi.c         **** #include "private.h"
+  22:spi.c         **** #include "vendorCommands.h"
+  23:spi.c         **** 
+  24:spi.c         **** static const uint8 swapTable[] = {
+  25:spi.c         **** 	0x00, 0x80, 0x40, 0xC0, 0x20, 0xA0, 0x60, 0xE0, 0x10, 0x90, 0x50, 0xD0, 0x30, 0xB0, 0x70, 0xF0,
+  26:spi.c         **** 	0x08, 0x88, 0x48, 0xC8, 0x28, 0xA8, 0x68, 0xE8, 0x18, 0x98, 0x58, 0xD8, 0x38, 0xB8, 0x78, 0xF8,
+  27:spi.c         **** 	0x04, 0x84, 0x44, 0xC4, 0x24, 0xA4, 0x64, 0xE4, 0x14, 0x94, 0x54, 0xD4, 0x34, 0xB4, 0x74, 0xF4,
+  28:spi.c         **** 	0x0C, 0x8C, 0x4C, 0xCC, 0x2C, 0xAC, 0x6C, 0xEC, 0x1C, 0x9C, 0x5C, 0xDC, 0x3C, 0xBC, 0x7C, 0xFC,
+  29:spi.c         **** 	0x02, 0x82, 0x42, 0xC2, 0x22, 0xA2, 0x62, 0xE2, 0x12, 0x92, 0x52, 0xD2, 0x32, 0xB2, 0x72, 0xF2,
+  30:spi.c         **** 	0x0A, 0x8A, 0x4A, 0xCA, 0x2A, 0xAA, 0x6A, 0xEA, 0x1A, 0x9A, 0x5A, 0xDA, 0x3A, 0xBA, 0x7A, 0xFA,
+  31:spi.c         **** 	0x06, 0x86, 0x46, 0xC6, 0x26, 0xA6, 0x66, 0xE6, 0x16, 0x96, 0x56, 0xD6, 0x36, 0xB6, 0x76, 0xF6,
+  32:spi.c         **** 	0x0E, 0x8E, 0x4E, 0xCE, 0x2E, 0xAE, 0x6E, 0xEE, 0x1E, 0x9E, 0x5E, 0xDE, 0x3E, 0xBE, 0x7E, 0xFE,
+  33:spi.c         **** 	0x01, 0x81, 0x41, 0xC1, 0x21, 0xA1, 0x61, 0xE1, 0x11, 0x91, 0x51, 0xD1, 0x31, 0xB1, 0x71, 0xF1,
+  34:spi.c         **** 	0x09, 0x89, 0x49, 0xC9, 0x29, 0xA9, 0x69, 0xE9, 0x19, 0x99, 0x59, 0xD9, 0x39, 0xB9, 0x79, 0xF9,
+  35:spi.c         **** 	0x05, 0x85, 0x45, 0xC5, 0x25, 0xA5, 0x65, 0xE5, 0x15, 0x95, 0x55, 0xD5, 0x35, 0xB5, 0x75, 0xF5,
+  36:spi.c         **** 	0x0D, 0x8D, 0x4D, 0xCD, 0x2D, 0xAD, 0x6D, 0xED, 0x1D, 0x9D, 0x5D, 0xDD, 0x3D, 0xBD, 0x7D, 0xFD,
+  37:spi.c         **** 	0x03, 0x83, 0x43, 0xC3, 0x23, 0xA3, 0x63, 0xE3, 0x13, 0x93, 0x53, 0xD3, 0x33, 0xB3, 0x73, 0xF3,
+  38:spi.c         **** 	0x0B, 0x8B, 0x4B, 0xCB, 0x2B, 0xAB, 0x6B, 0xEB, 0x1B, 0x9B, 0x5B, 0xDB, 0x3B, 0xBB, 0x7B, 0xFB,
+  39:spi.c         **** 	0x07, 0x87, 0x47, 0xC7, 0x27, 0xA7, 0x67, 0xE7, 0x17, 0x97, 0x57, 0xD7, 0x37, 0xB7, 0x77, 0xF7,
+  40:spi.c         **** 	0x0F, 0x8F, 0x4F, 0xCF, 0x2F, 0xAF, 0x6F, 0xEF, 0x1F, 0x9F, 0x5F, 0xDF, 0x3F, 0xBF, 0x7F, 0xFF
+  41:spi.c         **** };
+  42:spi.c         **** 
+  43:spi.c         **** DLLEXPORT(void) spiBitSwap(uint32 length, uint8 *buffer) {
+  50              		.loc 2 43 58
+  51              		.cfi_startproc
+  52 000c F30F1EFA 		endbr64
+  53 0010 55       		pushq	%rbp
+  54              		.cfi_def_cfa_offset 16
+  55              		.cfi_offset 6, -16
+  56 0011 4889E5   		movq	%rsp, %rbp
+  57              		.cfi_def_cfa_register 6
+  58 0014 897DFC   		movl	%edi, -4(%rbp)
+  59 0017 488975F0 		movq	%rsi, -16(%rbp)
+  44:spi.c         **** 	while ( length-- ) {
+  60              		.loc 2 44 8
+  61 001b EB22     		jmp	.L4
+  62              	.L5:
+  45:spi.c         **** 		*buffer = swapTable[*buffer];
+  63              		.loc 2 45 23
+  64 001d 488B45F0 		movq	-16(%rbp), %rax
+  65 0021 0FB600   		movzbl	(%rax), %eax
+  66 0024 0FB6C0   		movzbl	%al, %eax
+  67              		.loc 2 45 22
+  68 0027 4898     		cltq
+  69 0029 488D1500 		leaq	swapTable(%rip), %rdx
+  69      000000
+  70 0030 0FB61410 		movzbl	(%rax,%rdx), %edx
+  71              		.loc 2 45 11
+  72 0034 488B45F0 		movq	-16(%rbp), %rax
+  73 0038 8810     		movb	%dl, (%rax)
+  46:spi.c         **** 		buffer++;
+  74              		.loc 2 46 9
+  75 003a 488345F0 		addq	$1, -16(%rbp)
+  75      01
+  76              	.L4:
+  44:spi.c         **** 	while ( length-- ) {
+  77              		.loc 2 44 16
+  78 003f 8B45FC   		movl	-4(%rbp), %eax
+  79 0042 8D50FF   		leal	-1(%rax), %edx
+  80 0045 8955FC   		movl	%edx, -4(%rbp)
+  44:spi.c         **** 	while ( length-- ) {
+  81              		.loc 2 44 10
+  82 0048 85C0     		testl	%eax, %eax
+  83 004a 75D1     		jne	.L5
+  47:spi.c         **** 	}
+  48:spi.c         **** }
+  84              		.loc 2 48 1
+  85 004c 90       		nop
+  86 004d 90       		nop
+  87 004e 5D       		popq	%rbp
+  88              		.cfi_def_cfa 7, 8
+  89 004f C3       		ret
+  90              		.cfi_endproc
+  91              	.LFE4:
+  93              		.section	.rodata
+  94              	.LC0:
+  95 0100 73706953 		.string	"spiSend()"
+  95      656E6428 
+  95      2900
+  96 010a 00000000 		.align 8
+  96      0000
+  97              	.LC1:
+  98 0110 73706953 		.string	"spiSend(): device doesn't support SPI send"
+  98      656E6428 
+  98      293A2064 
+  98      65766963 
+  98      6520646F 
+  99              		.text
+ 100              		.globl	spiSend
+ 102              	spiSend:
+ 103              	.LFB5:
+  49:spi.c         **** 
+  50:spi.c         **** DLLEXPORT(FLStatus) spiSend(
+  51:spi.c         **** 	struct FLContext *handle, uint32 length, const uint8 *buffer, uint8 bitOrder, const char **error)
+  52:spi.c         **** {
+ 104              		.loc 2 52 1
+ 105              		.cfi_startproc
+ 106 0050 F30F1EFA 		endbr64
+ 107 0054 55       		pushq	%rbp
+ 108              		.cfi_def_cfa_offset 16
+ 109              		.cfi_offset 6, -16
+ 110 0055 4889E5   		movq	%rsp, %rbp
+ 111              		.cfi_def_cfa_register 6
+ 112 0058 4883EC60 		subq	$96, %rsp
+ 113 005c 48897DB8 		movq	%rdi, -72(%rbp)
+ 114 0060 8975B4   		movl	%esi, -76(%rbp)
+ 115 0063 488955A8 		movq	%rdx, -88(%rbp)
+ 116 0067 89C8     		movl	%ecx, %eax
+ 117 0069 4C8945A0 		movq	%r8, -96(%rbp)
+ 118 006d 8845B0   		movb	%al, -80(%rbp)
+ 119              		.loc 2 52 1
+ 120 0070 64488B04 		movq	%fs:40, %rax
+ 120      25280000 
+ 120      00
+ 121 0079 488945F8 		movq	%rax, -8(%rbp)
+ 122 007d 31C0     		xorl	%eax, %eax
+  53:spi.c         **** 	FLStatus retVal = FL_SUCCESS;
+ 123              		.loc 2 53 11
+ 124 007f C745C400 		movl	$0, -60(%rbp)
+ 124      000000
+  54:spi.c         **** 	USBStatus uStatus;
+  55:spi.c         **** 	uint8 *swapBuffer = NULL;
+ 125              		.loc 2 55 9
+ 126 0086 48C745D0 		movq	$0, -48(%rbp)
+ 126      00000000 
+  56:spi.c         **** 	const uint8 *data = buffer;
+ 127              		.loc 2 56 15
+ 128 008e 488B45A8 		movq	-88(%rbp), %rax
+ 129 0092 488945D8 		movq	%rax, -40(%rbp)
+  57:spi.c         **** 	union {
+  58:spi.c         **** 		uint32 u32;
+  59:spi.c         **** 		uint8 bytes[4];
+  60:spi.c         **** 	} countUnion;
+  61:spi.c         **** 
+  62:spi.c         **** 	// Maybe make a bit-swapped copy of the data before sending it
+  63:spi.c         **** 	if ( bitOrder == SPI_MSBFIRST ) {
+ 130              		.loc 2 63 5
+ 131 0096 807DB000 		cmpb	$0, -80(%rbp)
+ 132 009a 0F859100 		jne	.L7
+ 132      0000
+ 133              	.LBB2:
+  64:spi.c         **** 		uint32 count = length;
+ 134              		.loc 2 64 10
+ 135 00a0 8B45B4   		movl	-76(%rbp), %eax
+ 136 00a3 8945CC   		movl	%eax, -52(%rbp)
+  65:spi.c         **** 		const uint8 *srcPtr = buffer;
+ 137              		.loc 2 65 16
+ 138 00a6 488B45A8 		movq	-88(%rbp), %rax
+ 139 00aa 488945E0 		movq	%rax, -32(%rbp)
+  66:spi.c         **** 		uint8 *dstPtr = swapBuffer = (uint8*)malloc(length);
+ 140              		.loc 2 66 40
+ 141 00ae 8B45B4   		movl	-76(%rbp), %eax
+ 142 00b1 4889C7   		movq	%rax, %rdi
+ 143 00b4 E8000000 		call	malloc@PLT
+ 143      00
+ 144 00b9 488945D0 		movq	%rax, -48(%rbp)
+ 145              		.loc 2 66 10
+ 146 00bd 488B45D0 		movq	-48(%rbp), %rax
+ 147 00c1 488945E8 		movq	%rax, -24(%rbp)
+  67:spi.c         **** 		CHECK_STATUS(!swapBuffer, FL_ALLOC_ERR, cleanup, "spiSend()");
+ 148              		.loc 2 67 3
+ 149 00c5 48837DD0 		cmpq	$0, -48(%rbp)
+ 149      00
+ 150 00ca 7550     		jne	.L10
+ 151              		.loc 2 67 3 is_stmt 0 discriminator 1
+ 152 00cc 488B45A0 		movq	-96(%rbp), %rax
+ 153 00d0 488D1500 		leaq	.LC0(%rip), %rdx
+ 153      000000
+ 154 00d7 4889D6   		movq	%rdx, %rsi
+ 155 00da 4889C7   		movq	%rax, %rdi
+ 156 00dd E8000000 		call	errPrefix@PLT
+ 156      00
+ 157 00e2 C745C401 		movl	$1, -60(%rbp)
+ 157      000000
+ 158 00e9 E9750100 		jmp	.L9
+ 158      00
+ 159              	.L11:
+  68:spi.c         **** 		while ( count-- ) {
+  69:spi.c         **** 			*dstPtr++ = swapTable[*srcPtr++];
+ 160              		.loc 2 69 33 is_stmt 1
+ 161 00ee 488B45E0 		movq	-32(%rbp), %rax
+ 162 00f2 488D5001 		leaq	1(%rax), %rdx
+ 163 00f6 488955E0 		movq	%rdx, -32(%rbp)
+ 164              		.loc 2 69 26
+ 165 00fa 0FB600   		movzbl	(%rax), %eax
+ 166 00fd 0FB6C8   		movzbl	%al, %ecx
+ 167              		.loc 2 69 11
+ 168 0100 488B45E8 		movq	-24(%rbp), %rax
+ 169 0104 488D5001 		leaq	1(%rax), %rdx
+ 170 0108 488955E8 		movq	%rdx, -24(%rbp)
+ 171              		.loc 2 69 25
+ 172 010c 4863D1   		movslq	%ecx, %rdx
+ 173 010f 488D0D00 		leaq	swapTable(%rip), %rcx
+ 173      000000
+ 174 0116 0FB6140A 		movzbl	(%rdx,%rcx), %edx
+ 175              		.loc 2 69 14
+ 176 011a 8810     		movb	%dl, (%rax)
+ 177              	.L10:
+  68:spi.c         **** 		while ( count-- ) {
+ 178              		.loc 2 68 16
+ 179 011c 8B45CC   		movl	-52(%rbp), %eax
+ 180 011f 8D50FF   		leal	-1(%rax), %edx
+ 181 0122 8955CC   		movl	%edx, -52(%rbp)
+  68:spi.c         **** 		while ( count-- ) {
+ 182              		.loc 2 68 11
+ 183 0125 85C0     		testl	%eax, %eax
+ 184 0127 75C5     		jne	.L11
+  70:spi.c         **** 		}
+  71:spi.c         **** 		data = swapBuffer;
+ 185              		.loc 2 71 8
+ 186 0129 488B45D0 		movq	-48(%rbp), %rax
+ 187 012d 488945D8 		movq	%rax, -40(%rbp)
+ 188              	.L7:
+ 189              	.LBE2:
+  72:spi.c         **** 	}
+  73:spi.c         **** 
+  74:spi.c         **** 	// Request the SPI send operation
+  75:spi.c         **** 	countUnion.u32 = littleEndian32(length);
+ 190              		.loc 2 75 19
+ 191 0131 8B45B4   		movl	-76(%rbp), %eax
+ 192 0134 89C7     		movl	%eax, %edi
+ 193 0136 E8C5FEFF 		call	littleEndian32
+ 193      FF
+ 194              		.loc 2 75 17
+ 195 013b 8945F4   		movl	%eax, -12(%rbp)
+  76:spi.c         **** 	uStatus = usbControlWrite(
+ 196              		.loc 2 76 12
+ 197 013e 488B45B8 		movq	-72(%rbp), %rax
+ 198 0142 488B00   		movq	(%rax), %rax
+ 199 0145 488D55F4 		leaq	-12(%rbp), %rdx
+ 200 0149 6A00     		pushq	$0
+ 201 014b 68E80300 		pushq	$1000
+ 201      00
+ 202 0150 41B90400 		movl	$4, %r9d
+ 202      0000
+ 203 0156 4989D0   		movq	%rdx, %r8
+ 204 0159 B9060000 		movl	$6, %ecx
+ 204      00
+ 205 015e BA000000 		movl	$0, %edx
+ 205      00
+ 206 0163 BE810000 		movl	$129, %esi
+ 206      00
+ 207 0168 4889C7   		movq	%rax, %rdi
+ 208 016b E8000000 		call	usbControlWrite@PLT
+ 208      00
+ 209 0170 4883C410 		addq	$16, %rsp
+ 210 0174 8945C8   		movl	%eax, -56(%rbp)
+  77:spi.c         **** 		handle->device, CMD_PROG_CLOCK_DATA, 0x0000, PROG_SPI_SEND,
+  78:spi.c         **** 		countUnion.bytes, 4, 1000, NULL);
+  79:spi.c         **** 	CHECK_STATUS(uStatus, FL_PROTOCOL_ERR, cleanup, "spiSend(): device doesn't support SPI send");
+ 211              		.loc 2 79 2
+ 212 0177 837DC800 		cmpl	$0, -56(%rbp)
+ 213 017b 745E     		je	.L13
+ 214              		.loc 2 79 2 is_stmt 0 discriminator 1
+ 215 017d 488B45A0 		movq	-96(%rbp), %rax
+ 216 0181 488D1500 		leaq	.LC1(%rip), %rdx
+ 216      000000
+ 217 0188 4889D6   		movq	%rdx, %rsi
+ 218 018b 4889C7   		movq	%rax, %rdi
+ 219 018e E8000000 		call	errPrefix@PLT
+ 219      00
+ 220 0193 C745C403 		movl	$3, -60(%rbp)
+ 220      000000
+ 221 019a E9C40000 		jmp	.L9
+ 221      00
+ 222              	.L14:
+  80:spi.c         **** 
+  81:spi.c         **** 	// You have to report it as 512 bytes, but make sure you never try to do a
+  82:spi.c         **** 	// packet larger than 64.
+  83:spi.c         **** 	// http://permalink.gmane.org/gmane.comp.lib.libusbx.devel/1312
+  84:spi.c         **** 	//
+  85:spi.c         **** 	while ( length >= 64 ) {
+  86:spi.c         **** 		uStatus = usbBulkWrite(
+  87:spi.c         **** 			handle->device,
+  88:spi.c         **** 			handle->progOutEP,  // write to OUT endpoint
+ 223              		.loc 2 88 10 is_stmt 1
+ 224 019f 488B45B8 		movq	-72(%rbp), %rax
+ 225 01a3 0FB64015 		movzbl	21(%rax), %eax
+  86:spi.c         **** 			handle->device,
+ 226              		.loc 2 86 13
+ 227 01a7 0FB6F0   		movzbl	%al, %esi
+ 228 01aa 488B45B8 		movq	-72(%rbp), %rax
+ 229 01ae 488B00   		movq	(%rax), %rax
+ 230 01b1 488B4DA0 		movq	-96(%rbp), %rcx
+ 231 01b5 488B55D8 		movq	-40(%rbp), %rdx
+ 232 01b9 4989C9   		movq	%rcx, %r9
+ 233 01bc 41B8FFFF 		movl	$-1, %r8d
+ 233      FFFF
+ 234 01c2 B9400000 		movl	$64, %ecx
+ 234      00
+ 235 01c7 4889C7   		movq	%rax, %rdi
+ 236 01ca E8000000 		call	usbBulkWrite@PLT
+ 236      00
+ 237 01cf 8945C8   		movl	%eax, -56(%rbp)
+  89:spi.c         **** 			data,               // write from send buffer
+  90:spi.c         **** 			64,                 // write this many bytes
+  91:spi.c         **** 			U32MAX,             // timeout in milliseconds
+  92:spi.c         **** 			error
+  93:spi.c         **** 		);
+  94:spi.c         **** 		data += 64;
+ 238              		.loc 2 94 8
+ 239 01d2 488345D8 		addq	$64, -40(%rbp)
+ 239      40
+  95:spi.c         **** 		length -= 64;
+ 240              		.loc 2 95 10
+ 241 01d7 836DB440 		subl	$64, -76(%rbp)
+ 242              	.L13:
+  85:spi.c         **** 		uStatus = usbBulkWrite(
+ 243              		.loc 2 85 17
+ 244 01db 837DB43F 		cmpl	$63, -76(%rbp)
+ 245 01df 77BE     		ja	.L14
+  96:spi.c         **** 	}
+  97:spi.c         **** 	if ( length ) {
+ 246              		.loc 2 97 5
+ 247 01e1 837DB400 		cmpl	$0, -76(%rbp)
+ 248 01e5 747B     		je	.L18
+  98:spi.c         **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "spiSend()");
+ 249              		.loc 2 98 3
+ 250 01e7 837DC800 		cmpl	$0, -56(%rbp)
+ 251 01eb 741F     		je	.L15
+ 252              		.loc 2 98 3 is_stmt 0 discriminator 1
+ 253 01ed 488B45A0 		movq	-96(%rbp), %rax
+ 254 01f1 488D1500 		leaq	.LC0(%rip), %rdx
+ 254      000000
+ 255 01f8 4889D6   		movq	%rdx, %rsi
+ 256 01fb 4889C7   		movq	%rax, %rdi
+ 257 01fe E8000000 		call	errPrefix@PLT
+ 257      00
+ 258 0203 C745C402 		movl	$2, -60(%rbp)
+ 258      000000
+ 259 020a EB57     		jmp	.L9
+ 260              	.L15:
+  99:spi.c         **** 		uStatus = usbBulkWrite(
+ 100:spi.c         **** 			handle->device,
+ 101:spi.c         **** 			handle->progOutEP,  // write to OUT endpoint
+ 261              		.loc 2 101 10 is_stmt 1
+ 262 020c 488B45B8 		movq	-72(%rbp), %rax
+ 263 0210 0FB64015 		movzbl	21(%rax), %eax
+  99:spi.c         **** 		uStatus = usbBulkWrite(
+ 264              		.loc 2 99 13
+ 265 0214 0FB6F0   		movzbl	%al, %esi
+ 266 0217 488B45B8 		movq	-72(%rbp), %rax
+ 267 021b 488B00   		movq	(%rax), %rax
+ 268 021e 488B7DA0 		movq	-96(%rbp), %rdi
+ 269 0222 8B4DB4   		movl	-76(%rbp), %ecx
+ 270 0225 488B55D8 		movq	-40(%rbp), %rdx
+ 271 0229 4989F9   		movq	%rdi, %r9
+ 272 022c 41B8FFFF 		movl	$-1, %r8d
+ 272      FFFF
+ 273 0232 4889C7   		movq	%rax, %rdi
+ 274 0235 E8000000 		call	usbBulkWrite@PLT
+ 274      00
+ 275 023a 8945C8   		movl	%eax, -56(%rbp)
+ 102:spi.c         **** 			data,               // write from send buffer
+ 103:spi.c         **** 			length,             // write this many bytes
+ 104:spi.c         **** 			U32MAX,             // timeout in milliseconds
+ 105:spi.c         **** 			error
+ 106:spi.c         **** 		);
+ 107:spi.c         **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "spiSend()");
+ 276              		.loc 2 107 3
+ 277 023d 837DC800 		cmpl	$0, -56(%rbp)
+ 278 0241 741F     		je	.L18
+ 279              		.loc 2 107 3 is_stmt 0 discriminator 1
+ 280 0243 488B45A0 		movq	-96(%rbp), %rax
+ 281 0247 488D1500 		leaq	.LC0(%rip), %rdx
+ 281      000000
+ 282 024e 4889D6   		movq	%rdx, %rsi
+ 283 0251 4889C7   		movq	%rax, %rdi
+ 284 0254 E8000000 		call	errPrefix@PLT
+ 284      00
+ 285 0259 C745C402 		movl	$2, -60(%rbp)
+ 285      000000
+ 286 0260 EB01     		jmp	.L9
+ 287              	.L18:
+ 108:spi.c         **** 	}
+ 109:spi.c         **** cleanup:
+ 288              		.loc 2 109 1 is_stmt 1
+ 289 0262 90       		nop
+ 290              	.L9:
+ 110:spi.c         **** 	free(swapBuffer);
+ 291              		.loc 2 110 2
+ 292 0263 488B45D0 		movq	-48(%rbp), %rax
+ 293 0267 4889C7   		movq	%rax, %rdi
+ 294 026a E8000000 		call	free@PLT
+ 294      00
+ 111:spi.c         **** 	return retVal;
+ 295              		.loc 2 111 9
+ 296 026f 8B45C4   		movl	-60(%rbp), %eax
+ 112:spi.c         **** }
+ 297              		.loc 2 112 1
+ 298 0272 488B55F8 		movq	-8(%rbp), %rdx
+ 299 0276 64482B14 		subq	%fs:40, %rdx
+ 299      25280000 
+ 299      00
+ 300 027f 7405     		je	.L17
+ 301 0281 E8000000 		call	__stack_chk_fail@PLT
+ 301      00
+ 302              	.L17:
+ 303 0286 C9       		leave
+ 304              		.cfi_def_cfa 7, 8
+ 305 0287 C3       		ret
+ 306              		.cfi_endproc
+ 307              	.LFE5:
+ 309              		.section	.rodata
+ 310 013b 00000000 		.align 8
+ 310      00
+ 311              	.LC2:
+ 312 0140 73706952 		.string	"spiRecv(): device doesn't support SPI receive"
+ 312      65637628 
+ 312      293A2064 
+ 312      65766963 
+ 312      6520646F 
+ 313              	.LC3:
+ 314 016e 73706952 		.string	"spiRecv()"
+ 314      65637628 
+ 314      2900
+ 315              		.text
+ 316              		.globl	spiRecv
+ 318              	spiRecv:
+ 319              	.LFB6:
+ 113:spi.c         **** 
+ 114:spi.c         **** DLLEXPORT(FLStatus) spiRecv(
+ 115:spi.c         **** 	struct FLContext *handle, uint32 length, uint8 *buf, uint8 bitOrder, const char **error)
+ 116:spi.c         **** {
+ 320              		.loc 2 116 1
+ 321              		.cfi_startproc
+ 322 0288 F30F1EFA 		endbr64
+ 323 028c 55       		pushq	%rbp
+ 324              		.cfi_def_cfa_offset 16
+ 325              		.cfi_offset 6, -16
+ 326 028d 4889E5   		movq	%rsp, %rbp
+ 327              		.cfi_def_cfa_register 6
+ 328 0290 4883EC50 		subq	$80, %rsp
+ 329 0294 48897DC8 		movq	%rdi, -56(%rbp)
+ 330 0298 8975C4   		movl	%esi, -60(%rbp)
+ 331 029b 488955B8 		movq	%rdx, -72(%rbp)
+ 332 029f 89C8     		movl	%ecx, %eax
+ 333 02a1 4C8945B0 		movq	%r8, -80(%rbp)
+ 334 02a5 8845C0   		movb	%al, -64(%rbp)
+ 335              		.loc 2 116 1
+ 336 02a8 64488B04 		movq	%fs:40, %rax
+ 336      25280000 
+ 336      00
+ 337 02b1 488945F8 		movq	%rax, -8(%rbp)
+ 338 02b5 31C0     		xorl	%eax, %eax
+ 117:spi.c         **** 	FLStatus retVal = FL_SUCCESS;
+ 339              		.loc 2 117 11
+ 340 02b7 C745DC00 		movl	$0, -36(%rbp)
+ 340      000000
+ 118:spi.c         **** 	USBStatus uStatus;
+ 119:spi.c         **** 	union {
+ 120:spi.c         **** 		uint32 u32;
+ 121:spi.c         **** 		uint8 bytes[4];
+ 122:spi.c         **** 	} countUnion;
+ 123:spi.c         **** 	uint32 count = length;
+ 341              		.loc 2 123 9
+ 342 02be 8B45C4   		movl	-60(%rbp), %eax
+ 343 02c1 8945E0   		movl	%eax, -32(%rbp)
+ 124:spi.c         **** 	uint8 *ptr = buf;
+ 344              		.loc 2 124 9
+ 345 02c4 488B45B8 		movq	-72(%rbp), %rax
+ 346 02c8 488945E8 		movq	%rax, -24(%rbp)
+ 125:spi.c         **** 
+ 126:spi.c         **** 	// Request the SPI receive operation
+ 127:spi.c         **** 	countUnion.u32 = littleEndian32(length);
+ 347              		.loc 2 127 19
+ 348 02cc 8B45C4   		movl	-60(%rbp), %eax
+ 349 02cf 89C7     		movl	%eax, %edi
+ 350 02d1 E82AFDFF 		call	littleEndian32
+ 350      FF
+ 351              		.loc 2 127 17
+ 352 02d6 8945F4   		movl	%eax, -12(%rbp)
+ 128:spi.c         **** 	uStatus = usbControlWrite(
+ 353              		.loc 2 128 12
+ 354 02d9 488B45C8 		movq	-56(%rbp), %rax
+ 355 02dd 488B00   		movq	(%rax), %rax
+ 356 02e0 488D55F4 		leaq	-12(%rbp), %rdx
+ 357 02e4 6A00     		pushq	$0
+ 358 02e6 68E80300 		pushq	$1000
+ 358      00
+ 359 02eb 41B90400 		movl	$4, %r9d
+ 359      0000
+ 360 02f1 4989D0   		movq	%rdx, %r8
+ 361 02f4 B9070000 		movl	$7, %ecx
+ 361      00
+ 362 02f9 BA000000 		movl	$0, %edx
+ 362      00
+ 363 02fe BE810000 		movl	$129, %esi
+ 363      00
+ 364 0303 4889C7   		movq	%rax, %rdi
+ 365 0306 E8000000 		call	usbControlWrite@PLT
+ 365      00
+ 366 030b 4883C410 		addq	$16, %rsp
+ 367 030f 8945E4   		movl	%eax, -28(%rbp)
+ 129:spi.c         **** 		handle->device, CMD_PROG_CLOCK_DATA, 0x0000, PROG_SPI_RECV,
+ 130:spi.c         **** 		countUnion.bytes, 4, 1000, NULL);
+ 131:spi.c         **** 	CHECK_STATUS(uStatus, FL_PROTOCOL_ERR, cleanup, "spiRecv(): device doesn't support SPI receive");
+ 368              		.loc 2 131 2
+ 369 0312 837DE400 		cmpl	$0, -28(%rbp)
+ 370 0316 0F848600 		je	.L22
+ 370      0000
+ 371              		.loc 2 131 2 is_stmt 0 discriminator 1
+ 372 031c 488B45B0 		movq	-80(%rbp), %rax
+ 373 0320 488D1500 		leaq	.LC2(%rip), %rdx
+ 373      000000
+ 374 0327 4889D6   		movq	%rdx, %rsi
+ 375 032a 4889C7   		movq	%rax, %rdi
+ 376 032d E8000000 		call	errPrefix@PLT
+ 376      00
+ 377 0332 C745DC03 		movl	$3, -36(%rbp)
+ 377      000000
+ 378 0339 E9FE0000 		jmp	.L21
+ 378      00
+ 379              	.L24:
+ 132:spi.c         **** 
+ 133:spi.c         **** 	// You have to report it as 512 bytes, but make sure you never try to do a
+ 134:spi.c         **** 	// packet larger than 64.
+ 135:spi.c         **** 	// http://permalink.gmane.org/gmane.comp.lib.libusbx.devel/1312
+ 136:spi.c         **** 	//
+ 137:spi.c         **** 	while ( count >= 64 ) {
+ 138:spi.c         **** 		uStatus = usbBulkRead(
+ 139:spi.c         **** 			handle->device,
+ 140:spi.c         **** 			handle->progInEP,  // read from IN endpoint
+ 380              		.loc 2 140 10 is_stmt 1
+ 381 033e 488B45C8 		movq	-56(%rbp), %rax
+ 382 0342 0FB64016 		movzbl	22(%rax), %eax
+ 138:spi.c         **** 			handle->device,
+ 383              		.loc 2 138 13
+ 384 0346 0FB6F0   		movzbl	%al, %esi
+ 385 0349 488B45C8 		movq	-56(%rbp), %rax
+ 386 034d 488B00   		movq	(%rax), %rax
+ 387 0350 488B4DB0 		movq	-80(%rbp), %rcx
+ 388 0354 488B55E8 		movq	-24(%rbp), %rdx
+ 389 0358 4989C9   		movq	%rcx, %r9
+ 390 035b 41B8FFFF 		movl	$-1, %r8d
+ 390      FFFF
+ 391 0361 B9400000 		movl	$64, %ecx
+ 391      00
+ 392 0366 4889C7   		movq	%rax, %rdi
+ 393 0369 E8000000 		call	usbBulkRead@PLT
+ 393      00
+ 394 036e 8945E4   		movl	%eax, -28(%rbp)
+ 141:spi.c         **** 			ptr,               // read into receive buffer
+ 142:spi.c         **** 			64,                // read this many bytes
+ 143:spi.c         **** 			U32MAX,            // timeout in milliseconds
+ 144:spi.c         **** 			error
+ 145:spi.c         **** 		);
+ 146:spi.c         **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "spiRecv()");
+ 395              		.loc 2 146 3
+ 396 0371 837DE400 		cmpl	$0, -28(%rbp)
+ 397 0375 7422     		je	.L23
+ 398              		.loc 2 146 3 is_stmt 0 discriminator 1
+ 399 0377 488B45B0 		movq	-80(%rbp), %rax
+ 400 037b 488D1500 		leaq	.LC3(%rip), %rdx
+ 400      000000
+ 401 0382 4889D6   		movq	%rdx, %rsi
+ 402 0385 4889C7   		movq	%rax, %rdi
+ 403 0388 E8000000 		call	errPrefix@PLT
+ 403      00
+ 404 038d C745DC02 		movl	$2, -36(%rbp)
+ 404      000000
+ 405 0394 E9A30000 		jmp	.L21
+ 405      00
+ 406              	.L23:
+ 147:spi.c         **** 		ptr += 64;
+ 407              		.loc 2 147 7 is_stmt 1
+ 408 0399 488345E8 		addq	$64, -24(%rbp)
+ 408      40
+ 148:spi.c         **** 		count -= 64;
+ 409              		.loc 2 148 9
+ 410 039e 836DE040 		subl	$64, -32(%rbp)
+ 411              	.L22:
+ 137:spi.c         **** 		uStatus = usbBulkRead(
+ 412              		.loc 2 137 16
+ 413 03a2 837DE03F 		cmpl	$63, -32(%rbp)
+ 414 03a6 7796     		ja	.L24
+ 149:spi.c         **** 	}
+ 150:spi.c         **** 	if ( count ) {
+ 415              		.loc 2 150 5
+ 416 03a8 837DE000 		cmpl	$0, -32(%rbp)
+ 417 03ac 7456     		je	.L25
+ 151:spi.c         **** 		uStatus = usbBulkRead(
+ 152:spi.c         **** 			handle->device,
+ 153:spi.c         **** 			handle->progInEP,  // read from IN endpoint
+ 418              		.loc 2 153 10
+ 419 03ae 488B45C8 		movq	-56(%rbp), %rax
+ 420 03b2 0FB64016 		movzbl	22(%rax), %eax
+ 151:spi.c         **** 		uStatus = usbBulkRead(
+ 421              		.loc 2 151 13
+ 422 03b6 0FB6F0   		movzbl	%al, %esi
+ 423 03b9 488B45C8 		movq	-56(%rbp), %rax
+ 424 03bd 488B00   		movq	(%rax), %rax
+ 425 03c0 488B7DB0 		movq	-80(%rbp), %rdi
+ 426 03c4 8B4DE0   		movl	-32(%rbp), %ecx
+ 427 03c7 488B55E8 		movq	-24(%rbp), %rdx
+ 428 03cb 4989F9   		movq	%rdi, %r9
+ 429 03ce 41B8FFFF 		movl	$-1, %r8d
+ 429      FFFF
+ 430 03d4 4889C7   		movq	%rax, %rdi
+ 431 03d7 E8000000 		call	usbBulkRead@PLT
+ 431      00
+ 432 03dc 8945E4   		movl	%eax, -28(%rbp)
+ 154:spi.c         **** 			ptr,               // read into receive buffer
+ 155:spi.c         **** 			count,             // read this many bytes
+ 156:spi.c         **** 			U32MAX,            // timeout in milliseconds
+ 157:spi.c         **** 			error
+ 158:spi.c         **** 		);
+ 159:spi.c         **** 		CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "spiRecv()");
+ 433              		.loc 2 159 3
+ 434 03df 837DE400 		cmpl	$0, -28(%rbp)
+ 435 03e3 741F     		je	.L25
+ 436              		.loc 2 159 3 is_stmt 0 discriminator 1
+ 437 03e5 488B45B0 		movq	-80(%rbp), %rax
+ 438 03e9 488D1500 		leaq	.LC3(%rip), %rdx
+ 438      000000
+ 439 03f0 4889D6   		movq	%rdx, %rsi
+ 440 03f3 4889C7   		movq	%rax, %rdi
+ 441 03f6 E8000000 		call	errPrefix@PLT
+ 441      00
+ 442 03fb C745DC02 		movl	$2, -36(%rbp)
+ 442      000000
+ 443 0402 EB38     		jmp	.L21
+ 444              	.L25:
+ 160:spi.c         **** 	}
+ 161:spi.c         **** 
+ 162:spi.c         **** 	// Maybe bitswap the data
+ 163:spi.c         **** 	if ( bitOrder == SPI_MSBFIRST ) {
+ 445              		.loc 2 163 5 is_stmt 1
+ 446 0404 807DC000 		cmpb	$0, -64(%rbp)
+ 447 0408 7531     		jne	.L30
+ 164:spi.c         **** 		while ( length-- ) {
+ 448              		.loc 2 164 9
+ 449 040a EB22     		jmp	.L26
+ 450              	.L27:
+ 165:spi.c         **** 			*buf = swapTable[*buf];
+ 451              		.loc 2 165 21
+ 452 040c 488B45B8 		movq	-72(%rbp), %rax
+ 453 0410 0FB600   		movzbl	(%rax), %eax
+ 454 0413 0FB6C0   		movzbl	%al, %eax
+ 455              		.loc 2 165 20
+ 456 0416 4898     		cltq
+ 457 0418 488D1500 		leaq	swapTable(%rip), %rdx
+ 457      000000
+ 458 041f 0FB61410 		movzbl	(%rax,%rdx), %edx
+ 459              		.loc 2 165 9
+ 460 0423 488B45B8 		movq	-72(%rbp), %rax
+ 461 0427 8810     		movb	%dl, (%rax)
+ 166:spi.c         **** 			buf++;
+ 462              		.loc 2 166 7
+ 463 0429 488345B8 		addq	$1, -72(%rbp)
+ 463      01
+ 464              	.L26:
+ 164:spi.c         **** 		while ( length-- ) {
+ 465              		.loc 2 164 17
+ 466 042e 8B45C4   		movl	-60(%rbp), %eax
+ 467 0431 8D50FF   		leal	-1(%rax), %edx
+ 468 0434 8955C4   		movl	%edx, -60(%rbp)
+ 164:spi.c         **** 		while ( length-- ) {
+ 469              		.loc 2 164 11
+ 470 0437 85C0     		testl	%eax, %eax
+ 471 0439 75D1     		jne	.L27
+ 472              	.L30:
+ 167:spi.c         **** 		}
+ 168:spi.c         **** 	}
+ 169:spi.c         **** cleanup:
+ 473              		.loc 2 169 1
+ 474 043b 90       		nop
+ 475              	.L21:
+ 170:spi.c         **** 	return retVal;
+ 476              		.loc 2 170 9
+ 477 043c 8B45DC   		movl	-36(%rbp), %eax
+ 171:spi.c         **** }
+ 478              		.loc 2 171 1
+ 479 043f 488B55F8 		movq	-8(%rbp), %rdx
+ 480 0443 64482B14 		subq	%fs:40, %rdx
+ 480      25280000 
+ 480      00
+ 481 044c 7405     		je	.L29
+ 482 044e E8000000 		call	__stack_chk_fail@PLT
+ 482      00
+ 483              	.L29:
+ 484 0453 C9       		leave
+ 485              		.cfi_def_cfa 7, 8
+ 486 0454 C3       		ret
+ 487              		.cfi_endproc
+ 488              	.LFE6:
+ 490              	.Letext0:
+ 491              		.file 3 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+ 492              		.file 4 "/home/pong/FPGALink/makestuff/libs/libusbwrap/libusbwrap.h"
+ 493              		.file 5 "libfpgalink.h"
+ 494              		.file 6 "private.h"
+ 495              		.file 7 "vendorCommands.h"
+ 496              		.file 8 "/usr/include/stdlib.h"
+ 497              		.file 9 "/home/pong/FPGALink/makestuff/libs/liberror/liberror.h"
+ 2210              		.section	.note.gnu.property,"a"
+ 2211              		.align 8
+ 2212 0000 04000000 		.long	1f - 0f
+ 2213 0004 10000000 		.long	4f - 1f
+ 2214 0008 05000000 		.long	5
+ 2215              	0:
+ 2216 000c 474E5500 		.string	"GNU"
+ 2217              	1:
+ 2218              		.align 8
+ 2219 0010 020000C0 		.long	0xc0000002
+ 2220 0014 04000000 		.long	3f - 2f
+ 2221              	2:
+ 2222 0018 03000000 		.long	0x3
+ 2223              	3:
+ 2224 001c 00000000 		.align 8
+ 2225              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 spi.c
+     /tmp/ccdi71FY.s:6      .text:0000000000000000 littleEndian32
+     /tmp/ccdi71FY.s:30     .rodata:0000000000000000 swapTable
+     /tmp/ccdi71FY.s:47     .text:000000000000000c spiBitSwap
+     /tmp/ccdi71FY.s:102    .text:0000000000000050 spiSend
+     /tmp/ccdi71FY.s:318    .text:0000000000000288 spiRecv
+
+UNDEFINED SYMBOLS
+malloc
+errPrefix
+usbControlWrite
+usbBulkWrite
+free
+__stack_chk_fail
+usbBulkRead

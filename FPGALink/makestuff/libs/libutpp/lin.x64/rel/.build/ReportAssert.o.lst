@@ -1,0 +1,119 @@
+   1              		.file	"ReportAssert.cpp"
+   2              		.text
+   3              		.section	.text.unlikely,"ax",@progbits
+   4              		.globl	_ZN8UnitTest12ReportAssertEPKcS1_i
+   6              	_ZN8UnitTest12ReportAssertEPKcS1_i:
+   7              	.LFB6:
+   8              		.cfi_startproc
+   9              		.cfi_personality 0x9b,DW.ref.__gxx_personality_v0
+  10              		.cfi_lsda 0x1b,.LLSDA6
+  11 0000 F30F1EFA 		endbr64
+  12 0004 4156     		pushq	%r14
+  13              		.cfi_def_cfa_offset 16
+  14              		.cfi_offset 14, -16
+  15 0006 4189D6   		movl	%edx, %r14d
+  16 0009 4155     		pushq	%r13
+  17              		.cfi_def_cfa_offset 24
+  18              		.cfi_offset 13, -24
+  19 000b 4989F5   		movq	%rsi, %r13
+  20 000e 4154     		pushq	%r12
+  21              		.cfi_def_cfa_offset 32
+  22              		.cfi_offset 12, -32
+  23 0010 4989FC   		movq	%rdi, %r12
+  24 0013 BF100300 		movl	$784, %edi
+  24      00
+  25 0018 55       		pushq	%rbp
+  26              		.cfi_def_cfa_offset 40
+  27              		.cfi_offset 6, -40
+  28 0019 50       		pushq	%rax
+  29              		.cfi_def_cfa_offset 48
+  30 001a E8000000 		call	__cxa_allocate_exception@PLT
+  30      00
+  31 001f 4489F1   		movl	%r14d, %ecx
+  32 0022 4C89EA   		movq	%r13, %rdx
+  33 0025 4C89E6   		movq	%r12, %rsi
+  34 0028 4889C7   		movq	%rax, %rdi
+  35 002b 4889C5   		movq	%rax, %rbp
+  36              	.LEHB0:
+  37 002e E8000000 		call	_ZN8UnitTest15AssertExceptionC1EPKcS2_i@PLT
+  37      00
+  38              	.LEHE0:
+  39 0033 488B1500 		movq	_ZN8UnitTest15AssertExceptionD1Ev@GOTPCREL(%rip), %rdx
+  39      000000
+  40 003a 488B3500 		movq	_ZTIN8UnitTest15AssertExceptionE@GOTPCREL(%rip), %rsi
+  40      000000
+  41 0041 4889EF   		movq	%rbp, %rdi
+  42              	.LEHB1:
+  43 0044 E8000000 		call	__cxa_throw@PLT
+  43      00
+  44              	.L3:
+  45 0049 F30F1EFA 		endbr64
+  46 004d 4989C4   		movq	%rax, %r12
+  47              	.L2:
+  48 0050 4889EF   		movq	%rbp, %rdi
+  49 0053 E8000000 		call	__cxa_free_exception@PLT
+  49      00
+  50 0058 4C89E7   		movq	%r12, %rdi
+  51 005b E8000000 		call	_Unwind_Resume@PLT
+  51      00
+  52              	.LEHE1:
+  53              		.cfi_endproc
+  54              	.LFE6:
+  55              		.globl	__gxx_personality_v0
+  56              		.section	.gcc_except_table,"a",@progbits
+  57              	.LLSDA6:
+  58 0000 FF       		.byte	0xff
+  59 0001 FF       		.byte	0xff
+  60 0002 01       		.byte	0x1
+  61 0003 08       		.uleb128 .LLSDACSE6-.LLSDACSB6
+  62              	.LLSDACSB6:
+  63 0004 2E       		.uleb128 .LEHB0-.LFB6
+  64 0005 05       		.uleb128 .LEHE0-.LEHB0
+  65 0006 49       		.uleb128 .L3-.LFB6
+  66 0007 00       		.uleb128 0
+  67 0008 44       		.uleb128 .LEHB1-.LFB6
+  68 0009 1C       		.uleb128 .LEHE1-.LEHB1
+  69 000a 00       		.uleb128 0
+  70 000b 00       		.uleb128 0
+  71              	.LLSDACSE6:
+  72              		.section	.text.unlikely
+  74              		.hidden	DW.ref.__gxx_personality_v0
+  75              		.weak	DW.ref.__gxx_personality_v0
+  76              		.section	.data.rel.local.DW.ref.__gxx_personality_v0,"awG",@progbits,DW.ref.__gxx_personality_v0,c
+  77              		.align 8
+  80              	DW.ref.__gxx_personality_v0:
+  81 0000 00000000 		.quad	__gxx_personality_v0
+  81      00000000 
+  82              		.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+  83              		.section	.note.GNU-stack,"",@progbits
+  84              		.section	.note.gnu.property,"a"
+  85              		.align 8
+  86 0000 04000000 		.long	1f - 0f
+  87 0004 10000000 		.long	4f - 1f
+  88 0008 05000000 		.long	5
+  89              	0:
+  90 000c 474E5500 		.string	"GNU"
+  91              	1:
+  92              		.align 8
+  93 0010 020000C0 		.long	0xc0000002
+  94 0014 04000000 		.long	3f - 2f
+  95              	2:
+  96 0018 03000000 		.long	0x3
+  97              	3:
+  98 001c 00000000 		.align 8
+  99              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ReportAssert.cpp
+     /tmp/ccjk1typ.s:6      .text.unlikely:0000000000000000 _ZN8UnitTest12ReportAssertEPKcS1_i
+     /tmp/ccjk1typ.s:80     .data.rel.local.DW.ref.__gxx_personality_v0:0000000000000000 DW.ref.__gxx_personality_v0
+
+UNDEFINED SYMBOLS
+__cxa_allocate_exception
+_ZN8UnitTest15AssertExceptionC1EPKcS2_i
+_GLOBAL_OFFSET_TABLE_
+_ZN8UnitTest15AssertExceptionD1Ev
+_ZTIN8UnitTest15AssertExceptionE
+__cxa_throw
+__cxa_free_exception
+_Unwind_Resume
+__gxx_personality_v0

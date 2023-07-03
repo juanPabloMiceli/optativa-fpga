@@ -1,0 +1,131 @@
+   1              		.file	"ReportAssert.cpp"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libutpp" "ReportAssert.cpp"
+   5              		.globl	_ZN8UnitTest12ReportAssertEPKcS1_i
+   7              	_ZN8UnitTest12ReportAssertEPKcS1_i:
+   8              	.LFB6:
+   9              		.file 1 "ReportAssert.cpp"
+   1:ReportAssert.cpp **** #include "AssertException.h"
+   2:ReportAssert.cpp **** 
+   3:ReportAssert.cpp **** namespace UnitTest {
+   4:ReportAssert.cpp **** 
+   5:ReportAssert.cpp **** void ReportAssert(char const* description, char const* filename, int lineNumber)
+   6:ReportAssert.cpp **** {
+  10              		.loc 1 6 1
+  11              		.cfi_startproc
+  12              		.cfi_personality 0x9b,DW.ref.__gxx_personality_v0
+  13              		.cfi_lsda 0x1b,.LLSDA6
+  14 0000 F30F1EFA 		endbr64
+  15 0004 55       		pushq	%rbp
+  16              		.cfi_def_cfa_offset 16
+  17              		.cfi_offset 6, -16
+  18 0005 4889E5   		movq	%rsp, %rbp
+  19              		.cfi_def_cfa_register 6
+  20 0008 4154     		pushq	%r12
+  21 000a 53       		pushq	%rbx
+  22 000b 4883EC20 		subq	$32, %rsp
+  23              		.cfi_offset 12, -24
+  24              		.cfi_offset 3, -32
+  25 000f 48897DE8 		movq	%rdi, -24(%rbp)
+  26 0013 488975E0 		movq	%rsi, -32(%rbp)
+  27 0017 8955DC   		movl	%edx, -36(%rbp)
+   7:ReportAssert.cpp ****     throw AssertException(description, filename, lineNumber);
+  28              		.loc 1 7 60
+  29 001a BF100300 		movl	$784, %edi
+  29      00
+  30 001f E8000000 		call	__cxa_allocate_exception@PLT
+  30      00
+  31 0024 4889C3   		movq	%rax, %rbx
+  32              		.loc 1 7 5
+  33 0027 8B4DDC   		movl	-36(%rbp), %ecx
+  34 002a 488B55E0 		movq	-32(%rbp), %rdx
+  35 002e 488B45E8 		movq	-24(%rbp), %rax
+  36 0032 4889C6   		movq	%rax, %rsi
+  37 0035 4889DF   		movq	%rbx, %rdi
+  38              	.LEHB0:
+  39 0038 E8000000 		call	_ZN8UnitTest15AssertExceptionC1EPKcS2_i@PLT
+  39      00
+  40              	.LEHE0:
+  41              		.loc 1 7 60 discriminator 2
+  42 003d 488B0500 		movq	_ZN8UnitTest15AssertExceptionD1Ev@GOTPCREL(%rip), %rax
+  42      000000
+  43 0044 4889C2   		movq	%rax, %rdx
+  44 0047 488B0500 		movq	_ZTIN8UnitTest15AssertExceptionE@GOTPCREL(%rip), %rax
+  44      000000
+  45 004e 4889C6   		movq	%rax, %rsi
+  46 0051 4889DF   		movq	%rbx, %rdi
+  47              	.LEHB1:
+  48 0054 E8000000 		call	__cxa_throw@PLT
+  48      00
+  49              	.L3:
+  50 0059 F30F1EFA 		endbr64
+  51              		.loc 1 7 60 is_stmt 0
+  52 005d 4989C4   		movq	%rax, %r12
+  53 0060 4889DF   		movq	%rbx, %rdi
+  54 0063 E8000000 		call	__cxa_free_exception@PLT
+  54      00
+  55 0068 4C89E0   		movq	%r12, %rax
+  56 006b 4889C7   		movq	%rax, %rdi
+  57 006e E8000000 		call	_Unwind_Resume@PLT
+  57      00
+  58              	.LEHE1:
+  59              		.cfi_endproc
+  60              	.LFE6:
+  61              		.globl	__gxx_personality_v0
+  62              		.section	.gcc_except_table,"a",@progbits
+  63              	.LLSDA6:
+  64 0000 FF       		.byte	0xff
+  65 0001 FF       		.byte	0xff
+  66 0002 01       		.byte	0x1
+  67 0003 08       		.uleb128 .LLSDACSE6-.LLSDACSB6
+  68              	.LLSDACSB6:
+  69 0004 38       		.uleb128 .LEHB0-.LFB6
+  70 0005 05       		.uleb128 .LEHE0-.LEHB0
+  71 0006 59       		.uleb128 .L3-.LFB6
+  72 0007 00       		.uleb128 0
+  73 0008 54       		.uleb128 .LEHB1-.LFB6
+  74 0009 1F       		.uleb128 .LEHE1-.LEHB1
+  75 000a 00       		.uleb128 0
+  76 000b 00       		.uleb128 0
+  77              	.LLSDACSE6:
+  78              		.text
+  80              	.Letext0:
+  81              		.file 2 "AssertException.h"
+ 644              		.align 8
+ 647              	DW.ref.__gxx_personality_v0:
+ 648 0000 00000000 		.quad	__gxx_personality_v0
+ 648      00000000 
+ 649              		.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+ 650              		.section	.note.GNU-stack,"",@progbits
+ 651              		.section	.note.gnu.property,"a"
+ 652              		.align 8
+ 653 0000 04000000 		.long	1f - 0f
+ 654 0004 10000000 		.long	4f - 1f
+ 655 0008 05000000 		.long	5
+ 656              	0:
+ 657 000c 474E5500 		.string	"GNU"
+ 658              	1:
+ 659              		.align 8
+ 660 0010 020000C0 		.long	0xc0000002
+ 661 0014 04000000 		.long	3f - 2f
+ 662              	2:
+ 663 0018 03000000 		.long	0x3
+ 664              	3:
+ 665 001c 00000000 		.align 8
+ 666              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ReportAssert.cpp
+     /tmp/ccAB0Yk0.s:7      .text:0000000000000000 _ZN8UnitTest12ReportAssertEPKcS1_i
+     /tmp/ccAB0Yk0.s:647    .data.rel.local.DW.ref.__gxx_personality_v0:0000000000000000 DW.ref.__gxx_personality_v0
+
+UNDEFINED SYMBOLS
+__cxa_allocate_exception
+_ZN8UnitTest15AssertExceptionC1EPKcS2_i
+_GLOBAL_OFFSET_TABLE_
+_ZN8UnitTest15AssertExceptionD1Ev
+_ZTIN8UnitTest15AssertExceptionE
+__cxa_throw
+__cxa_free_exception
+_Unwind_Resume
+__gxx_personality_v0

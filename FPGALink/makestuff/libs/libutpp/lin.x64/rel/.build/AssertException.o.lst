@@ -1,0 +1,195 @@
+   1              		.file	"AssertException.cpp"
+   2              		.text
+   3              		.align 2
+   4              		.p2align 4
+   5              		.globl	_ZNK8UnitTest15AssertException4whatEv
+   7              	_ZNK8UnitTest15AssertException4whatEv:
+   8              	.LFB40:
+   9              		.cfi_startproc
+  10 0000 F30F1EFA 		endbr64
+  11 0004 488D4708 		leaq	8(%rdi), %rax
+  12 0008 C3       		ret
+  13              		.cfi_endproc
+  14              	.LFE40:
+  16 0009 90       		.align 2
+  17 000a 660F1F44 		.p2align 4
+  17      0000
+  18              		.globl	_ZN8UnitTest15AssertExceptionD2Ev
+  20              	_ZN8UnitTest15AssertExceptionD2Ev:
+  21              	.LFB37:
+  22              		.cfi_startproc
+  23 0010 F30F1EFA 		endbr64
+  24 0014 488B0500 		movq	_ZTVN8UnitTest15AssertExceptionE@GOTPCREL(%rip), %rax
+  24      000000
+  25 001b 4883C010 		addq	$16, %rax
+  26 001f 488907   		movq	%rax, (%rdi)
+  27 0022 E9000000 		jmp	_ZNSt9exceptionD2Ev@PLT
+  27      00
+  28              		.cfi_endproc
+  29              	.LFE37:
+  31              		.globl	_ZN8UnitTest15AssertExceptionD1Ev
+  32              		.set	_ZN8UnitTest15AssertExceptionD1Ev,_ZN8UnitTest15AssertExceptionD2Ev
+  33 0027 90       		.align 2
+  34 0028 0F1F8400 		.p2align 4
+  34      00000000 
+  35              		.globl	_ZN8UnitTest15AssertExceptionD0Ev
+  37              	_ZN8UnitTest15AssertExceptionD0Ev:
+  38              	.LFB39:
+  39              		.cfi_startproc
+  40 0030 F30F1EFA 		endbr64
+  41 0034 55       		pushq	%rbp
+  42              		.cfi_def_cfa_offset 16
+  43              		.cfi_offset 6, -16
+  44 0035 4889FD   		movq	%rdi, %rbp
+  45 0038 E8000000 		call	_ZN8UnitTest15AssertExceptionD1Ev@PLT
+  45      00
+  46 003d 4889EF   		movq	%rbp, %rdi
+  47 0040 5D       		popq	%rbp
+  48              		.cfi_def_cfa_offset 8
+  49 0041 E9000000 		jmp	_ZdlPv@PLT
+  49      00
+  50              		.cfi_endproc
+  51              	.LFE39:
+  53              		.align 2
+  54 0046 662E0F1F 		.p2align 4
+  54      84000000 
+  54      0000
+  55              		.globl	_ZN8UnitTest15AssertExceptionC2EPKcS2_i
+  57              	_ZN8UnitTest15AssertExceptionC2EPKcS2_i:
+  58              	.LFB34:
+  59              		.cfi_startproc
+  60 0050 F30F1EFA 		endbr64
+  61 0054 55       		pushq	%rbp
+  62              		.cfi_def_cfa_offset 16
+  63              		.cfi_offset 6, -16
+  64 0055 4889D5   		movq	%rdx, %rbp
+  65 0058 BA000200 		movl	$512, %edx
+  65      00
+  66 005d 53       		pushq	%rbx
+  67              		.cfi_def_cfa_offset 24
+  68              		.cfi_offset 3, -24
+  69 005e 4889FB   		movq	%rdi, %rbx
+  70 0061 488D7F08 		leaq	8(%rdi), %rdi
+  71 0065 4883EC08 		subq	$8, %rsp
+  72              		.cfi_def_cfa_offset 32
+  73 0069 488B0500 		movq	_ZTVN8UnitTest15AssertExceptionE@GOTPCREL(%rip), %rax
+  73      000000
+  74 0070 898F0003 		movl	%ecx, 768(%rdi)
+  74      0000
+  75 0076 4883C010 		addq	$16, %rax
+  76 007a 488947F8 		movq	%rax, -8(%rdi)
+  77 007e E8000000 		call	__strcpy_chk@PLT
+  77      00
+  78 0083 4883C408 		addq	$8, %rsp
+  79              		.cfi_def_cfa_offset 24
+  80 0087 4889EE   		movq	%rbp, %rsi
+  81 008a 488DBB08 		leaq	520(%rbx), %rdi
+  81      020000
+  82 0091 BA000100 		movl	$256, %edx
+  82      00
+  83 0096 5B       		popq	%rbx
+  84              		.cfi_def_cfa_offset 16
+  85 0097 5D       		popq	%rbp
+  86              		.cfi_def_cfa_offset 8
+  87 0098 E9000000 		jmp	__strcpy_chk@PLT
+  87      00
+  88              		.cfi_endproc
+  89              	.LFE34:
+  91              		.globl	_ZN8UnitTest15AssertExceptionC1EPKcS2_i
+  92              		.set	_ZN8UnitTest15AssertExceptionC1EPKcS2_i,_ZN8UnitTest15AssertExceptionC2EPKcS2_i
+  93 009d 90       		.align 2
+  94 009e 6690     		.p2align 4
+  95              		.globl	_ZNK8UnitTest15AssertException8FilenameEv
+  97              	_ZNK8UnitTest15AssertException8FilenameEv:
+  98              	.LFB41:
+  99              		.cfi_startproc
+ 100 00a0 F30F1EFA 		endbr64
+ 101 00a4 488D8708 		leaq	520(%rdi), %rax
+ 101      020000
+ 102 00ab C3       		ret
+ 103              		.cfi_endproc
+ 104              	.LFE41:
+ 106              		.align 2
+ 107 00ac 0F1F4000 		.p2align 4
+ 108              		.globl	_ZNK8UnitTest15AssertException10LineNumberEv
+ 110              	_ZNK8UnitTest15AssertException10LineNumberEv:
+ 111              	.LFB42:
+ 112              		.cfi_startproc
+ 113 00b0 F30F1EFA 		endbr64
+ 114 00b4 8B870803 		movl	776(%rdi), %eax
+ 114      0000
+ 115 00ba C3       		ret
+ 116              		.cfi_endproc
+ 117              	.LFE42:
+ 119              		.weak	_ZTSN8UnitTest15AssertExceptionE
+ 120              		.section	.rodata._ZTSN8UnitTest15AssertExceptionE,"aG",@progbits,_ZTSN8UnitTest15AssertExceptionE,
+ 121              		.align 16
+ 124              	_ZTSN8UnitTest15AssertExceptionE:
+ 125 0000 4E38556E 		.string	"N8UnitTest15AssertExceptionE"
+ 125      69745465 
+ 125      73743135 
+ 125      41737365 
+ 125      72744578 
+ 126              		.weak	_ZTIN8UnitTest15AssertExceptionE
+ 127              		.section	.data.rel.ro._ZTIN8UnitTest15AssertExceptionE,"awG",@progbits,_ZTIN8UnitTest15AssertExcep
+ 128              		.align 8
+ 131              	_ZTIN8UnitTest15AssertExceptionE:
+ 132 0000 00000000 		.quad	_ZTVN10__cxxabiv120__si_class_type_infoE+16
+ 132      00000000 
+ 133 0008 00000000 		.quad	_ZTSN8UnitTest15AssertExceptionE
+ 133      00000000 
+ 134 0010 00000000 		.quad	_ZTISt9exception
+ 134      00000000 
+ 135              		.weak	_ZTVN8UnitTest15AssertExceptionE
+ 136              		.section	.data.rel.ro._ZTVN8UnitTest15AssertExceptionE,"awG",@progbits,_ZTVN8UnitTest15AssertExcep
+ 137              		.align 8
+ 140              	_ZTVN8UnitTest15AssertExceptionE:
+ 141 0000 00000000 		.quad	0
+ 141      00000000 
+ 142 0008 00000000 		.quad	_ZTIN8UnitTest15AssertExceptionE
+ 142      00000000 
+ 143 0010 00000000 		.quad	_ZN8UnitTest15AssertExceptionD1Ev
+ 143      00000000 
+ 144 0018 00000000 		.quad	_ZN8UnitTest15AssertExceptionD0Ev
+ 144      00000000 
+ 145 0020 00000000 		.quad	_ZNK8UnitTest15AssertException4whatEv
+ 145      00000000 
+ 146              		.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+ 147              		.section	.note.GNU-stack,"",@progbits
+ 148              		.section	.note.gnu.property,"a"
+ 149              		.align 8
+ 150 0000 04000000 		.long	1f - 0f
+ 151 0004 10000000 		.long	4f - 1f
+ 152 0008 05000000 		.long	5
+ 153              	0:
+ 154 000c 474E5500 		.string	"GNU"
+ 155              	1:
+ 156              		.align 8
+ 157 0010 020000C0 		.long	0xc0000002
+ 158 0014 04000000 		.long	3f - 2f
+ 159              	2:
+ 160 0018 03000000 		.long	0x3
+ 161              	3:
+ 162 001c 00000000 		.align 8
+ 163              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 AssertException.cpp
+     /tmp/ccsdHgs5.s:7      .text:0000000000000000 _ZNK8UnitTest15AssertException4whatEv
+     /tmp/ccsdHgs5.s:20     .text:0000000000000010 _ZN8UnitTest15AssertExceptionD2Ev
+     /tmp/ccsdHgs5.s:140    .data.rel.ro._ZTVN8UnitTest15AssertExceptionE:0000000000000000 _ZTVN8UnitTest15AssertExceptionE
+     /tmp/ccsdHgs5.s:20     .text:0000000000000010 _ZN8UnitTest15AssertExceptionD1Ev
+     /tmp/ccsdHgs5.s:37     .text:0000000000000030 _ZN8UnitTest15AssertExceptionD0Ev
+     /tmp/ccsdHgs5.s:57     .text:0000000000000050 _ZN8UnitTest15AssertExceptionC2EPKcS2_i
+     /tmp/ccsdHgs5.s:57     .text:0000000000000050 _ZN8UnitTest15AssertExceptionC1EPKcS2_i
+     /tmp/ccsdHgs5.s:97     .text:00000000000000a0 _ZNK8UnitTest15AssertException8FilenameEv
+     /tmp/ccsdHgs5.s:110    .text:00000000000000b0 _ZNK8UnitTest15AssertException10LineNumberEv
+     /tmp/ccsdHgs5.s:124    .rodata._ZTSN8UnitTest15AssertExceptionE:0000000000000000 _ZTSN8UnitTest15AssertExceptionE
+     /tmp/ccsdHgs5.s:131    .data.rel.ro._ZTIN8UnitTest15AssertExceptionE:0000000000000000 _ZTIN8UnitTest15AssertExceptionE
+
+UNDEFINED SYMBOLS
+_GLOBAL_OFFSET_TABLE_
+_ZNSt9exceptionD2Ev
+_ZdlPv
+__strcpy_chk
+_ZTVN10__cxxabiv120__si_class_type_infoE
+_ZTISt9exception

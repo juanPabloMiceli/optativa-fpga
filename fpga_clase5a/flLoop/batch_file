@@ -1,0 +1,6 @@
+setMode -bscan
+addDevice -p 1 -file "/home/pong/fpga_clase5a/flLoop/top_level.xsvf"
+addDevice -p 2 -file "/home/pong/Xilinx/14.7/ISE_DS/ISE/xcf/data/xcf04s.bsd"
+setcable -port xsvf -file ""
+program -p 1
+exit

@@ -1,0 +1,70 @@
+   1              		.file	"arg_rem.c"
+   2              		.text
+   3              		.p2align 4
+   4              		.globl	arg_rem
+   6              	arg_rem:
+   7              	.LFB23:
+   8              		.cfi_startproc
+   9 0000 F30F1EFA 		endbr64
+  10 0004 66480F6E 		movq	%rdi, %xmm1
+  10      CF
+  11 0009 66480F6E 		movq	%rsi, %xmm2
+  11      D6
+  12 000e 4883EC18 		subq	$24, %rsp
+  13              		.cfi_def_cfa_offset 32
+  14 0012 BF600000 		movl	$96, %edi
+  14      00
+  15 0017 660F6CCA 		punpcklqdq	%xmm2, %xmm1
+  16 001b 0F290C24 		movaps	%xmm1, (%rsp)
+  17 001f E8000000 		call	malloc@PLT
+  17      00
+  18 0024 4885C0   		testq	%rax, %rax
+  19 0027 742B     		je	.L1
+  20 0029 488B1500 		movq	.LC0(%rip), %rdx
+  20      000000
+  21 0030 660F6F0C 		movdqa	(%rsp), %xmm1
+  21      24
+  22 0035 C60000   		movb	$0, (%rax)
+  23 0038 660FEFC0 		pxor	%xmm0, %xmm0
+  24 003c 48894030 		movq	%rax, 48(%rax)
+  25 0040 48895028 		movq	%rdx, 40(%rax)
+  26 0044 0F114008 		movups	%xmm0, 8(%rax)
+  27 0048 0F114818 		movups	%xmm1, 24(%rax)
+  28 004c 0F114038 		movups	%xmm0, 56(%rax)
+  29 0050 0F114048 		movups	%xmm0, 72(%rax)
+  30              	.L1:
+  31 0054 4883C418 		addq	$24, %rsp
+  32              		.cfi_def_cfa_offset 8
+  33 0058 C3       		ret
+  34              		.cfi_endproc
+  35              	.LFE23:
+  37              		.section	.rodata.cst8,"aM",@progbits,8
+  38              		.align 8
+  39              	.LC0:
+  40 0000 01000000 		.long	1
+  41 0004 01000000 		.long	1
+  42              		.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+  43              		.section	.note.GNU-stack,"",@progbits
+  44              		.section	.note.gnu.property,"a"
+  45              		.align 8
+  46 0000 04000000 		.long	1f - 0f
+  47 0004 10000000 		.long	4f - 1f
+  48 0008 05000000 		.long	5
+  49              	0:
+  50 000c 474E5500 		.string	"GNU"
+  51              	1:
+  52              		.align 8
+  53 0010 020000C0 		.long	0xc0000002
+  54 0014 04000000 		.long	3f - 2f
+  55              	2:
+  56 0018 03000000 		.long	0x3
+  57              	3:
+  58 001c 00000000 		.align 8
+  59              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arg_rem.c
+     /tmp/ccJfLdnX.s:6      .text:0000000000000000 arg_rem
+     /tmp/ccJfLdnX.s:39     .rodata.cst8:0000000000000000 .LC0
+
+UNDEFINED SYMBOLS
+malloc

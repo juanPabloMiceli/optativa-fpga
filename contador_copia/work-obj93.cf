@@ -1,0 +1,14 @@
+v 4
+file . "test_triple.vhdl" "25b95696697c7e45f700fc9743cf062821a08416" "20230427215021.127":
+  entity contador_triple_test at 1( 0) + 0 on 221;
+  architecture behavior of contador_triple_test at 10( 161) + 0 on 222;
+file . "contador_triple.vhdl" "0e726061bb3dbed4023a9982bde6ce07b60f5246" "20230427215021.125":
+  package my_package at 1( 0) + 0 on 218;
+  entity contador_triple at 9( 185) + 0 on 219;
+  architecture logic of contador_triple at 24( 450) + 0 on 220;
+file . "contador.vhdl" "db2265902f0fcd70b7761b770ef7ac137185f06d" "20230427215021.122":
+  entity contador at 1( 0) + 0 on 216;
+  architecture logic of contador at 17( 316) + 0 on 217;
+file . "test.vhdl" "4a0d6f825465c292ef1d6ccd430b3382bd5b562d" "20230420235726.839":
+  entity contador_test at 1( 0) + 0 on 88;
+  architecture behavior of contador_test at 8( 114) + 0 on 89;

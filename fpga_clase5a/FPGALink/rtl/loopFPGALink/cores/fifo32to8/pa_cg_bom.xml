@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<BillOfMaterials Version="1" Minor="2">
+  <IPInstance name="fifo32to8">
+    <FileSets>
+      <FileSet generator="apply_current_project_options_generator">
+        <File name="./apply_current_project_options_generator.xlog" type="ignore" timestamp="Thu May 11 23:17:49 GMT 2023" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="model_parameter_resolution_generator">
+        <File name="./model_parameter_resolution_generator.xlog" type="ignore" timestamp="Thu May 11 23:17:49 GMT 2023" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="ip_xco_generator">
+        <File name="./fifo32to8.xco" type="xco" timestamp="Thu May 11 23:15:56 GMT 2023" checksum="0x6064846B"></File>
+      </FileSet>
+      <FileSet generator="associated_files_generator">
+        <File name="./fifo32to8/doc/fifo_generator_v9_3_vinfo.html" type="ignore" timestamp="Sun Oct 13 18:04:38 GMT 2013" checksum="0x9B56C5A6"></File>
+        <File name="./fifo32to8/fifo_generator_v9_3_readme.txt" type="ignore" timestamp="Sun Oct 13 18:04:38 GMT 2013" checksum="0x4A0AA28D"></File>
+      </FileSet>
+      <FileSet generator="ejava_generator">
+        <File name="./ejava_generator.xlog" type="ignore" timestamp="Thu May 11 23:17:49 GMT 2023" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="ngc_netlist_generator">
+        <File name="./fifo32to8.ngc" type="ngc" timestamp="Thu May 11 23:17:40 GMT 2023" checksum="0xFDB644E6"></File>
+      </FileSet>
+      <FileSet generator="obfuscate_netlist_generator">
+        <File name="./obfuscate_netlist_generator.xlog" type="ignore" timestamp="Thu May 11 23:17:49 GMT 2023" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="padded_implementation_netlist_generator">
+        <File name="./padded_implementation_netlist_generator.xlog" type="ignore" timestamp="Thu May 11 23:17:49 GMT 2023" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="instantiation_template_generator">
+        <File name="./fifo32to8.vho" type="vho" timestamp="Thu May 11 23:17:40 GMT 2023" checksum="0x76747B76"></File>
+      </FileSet>
+      <FileSet generator="structural_simulation_model_generator">
+        <File name="./fifo32to8.vhd" type="vhdl" timestamp="Thu May 11 23:17:40 GMT 2023" checksum="0x6EF59C6D"></File>
+      </FileSet>
+      <FileSet generator="all_documents_generator">
+        <File name="./fifo32to8/doc/fifo_generator_v9_3_readme.txt" type="ignore" timestamp="Thu May 11 23:17:40 GMT 2023" checksum="0x4A0AA28D"></File>
+        <File name="./fifo32to8/doc/fifo_generator_v9_3_vinfo.html" type="ignore" timestamp="Thu May 11 23:17:40 GMT 2023" checksum="0x9B56C5A6"></File>
+        <File name="./fifo32to8/doc/pg057-fifo-generator.pdf" type="ignore" timestamp="Thu May 11 23:17:40 GMT 2023" checksum="0x90F23916"></File>
+      </FileSet>
+      <FileSet generator="readme_documents_generator">
+        <File name="./readme_documents_generator.xlog" type="ignore" timestamp="Thu May 11 23:17:49 GMT 2023" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="asy_generator">
+        <File name="./fifo32to8.asy" type="asy" timestamp="Thu May 11 23:17:43 GMT 2023" checksum="0xFB74DC45"></File>
+      </FileSet>
+      <FileSet generator="xmdf_generator">
+        <File name="./fifo32to8_xmdf.tcl" type="tclXmdf" timestamp="Thu May 11 23:17:43 GMT 2023" checksum="0x5DABAAAC"></File>
+      </FileSet>
+      <FileSet generator="synthesis_ise_generator">
+        <File name="./fifo32to8.gise" type="ignore" timestamp="Thu May 11 23:17:46 GMT 2023" checksum="0xDEEFD721"></File>
+        <File name="./fifo32to8.xise" type="ignore" timestamp="Thu May 11 23:17:46 GMT 2023" checksum="0x76E25163"></File>
+      </FileSet>
+      <FileSet generator="ise_generator">
+        <File name="./fifo32to8.gise" type="ignore" timestamp="Thu May 11 23:17:49 GMT 2023" checksum="0xED748E47"></File>
+        <File name="./fifo32to8.xise" type="ignore" timestamp="Thu May 11 23:17:48 GMT 2023" checksum="0x8C1FE5CF"></File>
+      </FileSet>
+      <FileSet generator="deliver_readme_generator">
+        <File name="./deliver_readme_generator.xlog" type="ignore" timestamp="Thu May 11 23:17:49 GMT 2023" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="flist_generator">
+        <File name="./fifo32to8_flist.txt" type="ignore" timestamp="Thu May 11 23:17:49 GMT 2023" checksum="0x6D9D0888"></File>
+      </FileSet>
+    </FileSets>
+  </IPInstance>
+</BillOfMaterials>

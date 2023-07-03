@@ -1,0 +1,352 @@
+   1              		.file	"binio.c"
+   2              		.text
+   3              		.section	.rodata.str1.1,"aMS",@progbits,1
+   4              	.LC0:
+   5 0000 726200   		.string	"rb"
+   6              	.LC1:
+   7 0003 62756641 		.string	"bufAppendFromBinaryFile()"
+   7      7070656E 
+   7      6446726F 
+   7      6D42696E 
+   7      61727946 
+   8              		.section	.rodata.str1.8,"aMS",@progbits,1
+   9              		.align 8
+  10              	.LC2:
+  11 0000 62756641 		.string	"bufAppendFromBinaryFile(): Unexpectedly hit EOF after reading %lu bytes!"
+  11      7070656E 
+  11      6446726F 
+  11      6D42696E 
+  11      61727946 
+  12              		.text
+  13              		.p2align 4
+  14              		.globl	bufAppendFromBinaryFile
+  16              	bufAppendFromBinaryFile:
+  17              	.LFB17:
+  18              		.cfi_startproc
+  19 0000 F30F1EFA 		endbr64
+  20 0004 4157     		pushq	%r15
+  21              		.cfi_def_cfa_offset 16
+  22              		.cfi_offset 15, -16
+  23 0006 4156     		pushq	%r14
+  24              		.cfi_def_cfa_offset 24
+  25              		.cfi_offset 14, -24
+  26 0008 4155     		pushq	%r13
+  27              		.cfi_def_cfa_offset 32
+  28              		.cfi_offset 13, -32
+  29 000a 4154     		pushq	%r12
+  30              		.cfi_def_cfa_offset 40
+  31              		.cfi_offset 12, -40
+  32 000c 4989D4   		movq	%rdx, %r12
+  33 000f 55       		pushq	%rbp
+  34              		.cfi_def_cfa_offset 48
+  35              		.cfi_offset 6, -48
+  36 0010 53       		pushq	%rbx
+  37              		.cfi_def_cfa_offset 56
+  38              		.cfi_offset 3, -56
+  39 0011 4889FB   		movq	%rdi, %rbx
+  40 0014 4889F7   		movq	%rsi, %rdi
+  41 0017 488D3500 		leaq	.LC0(%rip), %rsi
+  41      000000
+  42 001e 4883EC08 		subq	$8, %rsp
+  43              		.cfi_def_cfa_offset 64
+  44 0022 4C8B7308 		movq	8(%rbx), %r14
+  45 0026 E8000000 		call	fopen@PLT
+  45      00
+  46 002b 4885C0   		testq	%rax, %rax
+  47 002e 0F843801 		je	.L15
+  47      0000
+  48 0034 31F6     		xorl	%esi, %esi
+  49 0036 BA020000 		movl	$2, %edx
+  49      00
+  50 003b 4889C7   		movq	%rax, %rdi
+  51 003e 4889C5   		movq	%rax, %rbp
+  52 0041 E8000000 		call	fseek@PLT
+  52      00
+  53 0046 85C0     		testl	%eax, %eax
+  54 0048 0F85C200 		jne	.L16
+  54      0000
+  55 004e 4889EF   		movq	%rbp, %rdi
+  56 0051 E8000000 		call	ftell@PLT
+  56      00
+  57 0056 4989C5   		movq	%rax, %r13
+  58 0059 4885C0   		testq	%rax, %rax
+  59 005c 0F88CE00 		js	.L17
+  59      0000
+  60 0062 4C89E1   		movq	%r12, %rcx
+  61 0065 4889C2   		movq	%rax, %rdx
+  62 0068 31F6     		xorl	%esi, %esi
+  63 006a 4889DF   		movq	%rbx, %rdi
+  64 006d E8000000 		call	bufAppendConst@PLT
+  64      00
+  65 0072 4189C7   		movl	%eax, %r15d
+  66 0075 85C0     		testl	%eax, %eax
+  67 0077 7567     		jne	.L18
+  68 0079 4889EF   		movq	%rbp, %rdi
+  69 007c E8000000 		call	rewind@PLT
+  69      00
+  70 0081 488B3B   		movq	(%rbx), %rdi
+  71 0084 4889E9   		movq	%rbp, %rcx
+  72 0087 4C89EA   		movq	%r13, %rdx
+  73 008a BE010000 		movl	$1, %esi
+  73      00
+  74 008f 4C01F7   		addq	%r14, %rdi
+  75 0092 E8000000 		call	fread@PLT
+  75      00
+  76 0097 4989C6   		movq	%rax, %r14
+  77 009a 4939C5   		cmpq	%rax, %r13
+  78 009d 7450     		je	.L5
+  79 009f 4889EF   		movq	%rbp, %rdi
+  80 00a2 E8000000 		call	feof@PLT
+  80      00
+  81 00a7 85C0     		testl	%eax, %eax
+  82 00a9 0F85A100 		jne	.L19
+  82      0000
+  83 00af 4889EF   		movq	%rbp, %rdi
+  84 00b2 E8000000 		call	ferror@PLT
+  84      00
+  85 00b7 85C0     		testl	%eax, %eax
+  86 00b9 7434     		je	.L5
+  87 00bb 4C89E7   		movq	%r12, %rdi
+  88 00be 41BF0600 		movl	$6, %r15d
+  88      0000
+  89 00c4 E8000000 		call	errRenderStd@PLT
+  89      00
+  90 00c9 488D3500 		leaq	.LC1(%rip), %rsi
+  90      000000
+  91 00d0 4C89E7   		movq	%r12, %rdi
+  92 00d3 E8000000 		call	errPrefix@PLT
+  92      00
+  93 00d8 EB15     		jmp	.L5
+  94 00da 660F1F44 		.p2align 4,,10
+  94      0000
+  95              		.p2align 3
+  96              	.L18:
+  97 00e0 488D3500 		leaq	.LC1(%rip), %rsi
+  97      000000
+  98 00e7 4C89E7   		movq	%r12, %rdi
+  99 00ea E8000000 		call	errPrefix@PLT
+  99      00
+ 100              	.L5:
+ 101 00ef 4889EF   		movq	%rbp, %rdi
+ 102 00f2 E8000000 		call	fclose@PLT
+ 102      00
+ 103              	.L1:
+ 104 00f7 4883C408 		addq	$8, %rsp
+ 105              		.cfi_remember_state
+ 106              		.cfi_def_cfa_offset 56
+ 107 00fb 4489F8   		movl	%r15d, %eax
+ 108 00fe 5B       		popq	%rbx
+ 109              		.cfi_def_cfa_offset 48
+ 110 00ff 5D       		popq	%rbp
+ 111              		.cfi_def_cfa_offset 40
+ 112 0100 415C     		popq	%r12
+ 113              		.cfi_def_cfa_offset 32
+ 114 0102 415D     		popq	%r13
+ 115              		.cfi_def_cfa_offset 24
+ 116 0104 415E     		popq	%r14
+ 117              		.cfi_def_cfa_offset 16
+ 118 0106 415F     		popq	%r15
+ 119              		.cfi_def_cfa_offset 8
+ 120 0108 C3       		ret
+ 121 0109 0F1F8000 		.p2align 4,,10
+ 121      000000
+ 122              		.p2align 3
+ 123              	.L16:
+ 124              		.cfi_restore_state
+ 125 0110 4C89E7   		movq	%r12, %rdi
+ 126 0113 41BF0300 		movl	$3, %r15d
+ 126      0000
+ 127 0119 E8000000 		call	errRenderStd@PLT
+ 127      00
+ 128 011e 488D3500 		leaq	.LC1(%rip), %rsi
+ 128      000000
+ 129 0125 4C89E7   		movq	%r12, %rdi
+ 130 0128 E8000000 		call	errPrefix@PLT
+ 130      00
+ 131 012d EBC0     		jmp	.L5
+ 132 012f 90       		.p2align 4,,10
+ 133              		.p2align 3
+ 134              	.L17:
+ 135 0130 4C89E7   		movq	%r12, %rdi
+ 136 0133 41BF0400 		movl	$4, %r15d
+ 136      0000
+ 137 0139 E8000000 		call	errRenderStd@PLT
+ 137      00
+ 138 013e 488D3500 		leaq	.LC1(%rip), %rsi
+ 138      000000
+ 139 0145 4C89E7   		movq	%r12, %rdi
+ 140 0148 E8000000 		call	errPrefix@PLT
+ 140      00
+ 141 014d EBA0     		jmp	.L5
+ 142 014f 90       		.p2align 4,,10
+ 143              		.p2align 3
+ 144              	.L19:
+ 145 0150 4C89F2   		movq	%r14, %rdx
+ 146 0153 488D3500 		leaq	.LC2(%rip), %rsi
+ 146      000000
+ 147 015a 4C89E7   		movq	%r12, %rdi
+ 148 015d 31C0     		xorl	%eax, %eax
+ 149 015f E8000000 		call	errRender@PLT
+ 149      00
+ 150 0164 41BF0500 		movl	$5, %r15d
+ 150      0000
+ 151 016a EB83     		jmp	.L5
+ 152              	.L15:
+ 153 016c 4C89E7   		movq	%r12, %rdi
+ 154 016f 41BF0200 		movl	$2, %r15d
+ 154      0000
+ 155 0175 E8000000 		call	errRenderStd@PLT
+ 155      00
+ 156 017a 488D3500 		leaq	.LC1(%rip), %rsi
+ 156      000000
+ 157 0181 4C89E7   		movq	%r12, %rdi
+ 158 0184 E8000000 		call	errPrefix@PLT
+ 158      00
+ 159 0189 E969FFFF 		jmp	.L1
+ 159      FF
+ 160              		.cfi_endproc
+ 161              	.LFE17:
+ 163              		.section	.rodata.str1.1
+ 164              	.LC3:
+ 165 001d 776200   		.string	"wb"
+ 166              	.LC4:
+ 167 0020 62756657 		.string	"bufWriteBinaryFile()"
+ 167      72697465 
+ 167      42696E61 
+ 167      72794669 
+ 167      6C652829 
+ 168              		.text
+ 169 018e 6690     		.p2align 4
+ 170              		.globl	bufWriteBinaryFile
+ 172              	bufWriteBinaryFile:
+ 173              	.LFB18:
+ 174              		.cfi_startproc
+ 175 0190 F30F1EFA 		endbr64
+ 176 0194 4156     		pushq	%r14
+ 177              		.cfi_def_cfa_offset 16
+ 178              		.cfi_offset 14, -16
+ 179 0196 4D89C6   		movq	%r8, %r14
+ 180 0199 4155     		pushq	%r13
+ 181              		.cfi_def_cfa_offset 24
+ 182              		.cfi_offset 13, -24
+ 183 019b 4989FD   		movq	%rdi, %r13
+ 184 019e 4889F7   		movq	%rsi, %rdi
+ 185 01a1 488D3500 		leaq	.LC3(%rip), %rsi
+ 185      000000
+ 186 01a8 4154     		pushq	%r12
+ 187              		.cfi_def_cfa_offset 32
+ 188              		.cfi_offset 12, -32
+ 189 01aa 4989CC   		movq	%rcx, %r12
+ 190 01ad 55       		pushq	%rbp
+ 191              		.cfi_def_cfa_offset 40
+ 192              		.cfi_offset 6, -40
+ 193 01ae 53       		pushq	%rbx
+ 194              		.cfi_def_cfa_offset 48
+ 195              		.cfi_offset 3, -48
+ 196 01af 4889D3   		movq	%rdx, %rbx
+ 197 01b2 E8000000 		call	fopen@PLT
+ 197      00
+ 198 01b7 4885C0   		testq	%rax, %rax
+ 199 01ba 745B     		je	.L26
+ 200 01bc 49035D00 		addq	0(%r13), %rbx
+ 201 01c0 4889C1   		movq	%rax, %rcx
+ 202 01c3 4C89E2   		movq	%r12, %rdx
+ 203 01c6 BE010000 		movl	$1, %esi
+ 203      00
+ 204 01cb 4889DF   		movq	%rbx, %rdi
+ 205 01ce 4889C5   		movq	%rax, %rbp
+ 206 01d1 4531ED   		xorl	%r13d, %r13d
+ 207 01d4 E8000000 		call	fwrite@PLT
+ 207      00
+ 208 01d9 4939C4   		cmpq	%rax, %r12
+ 209 01dc 751A     		jne	.L27
+ 210              	.L23:
+ 211 01de 4889EF   		movq	%rbp, %rdi
+ 212 01e1 E8000000 		call	fclose@PLT
+ 212      00
+ 213              	.L20:
+ 214 01e6 5B       		popq	%rbx
+ 215              		.cfi_remember_state
+ 216              		.cfi_def_cfa_offset 40
+ 217 01e7 4489E8   		movl	%r13d, %eax
+ 218 01ea 5D       		popq	%rbp
+ 219              		.cfi_def_cfa_offset 32
+ 220 01eb 415C     		popq	%r12
+ 221              		.cfi_def_cfa_offset 24
+ 222 01ed 415D     		popq	%r13
+ 223              		.cfi_def_cfa_offset 16
+ 224 01ef 415E     		popq	%r14
+ 225              		.cfi_def_cfa_offset 8
+ 226 01f1 C3       		ret
+ 227              		.p2align 4,,10
+ 228 01f2 660F1F44 		.p2align 3
+ 228      0000
+ 229              	.L27:
+ 230              		.cfi_restore_state
+ 231 01f8 4C89F7   		movq	%r14, %rdi
+ 232 01fb 41BD0600 		movl	$6, %r13d
+ 232      0000
+ 233 0201 E8000000 		call	errRenderStd@PLT
+ 233      00
+ 234 0206 488D3500 		leaq	.LC4(%rip), %rsi
+ 234      000000
+ 235 020d 4C89F7   		movq	%r14, %rdi
+ 236 0210 E8000000 		call	errPrefix@PLT
+ 236      00
+ 237 0215 EBC7     		jmp	.L23
+ 238              	.L26:
+ 239 0217 4C89F7   		movq	%r14, %rdi
+ 240 021a 41BD0200 		movl	$2, %r13d
+ 240      0000
+ 241 0220 E8000000 		call	errRenderStd@PLT
+ 241      00
+ 242 0225 488D3500 		leaq	.LC4(%rip), %rsi
+ 242      000000
+ 243 022c 4C89F7   		movq	%r14, %rdi
+ 244 022f E8000000 		call	errPrefix@PLT
+ 244      00
+ 245 0234 EBB0     		jmp	.L20
+ 246              		.cfi_endproc
+ 247              	.LFE18:
+ 249              		.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+ 250              		.section	.note.GNU-stack,"",@progbits
+ 251              		.section	.note.gnu.property,"a"
+ 252              		.align 8
+ 253 0000 04000000 		.long	1f - 0f
+ 254 0004 10000000 		.long	4f - 1f
+ 255 0008 05000000 		.long	5
+ 256              	0:
+ 257 000c 474E5500 		.string	"GNU"
+ 258              	1:
+ 259              		.align 8
+ 260 0010 020000C0 		.long	0xc0000002
+ 261 0014 04000000 		.long	3f - 2f
+ 262              	2:
+ 263 0018 03000000 		.long	0x3
+ 264              	3:
+ 265 001c 00000000 		.align 8
+ 266              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 binio.c
+     /tmp/cceVHr6F.s:16     .text:0000000000000000 bufAppendFromBinaryFile
+     /tmp/cceVHr6F.s:172    .text:0000000000000190 bufWriteBinaryFile
+     /tmp/cceVHr6F.s:4      .rodata.str1.1:0000000000000000 .LC0
+     /tmp/cceVHr6F.s:6      .rodata.str1.1:0000000000000003 .LC1
+     /tmp/cceVHr6F.s:10     .rodata.str1.8:0000000000000000 .LC2
+     /tmp/cceVHr6F.s:164    .rodata.str1.1:000000000000001d .LC3
+     /tmp/cceVHr6F.s:166    .rodata.str1.1:0000000000000020 .LC4
+
+UNDEFINED SYMBOLS
+fopen
+fseek
+ftell
+bufAppendConst
+rewind
+fread
+feof
+ferror
+errRenderStd
+errPrefix
+fclose
+errRender
+fwrite

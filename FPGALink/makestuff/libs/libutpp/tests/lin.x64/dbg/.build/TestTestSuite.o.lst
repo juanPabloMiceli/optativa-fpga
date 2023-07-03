@@ -1,0 +1,442 @@
+   1              		.file	"TestTestSuite.cpp"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libutpp/tests" "TestTestSuite.cpp"
+   5              		.section	.rodata
+   6              	.LC0:
+   7 0000 53616D65 		.string	"SameTestSuite"
+   7      54657374 
+   7      53756974 
+   7      6500
+   8              		.section	.text._ZN18SuiteSameTestSuite13UnitTestSuite12GetSuiteNameEv,"axG",@progbits,_ZN18SuiteSa
+   9              		.weak	_ZN18SuiteSameTestSuite13UnitTestSuite12GetSuiteNameEv
+  11              	_ZN18SuiteSameTestSuite13UnitTestSuite12GetSuiteNameEv:
+  12              	.LFB1141:
+  13              		.file 1 "TestTestSuite.cpp"
+   1:TestTestSuite.cpp **** #include "../UnitTest++.h"
+   2:TestTestSuite.cpp **** 
+   3:TestTestSuite.cpp **** // We're really testing if it's possible to use the same suite in two files
+   4:TestTestSuite.cpp **** // to compile and link successfuly (TestTestSuite.cpp has suite with the same name)
+   5:TestTestSuite.cpp **** // Note: we are outside of the anonymous namespace
+   6:TestTestSuite.cpp **** SUITE(SameTestSuite)
+  14              		.loc 1 6 1
+  15              		.cfi_startproc
+  16 0000 F30F1EFA 		endbr64
+  17 0004 55       		pushq	%rbp
+  18              		.cfi_def_cfa_offset 16
+  19              		.cfi_offset 6, -16
+  20 0005 4889E5   		movq	%rsp, %rbp
+  21              		.cfi_def_cfa_register 6
+  22              		.loc 1 6 1
+  23 0008 488D0500 		leaq	.LC0(%rip), %rax
+  23      000000
+  24 000f 5D       		popq	%rbp
+  25              		.cfi_def_cfa 7, 8
+  26 0010 C3       		ret
+  27              		.cfi_endproc
+  28              	.LFE1141:
+  30              		.section	.rodata
+  31              	.LC1:
+  32 000e 54657374 		.string	"TestTestSuite.cpp"
+  32      54657374 
+  32      53756974 
+  32      652E6370 
+  32      7000
+  33              	.LC2:
+  34 0020 44756D6D 		.string	"DummyTest2"
+  34      79546573 
+  34      743200
+  35              		.section	.text._ZN18SuiteSameTestSuite14TestDummyTest2C2Ev,"axG",@progbits,_ZN18SuiteSameTestSuite
+  36              		.align 2
+  37              		.weak	_ZN18SuiteSameTestSuite14TestDummyTest2C2Ev
+  39              	_ZN18SuiteSameTestSuite14TestDummyTest2C2Ev:
+  40              	.LFB1143:
+   7:TestTestSuite.cpp **** {
+   8:TestTestSuite.cpp ****     TEST(DummyTest2)
+  41              		.loc 1 8 5
+  42              		.cfi_startproc
+  43 0000 F30F1EFA 		endbr64
+  44 0004 55       		pushq	%rbp
+  45              		.cfi_def_cfa_offset 16
+  46              		.cfi_offset 6, -16
+  47 0005 4889E5   		movq	%rsp, %rbp
+  48              		.cfi_def_cfa_register 6
+  49 0008 53       		pushq	%rbx
+  50 0009 4883EC18 		subq	$24, %rsp
+  51              		.cfi_offset 3, -24
+  52 000d 48897DE8 		movq	%rdi, -24(%rbp)
+  53              	.LBB2:
+  54              		.loc 1 8 5
+  55 0011 488B5DE8 		movq	-24(%rbp), %rbx
+  56 0015 E8000000 		call	_ZN18SuiteSameTestSuite13UnitTestSuite12GetSuiteNameEv
+  56      00
+  57 001a 4889C2   		movq	%rax, %rdx
+  58 001d 41B80800 		movl	$8, %r8d
+  58      0000
+  59 0023 488D0500 		leaq	.LC1(%rip), %rax
+  59      000000
+  60 002a 4889C1   		movq	%rax, %rcx
+  61 002d 488D0500 		leaq	.LC2(%rip), %rax
+  61      000000
+  62 0034 4889C6   		movq	%rax, %rsi
+  63 0037 4889DF   		movq	%rbx, %rdi
+  64 003a E8000000 		call	_ZN8UnitTest4TestC2EPKcS2_S2_i@PLT
+  64      00
+  65 003f 488D1500 		leaq	16+_ZTVN18SuiteSameTestSuite14TestDummyTest2E(%rip), %rdx
+  65      000000
+  66 0046 488B45E8 		movq	-24(%rbp), %rax
+  67 004a 488910   		movq	%rdx, (%rax)
+  68              	.LBE2:
+  69 004d 90       		nop
+  70 004e 488B5DF8 		movq	-8(%rbp), %rbx
+  71 0052 C9       		leave
+  72              		.cfi_def_cfa 7, 8
+  73 0053 C3       		ret
+  74              		.cfi_endproc
+  75              	.LFE1143:
+  77              		.weak	_ZN18SuiteSameTestSuite14TestDummyTest2C1Ev
+  78              		.set	_ZN18SuiteSameTestSuite14TestDummyTest2C1Ev,_ZN18SuiteSameTestSuite14TestDummyTest2C2Ev
+  79              		.globl	_ZN18SuiteSameTestSuite22testDummyTest2InstanceE
+  80              		.bss
+  81              		.align 32
+  84              	_ZN18SuiteSameTestSuite22testDummyTest2InstanceE:
+  85 0000 00000000 		.zero	56
+  85      00000000 
+  85      00000000 
+  85      00000000 
+  85      00000000 
+  86              		.globl	_ZN18SuiteSameTestSuite15adderDummyTest2E
+  89              	_ZN18SuiteSameTestSuite15adderDummyTest2E:
+  90 0038 00       		.zero	1
+  91              		.text
+  92              		.align 2
+  93              		.globl	_ZNK18SuiteSameTestSuite14TestDummyTest27RunImplEv
+  95              	_ZNK18SuiteSameTestSuite14TestDummyTest27RunImplEv:
+  96              	.LFB1145:
+   9:TestTestSuite.cpp ****     {
+  97              		.loc 1 9 5
+  98              		.cfi_startproc
+  99 0000 F30F1EFA 		endbr64
+ 100 0004 55       		pushq	%rbp
+ 101              		.cfi_def_cfa_offset 16
+ 102              		.cfi_offset 6, -16
+ 103 0005 4889E5   		movq	%rsp, %rbp
+ 104              		.cfi_def_cfa_register 6
+ 105 0008 48897DF8 		movq	%rdi, -8(%rbp)
+  10:TestTestSuite.cpp ****     }
+ 106              		.loc 1 10 5
+ 107 000c 90       		nop
+ 108 000d 5D       		popq	%rbp
+ 109              		.cfi_def_cfa 7, 8
+ 110 000e C3       		ret
+ 111              		.cfi_endproc
+ 112              	.LFE1145:
+ 114              		.weak	_ZTVN18SuiteSameTestSuite14TestDummyTest2E
+ 115              		.section	.data.rel.ro.local._ZTVN18SuiteSameTestSuite14TestDummyTest2E,"awG",@progbits,_ZTVN18Suit
+ 116              		.align 8
+ 119              	_ZTVN18SuiteSameTestSuite14TestDummyTest2E:
+ 120 0000 00000000 		.quad	0
+ 120      00000000 
+ 121 0008 00000000 		.quad	_ZTIN18SuiteSameTestSuite14TestDummyTest2E
+ 121      00000000 
+ 122 0010 00000000 		.quad	_ZN18SuiteSameTestSuite14TestDummyTest2D1Ev
+ 122      00000000 
+ 123 0018 00000000 		.quad	_ZN18SuiteSameTestSuite14TestDummyTest2D0Ev
+ 123      00000000 
+ 124 0020 00000000 		.quad	_ZNK18SuiteSameTestSuite14TestDummyTest27RunImplEv
+ 124      00000000 
+ 125              		.section	.text._ZN18SuiteSameTestSuite14TestDummyTest2D2Ev,"axG",@progbits,_ZN18SuiteSameTestSuite
+ 126              		.align 2
+ 127              		.weak	_ZN18SuiteSameTestSuite14TestDummyTest2D2Ev
+ 129              	_ZN18SuiteSameTestSuite14TestDummyTest2D2Ev:
+ 130              	.LFB1223:
+   8:TestTestSuite.cpp ****     {
+ 131              		.loc 1 8 5
+ 132              		.cfi_startproc
+ 133 0000 F30F1EFA 		endbr64
+ 134 0004 55       		pushq	%rbp
+ 135              		.cfi_def_cfa_offset 16
+ 136              		.cfi_offset 6, -16
+ 137 0005 4889E5   		movq	%rsp, %rbp
+ 138              		.cfi_def_cfa_register 6
+ 139 0008 4883EC10 		subq	$16, %rsp
+ 140 000c 48897DF8 		movq	%rdi, -8(%rbp)
+ 141              	.LBB3:
+   8:TestTestSuite.cpp ****     {
+ 142              		.loc 1 8 5
+ 143 0010 488D1500 		leaq	16+_ZTVN18SuiteSameTestSuite14TestDummyTest2E(%rip), %rdx
+ 143      000000
+ 144 0017 488B45F8 		movq	-8(%rbp), %rax
+ 145 001b 488910   		movq	%rdx, (%rax)
+ 146 001e 488B45F8 		movq	-8(%rbp), %rax
+ 147 0022 4889C7   		movq	%rax, %rdi
+ 148 0025 E8000000 		call	_ZN8UnitTest4TestD2Ev@PLT
+ 148      00
+ 149              	.LBE3:
+ 150 002a 90       		nop
+ 151 002b C9       		leave
+ 152              		.cfi_def_cfa 7, 8
+ 153 002c C3       		ret
+ 154              		.cfi_endproc
+ 155              	.LFE1223:
+ 157              		.weak	_ZN18SuiteSameTestSuite14TestDummyTest2D1Ev
+ 158              		.set	_ZN18SuiteSameTestSuite14TestDummyTest2D1Ev,_ZN18SuiteSameTestSuite14TestDummyTest2D2Ev
+ 159              		.section	.text._ZN18SuiteSameTestSuite14TestDummyTest2D0Ev,"axG",@progbits,_ZN18SuiteSameTestSuite
+ 160              		.align 2
+ 161              		.weak	_ZN18SuiteSameTestSuite14TestDummyTest2D0Ev
+ 163              	_ZN18SuiteSameTestSuite14TestDummyTest2D0Ev:
+ 164              	.LFB1225:
+   8:TestTestSuite.cpp ****     {
+ 165              		.loc 1 8 5
+ 166              		.cfi_startproc
+ 167              		.cfi_personality 0x9b,DW.ref.__gxx_personality_v0
+ 168              		.cfi_lsda 0x1b,.LLSDA1225
+ 169 0000 F30F1EFA 		endbr64
+ 170 0004 55       		pushq	%rbp
+ 171              		.cfi_def_cfa_offset 16
+ 172              		.cfi_offset 6, -16
+ 173 0005 4889E5   		movq	%rsp, %rbp
+ 174              		.cfi_def_cfa_register 6
+ 175 0008 53       		pushq	%rbx
+ 176 0009 4883EC18 		subq	$24, %rsp
+ 177              		.cfi_offset 3, -24
+ 178 000d 48897DE8 		movq	%rdi, -24(%rbp)
+   8:TestTestSuite.cpp ****     {
+ 179              		.loc 1 8 5
+ 180 0011 488B45E8 		movq	-24(%rbp), %rax
+ 181 0015 4889C7   		movq	%rax, %rdi
+ 182              	.LEHB0:
+ 183 0018 E8000000 		call	_ZN18SuiteSameTestSuite14TestDummyTest2D1Ev
+ 183      00
+ 184              	.LEHE0:
+   8:TestTestSuite.cpp ****     {
+ 185              		.loc 1 8 5 is_stmt 0 discriminator 2
+ 186 001d 488B45E8 		movq	-24(%rbp), %rax
+ 187 0021 4889C7   		movq	%rax, %rdi
+ 188 0024 E8000000 		call	_ZdlPv@PLT
+ 188      00
+ 189 0029 EB1E     		jmp	.L9
+ 190              	.L8:
+ 191 002b F30F1EFA 		endbr64
+   8:TestTestSuite.cpp ****     {
+ 192              		.loc 1 8 5
+ 193 002f 4889C3   		movq	%rax, %rbx
+ 194 0032 488B45E8 		movq	-24(%rbp), %rax
+ 195 0036 4889C7   		movq	%rax, %rdi
+ 196 0039 E8000000 		call	_ZdlPv@PLT
+ 196      00
+ 197 003e 4889D8   		movq	%rbx, %rax
+ 198 0041 4889C7   		movq	%rax, %rdi
+ 199              	.LEHB1:
+ 200 0044 E8000000 		call	_Unwind_Resume@PLT
+ 200      00
+ 201              	.LEHE1:
+ 202              	.L9:
+ 203 0049 488B5DF8 		movq	-8(%rbp), %rbx
+ 204 004d C9       		leave
+ 205              		.cfi_def_cfa 7, 8
+ 206 004e C3       		ret
+ 207              		.cfi_endproc
+ 208              	.LFE1225:
+ 209              		.globl	__gxx_personality_v0
+ 210              		.section	.gcc_except_table._ZN18SuiteSameTestSuite14TestDummyTest2D0Ev,"aG",@progbits,_ZN18SuiteSa
+ 211              	.LLSDA1225:
+ 212 0000 FF       		.byte	0xff
+ 213 0001 FF       		.byte	0xff
+ 214 0002 01       		.byte	0x1
+ 215 0003 08       		.uleb128 .LLSDACSE1225-.LLSDACSB1225
+ 216              	.LLSDACSB1225:
+ 217 0004 18       		.uleb128 .LEHB0-.LFB1225
+ 218 0005 05       		.uleb128 .LEHE0-.LEHB0
+ 219 0006 2B       		.uleb128 .L8-.LFB1225
+ 220 0007 00       		.uleb128 0
+ 221 0008 44       		.uleb128 .LEHB1-.LFB1225
+ 222 0009 05       		.uleb128 .LEHE1-.LEHB1
+ 223 000a 00       		.uleb128 0
+ 224 000b 00       		.uleb128 0
+ 225              	.LLSDACSE1225:
+ 226              		.section	.text._ZN18SuiteSameTestSuite14TestDummyTest2D0Ev,"axG",@progbits,_ZN18SuiteSameTestSuite
+ 228              		.weak	_ZTIN18SuiteSameTestSuite14TestDummyTest2E
+ 229              		.section	.data.rel.ro._ZTIN18SuiteSameTestSuite14TestDummyTest2E,"awG",@progbits,_ZTIN18SuiteSameT
+ 230              		.align 8
+ 233              	_ZTIN18SuiteSameTestSuite14TestDummyTest2E:
+ 234 0000 00000000 		.quad	_ZTVN10__cxxabiv120__si_class_type_infoE+16
+ 234      00000000 
+ 235 0008 00000000 		.quad	_ZTSN18SuiteSameTestSuite14TestDummyTest2E
+ 235      00000000 
+ 236 0010 00000000 		.quad	_ZTIN8UnitTest4TestE
+ 236      00000000 
+ 237              		.weak	_ZTSN18SuiteSameTestSuite14TestDummyTest2E
+ 238              		.section	.rodata._ZTSN18SuiteSameTestSuite14TestDummyTest2E,"aG",@progbits,_ZTSN18SuiteSameTestSui
+ 239              		.align 32
+ 242              	_ZTSN18SuiteSameTestSuite14TestDummyTest2E:
+ 243 0000 4E313853 		.string	"N18SuiteSameTestSuite14TestDummyTest2E"
+ 243      75697465 
+ 243      53616D65 
+ 243      54657374 
+ 243      53756974 
+ 244              		.text
+ 246              	_Z41__static_initialization_and_destruction_0ii:
+ 247              	.LFB1230:
+  11:TestTestSuite.cpp **** }
+ 248              		.loc 1 11 1 is_stmt 1
+ 249              		.cfi_startproc
+ 250 000f F30F1EFA 		endbr64
+ 251 0013 55       		pushq	%rbp
+ 252              		.cfi_def_cfa_offset 16
+ 253              		.cfi_offset 6, -16
+ 254 0014 4889E5   		movq	%rsp, %rbp
+ 255              		.cfi_def_cfa_register 6
+ 256 0017 4883EC10 		subq	$16, %rsp
+ 257 001b 897DFC   		movl	%edi, -4(%rbp)
+ 258 001e 8975F8   		movl	%esi, -8(%rbp)
+ 259              		.loc 1 11 1
+ 260 0021 837DFC01 		cmpl	$1, -4(%rbp)
+ 261 0025 755F     		jne	.L12
+ 262              		.loc 1 11 1 is_stmt 0 discriminator 1
+ 263 0027 817DF8FF 		cmpl	$65535, -8(%rbp)
+ 263      FF0000
+ 264 002e 7556     		jne	.L12
+   8:TestTestSuite.cpp ****     {
+ 265              		.loc 1 8 5 is_stmt 1
+ 266 0030 488D0500 		leaq	_ZN18SuiteSameTestSuite22testDummyTest2InstanceE(%rip), %rax
+ 266      000000
+ 267 0037 4889C7   		movq	%rax, %rdi
+ 268 003a E8000000 		call	_ZN18SuiteSameTestSuite14TestDummyTest2C1Ev
+ 268      00
+ 269 003f 488D0500 		leaq	__dso_handle(%rip), %rax
+ 269      000000
+ 270 0046 4889C2   		movq	%rax, %rdx
+ 271 0049 488D0500 		leaq	_ZN18SuiteSameTestSuite22testDummyTest2InstanceE(%rip), %rax
+ 271      000000
+ 272 0050 4889C6   		movq	%rax, %rsi
+ 273 0053 488D0500 		leaq	_ZN18SuiteSameTestSuite14TestDummyTest2D1Ev(%rip), %rax
+ 273      000000
+ 274 005a 4889C7   		movq	%rax, %rdi
+ 275 005d E8000000 		call	__cxa_atexit@PLT
+ 275      00
+ 276 0062 E8000000 		call	_ZN8UnitTest4Test11GetTestListEv@PLT
+ 276      00
+ 277 0067 4889C1   		movq	%rax, %rcx
+ 278 006a 488D0500 		leaq	_ZN18SuiteSameTestSuite22testDummyTest2InstanceE(%rip), %rax
+ 278      000000
+ 279 0071 4889C2   		movq	%rax, %rdx
+ 280 0074 4889CE   		movq	%rcx, %rsi
+ 281 0077 488D0500 		leaq	_ZN18SuiteSameTestSuite15adderDummyTest2E(%rip), %rax
+ 281      000000
+ 282 007e 4889C7   		movq	%rax, %rdi
+ 283 0081 E8000000 		call	_ZN8UnitTest9ListAdderC1ERNS_8TestListEPNS_4TestE@PLT
+ 283      00
+ 284              	.L12:
+ 285              		.loc 1 11 1
+ 286 0086 90       		nop
+ 287 0087 C9       		leave
+ 288              		.cfi_def_cfa 7, 8
+ 289 0088 C3       		ret
+ 290              		.cfi_endproc
+ 291              	.LFE1230:
+ 294              	_GLOBAL__sub_I__ZN18SuiteSameTestSuite22testDummyTest2InstanceE:
+ 295              	.LFB1231:
+ 296              		.loc 1 11 1
+ 297              		.cfi_startproc
+ 298 0089 F30F1EFA 		endbr64
+ 299 008d 55       		pushq	%rbp
+ 300              		.cfi_def_cfa_offset 16
+ 301              		.cfi_offset 6, -16
+ 302 008e 4889E5   		movq	%rsp, %rbp
+ 303              		.cfi_def_cfa_register 6
+ 304              		.loc 1 11 1
+ 305 0091 BEFFFF00 		movl	$65535, %esi
+ 305      00
+ 306 0096 BF010000 		movl	$1, %edi
+ 306      00
+ 307 009b E86FFFFF 		call	_Z41__static_initialization_and_destruction_0ii
+ 307      FF
+ 308 00a0 5D       		popq	%rbp
+ 309              		.cfi_def_cfa 7, 8
+ 310 00a1 C3       		ret
+ 311              		.cfi_endproc
+ 312              	.LFE1231:
+ 314              		.section	.init_array,"aw"
+ 315              		.align 8
+ 316 0000 00000000 		.quad	_GLOBAL__sub_I__ZN18SuiteSameTestSuite22testDummyTest2InstanceE
+ 316      00000000 
+ 317              		.text
+ 318              	.Letext0:
+ 319              		.file 2 "../TestList.h"
+ 320              		.file 3 "../Test.h"
+ 321              		.file 4 "<built-in>"
+ 322              		.file 5 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+ 323              		.file 6 "/usr/include/x86_64-linux-gnu/bits/types/wint_t.h"
+ 324              		.file 7 "/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h"
+ 325              		.file 8 "/usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h"
+ 326              		.file 9 "/usr/include/x86_64-linux-gnu/bits/types/__FILE.h"
+ 327              		.file 10 "/usr/include/c++/11/cwchar"
+ 328              		.file 11 "/usr/include/c++/11/clocale"
+ 329              		.file 12 "/usr/include/c++/11/cwctype"
+ 330              		.file 13 "/usr/include/wchar.h"
+ 331              		.file 14 "/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h"
+ 332              		.file 15 "../TestDetails.h"
+ 333              		.file 16 "/usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h"
+ 334              		.file 17 "/usr/include/c++/11/debug/debug.h"
+ 335              		.file 18 "/usr/include/c++/11/bits/predefined_ops.h"
+ 336              		.file 19 "/usr/include/locale.h"
+ 337              		.file 20 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 338              		.file 21 "/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h"
+ 339              		.file 22 "/usr/include/wctype.h"
+ 340              		.file 23 "/usr/include/c++/11/new"
+ 4313              		.align 8
+ 4316              	DW.ref.__gxx_personality_v0:
+ 4317 0000 00000000 		.quad	__gxx_personality_v0
+ 4317      00000000 
+ 4318              		.hidden	__dso_handle
+ 4319              		.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+ 4320              		.section	.note.GNU-stack,"",@progbits
+ 4321              		.section	.note.gnu.property,"a"
+ 4322              		.align 8
+ 4323 0000 04000000 		.long	1f - 0f
+ 4324 0004 10000000 		.long	4f - 1f
+ 4325 0008 05000000 		.long	5
+ 4326              	0:
+ 4327 000c 474E5500 		.string	"GNU"
+ 4328              	1:
+ 4329              		.align 8
+ 4330 0010 020000C0 		.long	0xc0000002
+ 4331 0014 04000000 		.long	3f - 2f
+ 4332              	2:
+ 4333 0018 03000000 		.long	0x3
+ 4334              	3:
+ 4335 001c 00000000 		.align 8
+ 4336              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 TestTestSuite.cpp
+     /tmp/ccZcIecA.s:11     .text._ZN18SuiteSameTestSuite13UnitTestSuite12GetSuiteNameEv:0000000000000000 _ZN18SuiteSameTestSuite13UnitTestSuite12GetSuiteNameEv
+     /tmp/ccZcIecA.s:39     .text._ZN18SuiteSameTestSuite14TestDummyTest2C2Ev:0000000000000000 _ZN18SuiteSameTestSuite14TestDummyTest2C2Ev
+     /tmp/ccZcIecA.s:119    .data.rel.ro.local._ZTVN18SuiteSameTestSuite14TestDummyTest2E:0000000000000000 _ZTVN18SuiteSameTestSuite14TestDummyTest2E
+     /tmp/ccZcIecA.s:39     .text._ZN18SuiteSameTestSuite14TestDummyTest2C2Ev:0000000000000000 _ZN18SuiteSameTestSuite14TestDummyTest2C1Ev
+     /tmp/ccZcIecA.s:84     .bss:0000000000000000 _ZN18SuiteSameTestSuite22testDummyTest2InstanceE
+     /tmp/ccZcIecA.s:89     .bss:0000000000000038 _ZN18SuiteSameTestSuite15adderDummyTest2E
+     /tmp/ccZcIecA.s:95     .text:0000000000000000 _ZNK18SuiteSameTestSuite14TestDummyTest27RunImplEv
+     /tmp/ccZcIecA.s:233    .data.rel.ro._ZTIN18SuiteSameTestSuite14TestDummyTest2E:0000000000000000 _ZTIN18SuiteSameTestSuite14TestDummyTest2E
+     /tmp/ccZcIecA.s:129    .text._ZN18SuiteSameTestSuite14TestDummyTest2D2Ev:0000000000000000 _ZN18SuiteSameTestSuite14TestDummyTest2D1Ev
+     /tmp/ccZcIecA.s:163    .text._ZN18SuiteSameTestSuite14TestDummyTest2D0Ev:0000000000000000 _ZN18SuiteSameTestSuite14TestDummyTest2D0Ev
+     /tmp/ccZcIecA.s:129    .text._ZN18SuiteSameTestSuite14TestDummyTest2D2Ev:0000000000000000 _ZN18SuiteSameTestSuite14TestDummyTest2D2Ev
+     /tmp/ccZcIecA.s:4316   .data.rel.local.DW.ref.__gxx_personality_v0:0000000000000000 DW.ref.__gxx_personality_v0
+     /tmp/ccZcIecA.s:242    .rodata._ZTSN18SuiteSameTestSuite14TestDummyTest2E:0000000000000000 _ZTSN18SuiteSameTestSuite14TestDummyTest2E
+     /tmp/ccZcIecA.s:246    .text:000000000000000f _Z41__static_initialization_and_destruction_0ii
+     /tmp/ccZcIecA.s:294    .text:0000000000000089 _GLOBAL__sub_I__ZN18SuiteSameTestSuite22testDummyTest2InstanceE
+                           .group:0000000000000000 _ZN18SuiteSameTestSuite14TestDummyTest2C5Ev
+                           .group:0000000000000000 _ZN18SuiteSameTestSuite14TestDummyTest2D5Ev
+
+UNDEFINED SYMBOLS
+_ZN8UnitTest4TestC2EPKcS2_S2_i
+_ZN8UnitTest4TestD2Ev
+_ZdlPv
+_Unwind_Resume
+__gxx_personality_v0
+_ZTVN10__cxxabiv120__si_class_type_infoE
+_ZTIN8UnitTest4TestE
+__dso_handle
+__cxa_atexit
+_ZN8UnitTest4Test11GetTestListEv
+_ZN8UnitTest9ListAdderC1ERNS_8TestListEPNS_4TestE

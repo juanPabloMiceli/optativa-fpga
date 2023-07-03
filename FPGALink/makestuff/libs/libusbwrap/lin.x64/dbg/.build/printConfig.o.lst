@@ -1,0 +1,838 @@
+   1              		.file	"printConfig.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libusbwrap" "printConfig.c"
+   6              	littleEndian16:
+   7              	.LFB2:
+   8              		.file 1 "/home/pong/FPGALink/makestuff/common/makestuff.h"
+   1:/home/pong/FPGALink/makestuff/common/makestuff.h **** /*
+   2:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:/home/pong/FPGALink/makestuff/common/makestuff.h ****  *
+   4:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * This program is free software: you can redistribute it and/or modify
+   5:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * the Free Software Foundation, either version 3 of the License, or
+   7:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * (at your option) any later version.
+   8:/home/pong/FPGALink/makestuff/common/makestuff.h ****  *
+   9:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * This program is distributed in the hope that it will be useful,
+  10:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * GNU Lesser General Public License for more details.
+  13:/home/pong/FPGALink/makestuff/common/makestuff.h ****  *
+  14:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * You should have received a copy of the GNU Lesser General Public License
+  15:/home/pong/FPGALink/makestuff/common/makestuff.h ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:/home/pong/FPGALink/makestuff/common/makestuff.h ****  */
+  17:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  18:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef MAKESTUFF_H
+  19:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define MAKESTUFF_H
+  20:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  21:/home/pong/FPGALink/makestuff/common/makestuff.h **** #include <stddef.h>
+  22:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  23:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  24:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifdef WIN32
+  25:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		typedef char bool;
+  26:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		enum {
+  27:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			false = 0,
+  28:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			true = 1
+  29:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		};
+  30:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#else
+  31:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#include <stdbool.h>
+  32:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  33:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  34:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  35:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifdef WIN32
+  36:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define WARN_UNUSED_RESULT
+  37:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define DLLEXPORT(t) __declspec(dllexport) t __stdcall
+  38:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define PFSZD "%Iu"
+  39:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifdef _WIN64
+  40:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define PFSZH "%016IX"
+  41:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define WORD_LENGTH 64
+  42:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#else
+  43:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define PFSZH "%08IX"
+  44:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define WORD_LENGTH 32
+  45:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  46:/home/pong/FPGALink/makestuff/common/makestuff.h **** #else
+  47:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+  48:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define DLLEXPORT(t) t
+  49:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define PFSZD "%zu"
+  50:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifdef __LP64__
+  51:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define PFSZH "%016zX"
+  52:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define WORD_LENGTH 64
+  53:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#else
+  54:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define PFSZH "%08zX"
+  55:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define WORD_LENGTH 32
+  56:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  57:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  58:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  59:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef NULL
+  60:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define NULL ((void*)0)
+  61:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  62:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  63:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef unsigned char      uint8;
+  64:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef unsigned short     uint16;
+  65:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  66:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifndef SDCC
+  67:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		typedef unsigned long long uint64;
+  68:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  69:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  70:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  71:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef signed char        int8;
+  72:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef signed short       int16;
+  73:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  74:/home/pong/FPGALink/makestuff/common/makestuff.h **** #if (defined __AVR__ && defined __GNUC__) || defined SDCC
+  75:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	// The embedded platforms have sizeof(int) = 2, so use long
+  76:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	typedef signed long    int32;
+  77:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	typedef unsigned long  uint32;
+  78:/home/pong/FPGALink/makestuff/common/makestuff.h **** #else
+  79:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	// The i686 & x86_64 have sizeof(int) = 4
+  80:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	typedef signed int     int32;
+  81:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	typedef unsigned int   uint32;
+  82:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  83:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  84:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifndef __cplusplus
+  85:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifndef SDCC
+  86:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		typedef signed long long int64;
+  87:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  88:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+  89:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  90:/home/pong/FPGALink/makestuff/common/makestuff.h **** typedef unsigned int       bitfield;
+  91:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+  92:/home/pong/FPGALink/makestuff/common/makestuff.h **** #if defined __GNUC__
+  93:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define swap32(x) __builtin_bswap32(x)
+  94:/home/pong/FPGALink/makestuff/common/makestuff.h **** #elif defined WIN32
+  95:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifdef __cplusplus
+  96:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		extern "C"
+  97:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+  98:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	unsigned long  __cdecl _byteswap_ulong(unsigned long);
+  99:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#define swap32(x) _byteswap_ulong(x)
+ 100:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#ifndef __cplusplus
+ 101:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		#define inline __inline
+ 102:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#endif
+ 103:/home/pong/FPGALink/makestuff/common/makestuff.h **** #endif
+ 104:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define swap16(x) ((uint16)((((x) & 0x00FF) << 8) | (((x) >> 8) & 0x00FF)))
+ 105:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 106:/home/pong/FPGALink/makestuff/common/makestuff.h **** // The C standard requires this two-level indirection thing
+ 107:/home/pong/FPGALink/makestuff/common/makestuff.h **** #undef CONCAT
+ 108:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CONCAT_INTERNAL(x, y) x ## y
+ 109:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CONCAT(x, y) CONCAT_INTERNAL(x, y)
+ 110:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 111:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define STR_INTERNAL(x) #x
+ 112:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define STR(x) STR_INTERNAL(x)
+ 113:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 114:/home/pong/FPGALink/makestuff/common/makestuff.h **** // The VA_NARGS() macro - count the number of arguments in a C99 variadic macro
+ 115:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define VA_EXPAND(x) x
+ 116:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define VA_NARGS(...) VA_EXPAND(VA_NARGS_INTERNAL(__VA_ARGS__, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 
+ 117:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define VA_NARGS_INTERNAL(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y
+ 118:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define FAIL(code, label) { retVal = code; goto label; }
+ 119:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 120:/home/pong/FPGALink/makestuff/common/makestuff.h **** // The CHECK_STATUS() macro - if condition is true, set a returnCode and jump to a label (exit,
+ 121:/home/pong/FPGALink/makestuff/common/makestuff.h **** // cleanup etc). If liberror is included you can also give an error message.
+ 122:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CHECK_INTERNAL3(condition, code, label) if ( condition ) { FAIL(code, label); }
+ 123:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CHECK_INTERNAL4(condition, code, label, prefix) LIBERROR_IS_REQUIRED
+ 124:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CHECK_INTERNAL5(condition, code, label, ...) LIBERROR_IS_REQUIRED
+ 125:/home/pong/FPGALink/makestuff/common/makestuff.h **** #define CHECK_STATUS(...) VA_EXPAND(CONCAT(CHECK_INTERNAL, VA_NARGS(__VA_ARGS__))(__VA_ARGS__))
+ 126:/home/pong/FPGALink/makestuff/common/makestuff.h **** 
+ 127:/home/pong/FPGALink/makestuff/common/makestuff.h **** #ifdef BYTE_ORDER
+ 128:/home/pong/FPGALink/makestuff/common/makestuff.h **** 	#if BYTE_ORDER == 1234
+ 129:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		// Little-endian machines
+ 130:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		static inline uint16 bigEndian16(uint16 x) {
+ 131:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			return swap16(x);
+ 132:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		}
+ 133:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		static inline uint32 bigEndian32(uint32 x) {
+ 134:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			return swap32(x);
+ 135:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		}
+ 136:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		static inline uint16 littleEndian16(uint16 x) {
+   9              		.loc 1 136 49
+  10              		.cfi_startproc
+  11 0000 55       		pushq	%rbp
+  12              		.cfi_def_cfa_offset 16
+  13              		.cfi_offset 6, -16
+  14 0001 4889E5   		movq	%rsp, %rbp
+  15              		.cfi_def_cfa_register 6
+  16 0004 89F8     		movl	%edi, %eax
+  17 0006 668945FC 		movw	%ax, -4(%rbp)
+ 137:/home/pong/FPGALink/makestuff/common/makestuff.h **** 			return x;
+  18              		.loc 1 137 11
+  19 000a 0FB745FC 		movzwl	-4(%rbp), %eax
+ 138:/home/pong/FPGALink/makestuff/common/makestuff.h **** 		}
+  20              		.loc 1 138 3
+  21 000e 5D       		popq	%rbp
+  22              		.cfi_def_cfa 7, 8
+  23 000f C3       		ret
+  24              		.cfi_endproc
+  25              	.LFE2:
+  27              		.section	.rodata
+  28              	.LC0:
+  29 0000 4661696C 		.string	"Failed to get descriptor: %s"
+  29      65642074 
+  29      6F206765 
+  29      74206465 
+  29      73637269 
+  30 001d 000000   		.align 8
+  31              	.LC1:
+  32 0020 636F6E66 		.string	"configDescriptor {\n    bLength = 0x%02X\n    bDescriptorType = 0x%02X\n    wTotalLength 
+  32      69674465 
+  32      73637269 
+  32      70746F72 
+  32      207B0A20 
+  33 0109 00000000 		.align 8
+  33      000000
+  34              	.LC2:
+  35 0110 20202020 		.ascii	"    interfaceDescriptor {\n        bLength = 0x%02X\n       "
+  35      696E7465 
+  35      72666163 
+  35      65446573 
+  35      63726970 
+  36 014a 206244   		.ascii	" bD"
+  37 014d 65736372 		.string	"escriptorType = 0x%02X\n        bInterfaceNumber = 0x%02X\n        bAlternateSetting = 0x
+  37      6970746F 
+  37      72547970 
+  37      65203D20 
+  37      30782530 
+  38 024e 0000     		.align 8
+  39              	.LC3:
+  40 0250 20202020 		.ascii	"        endpointDescriptor {\n            bLength = 0x"
+  40      20202020 
+  40      656E6470 
+  40      6F696E74 
+  40      44657363 
+  41 0285 25303258 		.string	"%02X\n            bDescriptorType = 0x%02X\n            bEndpointAddress = 0x%02X\n      
+  41      0A202020 
+  41      20202020 
+  41      20202020 
+  41      20624465 
+  42              	.LC4:
+  43 0386 20202020 		.string	"    }\n"
+  43      7D0A00
+  44              	.LC5:
+  45 038d 7D0A00   		.string	"}\n"
+  46              		.text
+  47              		.globl	usbPrintConfiguration
+  49              	usbPrintConfiguration:
+  50              	.LFB19:
+  51              		.file 2 "printConfig.c"
+   1:printConfig.c **** /*
+   2:printConfig.c ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:printConfig.c ****  *
+   4:printConfig.c ****  * This program is free software: you can redistribute it and/or modify
+   5:printConfig.c ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:printConfig.c ****  * the Free Software Foundation, either version 3 of the License, or
+   7:printConfig.c ****  * (at your option) any later version.
+   8:printConfig.c ****  *
+   9:printConfig.c ****  * This program is distributed in the hope that it will be useful,
+  10:printConfig.c ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:printConfig.c ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:printConfig.c ****  * GNU Lesser General Public License for more details.
+  13:printConfig.c ****  *
+  14:printConfig.c ****  * You should have received a copy of the GNU Lesser General Public License
+  15:printConfig.c ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:printConfig.c ****  */
+  17:printConfig.c **** #include <liberror.h>
+  18:printConfig.c **** #include <stdio.h>
+  19:printConfig.c **** #include "private.h"
+  20:printConfig.c **** 
+  21:printConfig.c **** // Print out the configuration tree
+  22:printConfig.c **** //
+  23:printConfig.c **** DLLEXPORT(USBStatus) usbPrintConfiguration(struct USBDevice *dev, FILE *stream, const char **error)
+  52              		.loc 2 23 101
+  53              		.cfi_startproc
+  54 0010 F30F1EFA 		endbr64
+  55 0014 55       		pushq	%rbp
+  56              		.cfi_def_cfa_offset 16
+  57              		.cfi_offset 6, -16
+  58 0015 4889E5   		movq	%rsp, %rbp
+  59              		.cfi_def_cfa_register 6
+  60 0018 4157     		pushq	%r15
+  61 001a 4156     		pushq	%r14
+  62 001c 4155     		pushq	%r13
+  63 001e 4154     		pushq	%r12
+  64 0020 53       		pushq	%rbx
+  65 0021 4881EC68 		subq	$1128, %rsp
+  65      040000
+  66              		.cfi_offset 15, -24
+  67              		.cfi_offset 14, -32
+  68              		.cfi_offset 13, -40
+  69              		.cfi_offset 12, -48
+  70              		.cfi_offset 3, -56
+  71 0028 4889BD88 		movq	%rdi, -1144(%rbp)
+  71      FBFFFF
+  72 002f 4889B580 		movq	%rsi, -1152(%rbp)
+  72      FBFFFF
+  73 0036 48899578 		movq	%rdx, -1160(%rbp)
+  73      FBFFFF
+  74              		.loc 2 23 101
+  75 003d 64488B04 		movq	%fs:40, %rax
+  75      25280000 
+  75      00
+  76 0046 488945C8 		movq	%rax, -56(%rbp)
+  77 004a 31C0     		xorl	%eax, %eax
+  24:printConfig.c **** 	USBStatus retVal = USB_SUCCESS;
+  78              		.loc 2 24 12
+  79 004c C78598FB 		movl	$0, -1128(%rbp)
+  79      FFFF0000 
+  79      0000
+  25:printConfig.c **** 	uint8 descriptorBuffer[1024];
+  26:printConfig.c **** 	uint8 *ptr = descriptorBuffer;
+  80              		.loc 2 26 9
+  81 0056 488D85C0 		leaq	-1088(%rbp), %rax
+  81      FBFFFF
+  82 005d 488985A0 		movq	%rax, -1120(%rbp)
+  82      FBFFFF
+  27:printConfig.c **** 	uint8 endpointNum, interfaceNum;
+  28:printConfig.c **** 	struct libusb_config_descriptor *configDesc;
+  29:printConfig.c **** 	struct libusb_interface_descriptor *interfaceDesc;
+  30:printConfig.c **** 	struct libusb_endpoint_descriptor *endpointDesc;
+  31:printConfig.c **** 	int status = libusb_control_transfer(
+  32:printConfig.c **** 		dev->handle,
+  83              		.loc 2 32 6
+  84 0064 488B8588 		movq	-1144(%rbp), %rax
+  84      FBFFFF
+  85 006b 488B00   		movq	(%rax), %rax
+  31:printConfig.c **** 		dev->handle,
+  86              		.loc 2 31 15
+  87 006e 488D95C0 		leaq	-1088(%rbp), %rdx
+  87      FBFFFF
+  88 0075 68881300 		pushq	$5000
+  88      00
+  89 007a 68000100 		pushq	$256
+  89      00
+  90 007f 4989D1   		movq	%rdx, %r9
+  91 0082 41B80000 		movl	$0, %r8d
+  91      0000
+  92 0088 B9000200 		movl	$512, %ecx
+  92      00
+  93 008d BA060000 		movl	$6, %edx
+  93      00
+  94 0092 BE800000 		movl	$128, %esi
+  94      00
+  95 0097 4889C7   		movq	%rax, %rdi
+  96 009a E8000000 		call	libusb_control_transfer@PLT
+  96      00
+  97 009f 4883C410 		addq	$16, %rsp
+  98 00a3 89859CFB 		movl	%eax, -1124(%rbp)
+  98      FFFF
+  33:printConfig.c **** 		LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_STANDARD | LIBUSB_RECIPIENT_DEVICE,
+  34:printConfig.c **** 		LIBUSB_REQUEST_GET_DESCRIPTOR,  // bRequest
+  35:printConfig.c **** 		0x0200,                         // wValue
+  36:printConfig.c **** 		0x0000,                         // wIndex
+  37:printConfig.c **** 		descriptorBuffer,
+  38:printConfig.c **** 		256,                            // wLength
+  39:printConfig.c **** 		5000                            // timeout (ms)
+  40:printConfig.c **** 	);
+  41:printConfig.c **** 	CHECK_STATUS(
+  99              		.loc 2 41 2
+ 100 00a9 83BD9CFB 		cmpl	$0, -1124(%rbp)
+ 100      FFFF00
+ 101 00b0 7F3D     		jg	.L4
+ 102              		.loc 2 41 2 is_stmt 0 discriminator 1
+ 103 00b2 8B859CFB 		movl	-1124(%rbp), %eax
+ 103      FFFF
+ 104 00b8 89C7     		movl	%eax, %edi
+ 105 00ba E8000000 		call	libusb_error_name@PLT
+ 105      00
+ 106 00bf 4889C2   		movq	%rax, %rdx
+ 107 00c2 488B8578 		movq	-1160(%rbp), %rax
+ 107      FBFFFF
+ 108 00c9 488D0D00 		leaq	.LC0(%rip), %rcx
+ 108      000000
+ 109 00d0 4889CE   		movq	%rcx, %rsi
+ 110 00d3 4889C7   		movq	%rax, %rdi
+ 111 00d6 B8000000 		movl	$0, %eax
+ 111      00
+ 112 00db E8000000 		call	errRender@PLT
+ 112      00
+ 113 00e0 C78598FB 		movl	$9, -1128(%rbp)
+ 113      FFFF0900 
+ 113      0000
+ 114 00ea E90A0300 		jmp	.L5
+ 114      00
+ 115              	.L4:
+  42:printConfig.c **** 		status <= 0, USB_CANNOT_GET_DESCRIPTOR, cleanup,
+  43:printConfig.c **** 		"Failed to get descriptor: %s", libusb_error_name(status));
+  44:printConfig.c **** 	configDesc = (struct libusb_config_descriptor *)ptr;
+ 116              		.loc 2 44 13 is_stmt 1
+ 117 00ef 488B85A0 		movq	-1120(%rbp), %rax
+ 117      FBFFFF
+ 118 00f6 488985A8 		movq	%rax, -1112(%rbp)
+ 118      FBFFFF
+  45:printConfig.c **** 	fprintf(
+  46:printConfig.c **** 		stream,
+  47:printConfig.c **** 		"configDescriptor {\n    bLength = 0x%02X\n    bDescriptorType = 0x%02X\n    wTotalLength = 0x%04
+  48:printConfig.c **** 		configDesc->bLength,
+  49:printConfig.c **** 		configDesc->bDescriptorType,
+  50:printConfig.c **** 		littleEndian16(configDesc->wTotalLength),
+  51:printConfig.c **** 		configDesc->bNumInterfaces,
+  52:printConfig.c **** 		configDesc->bConfigurationValue,
+  53:printConfig.c **** 		configDesc->iConfiguration,
+  54:printConfig.c **** 		configDesc->bmAttributes,
+  55:printConfig.c **** 		configDesc->MaxPower
+ 119              		.loc 2 55 13
+ 120 00fd 488B85A8 		movq	-1112(%rbp), %rax
+ 120      FBFFFF
+ 121 0104 0FB64008 		movzbl	8(%rax), %eax
+  45:printConfig.c **** 	fprintf(
+ 122              		.loc 2 45 2
+ 123 0108 440FB6F0 		movzbl	%al, %r14d
+  54:printConfig.c **** 		configDesc->MaxPower
+ 124              		.loc 2 54 13
+ 125 010c 488B85A8 		movq	-1112(%rbp), %rax
+ 125      FBFFFF
+ 126 0113 0FB64007 		movzbl	7(%rax), %eax
+  45:printConfig.c **** 	fprintf(
+ 127              		.loc 2 45 2
+ 128 0117 440FB6E8 		movzbl	%al, %r13d
+  53:printConfig.c **** 		configDesc->bmAttributes,
+ 129              		.loc 2 53 13
+ 130 011b 488B85A8 		movq	-1112(%rbp), %rax
+ 130      FBFFFF
+ 131 0122 0FB64006 		movzbl	6(%rax), %eax
+  45:printConfig.c **** 	fprintf(
+ 132              		.loc 2 45 2
+ 133 0126 440FB6E0 		movzbl	%al, %r12d
+  52:printConfig.c **** 		configDesc->iConfiguration,
+ 134              		.loc 2 52 13
+ 135 012a 488B85A8 		movq	-1112(%rbp), %rax
+ 135      FBFFFF
+ 136 0131 0FB64005 		movzbl	5(%rax), %eax
+  45:printConfig.c **** 		stream,
+ 137              		.loc 2 45 2
+ 138 0135 0FB6D8   		movzbl	%al, %ebx
+  51:printConfig.c **** 		configDesc->bConfigurationValue,
+ 139              		.loc 2 51 13
+ 140 0138 488B85A8 		movq	-1112(%rbp), %rax
+ 140      FBFFFF
+ 141 013f 0FB64004 		movzbl	4(%rax), %eax
+  45:printConfig.c **** 		stream,
+ 142              		.loc 2 45 2
+ 143 0143 440FB6F8 		movzbl	%al, %r15d
+  50:printConfig.c **** 		configDesc->bNumInterfaces,
+ 144              		.loc 2 50 28
+ 145 0147 488B85A8 		movq	-1112(%rbp), %rax
+ 145      FBFFFF
+ 146 014e 0FB74002 		movzwl	2(%rax), %eax
+  50:printConfig.c **** 		configDesc->bNumInterfaces,
+ 147              		.loc 2 50 3
+ 148 0152 0FB7C0   		movzwl	%ax, %eax
+ 149 0155 89C7     		movl	%eax, %edi
+ 150 0157 E8A4FEFF 		call	littleEndian16
+ 150      FF
+  45:printConfig.c **** 		stream,
+ 151              		.loc 2 45 2
+ 152 015c 0FB7F0   		movzwl	%ax, %esi
+  49:printConfig.c **** 		littleEndian16(configDesc->wTotalLength),
+ 153              		.loc 2 49 13
+ 154 015f 488B85A8 		movq	-1112(%rbp), %rax
+ 154      FBFFFF
+ 155 0166 0FB64001 		movzbl	1(%rax), %eax
+  45:printConfig.c **** 		stream,
+ 156              		.loc 2 45 2
+ 157 016a 0FB6C8   		movzbl	%al, %ecx
+  48:printConfig.c **** 		configDesc->bDescriptorType,
+ 158              		.loc 2 48 13
+ 159 016d 488B85A8 		movq	-1112(%rbp), %rax
+ 159      FBFFFF
+ 160 0174 0FB600   		movzbl	(%rax), %eax
+  45:printConfig.c **** 		stream,
+ 161              		.loc 2 45 2
+ 162 0177 0FB6D0   		movzbl	%al, %edx
+ 163 017a 488B8580 		movq	-1152(%rbp), %rax
+ 163      FBFFFF
+ 164 0181 4156     		pushq	%r14
+ 165 0183 4155     		pushq	%r13
+ 166 0185 4154     		pushq	%r12
+ 167 0187 53       		pushq	%rbx
+ 168 0188 4589F9   		movl	%r15d, %r9d
+ 169 018b 4189F0   		movl	%esi, %r8d
+ 170 018e 488D3500 		leaq	.LC1(%rip), %rsi
+ 170      000000
+ 171 0195 4889C7   		movq	%rax, %rdi
+ 172 0198 B8000000 		movl	$0, %eax
+ 172      00
+ 173 019d E8000000 		call	fprintf@PLT
+ 173      00
+ 174 01a2 4883C420 		addq	$32, %rsp
+  56:printConfig.c **** 	);
+  57:printConfig.c **** 	ptr += configDesc->bLength;
+ 175              		.loc 2 57 19
+ 176 01a6 488B85A8 		movq	-1112(%rbp), %rax
+ 176      FBFFFF
+ 177 01ad 0FB600   		movzbl	(%rax), %eax
+ 178 01b0 0FB6C0   		movzbl	%al, %eax
+ 179              		.loc 2 57 6
+ 180 01b3 480185A0 		addq	%rax, -1120(%rbp)
+ 180      FBFFFF
+  58:printConfig.c **** 	interfaceNum = configDesc->bNumInterfaces;
+ 181              		.loc 2 58 15
+ 182 01ba 488B85A8 		movq	-1112(%rbp), %rax
+ 182      FBFFFF
+ 183 01c1 0FB64004 		movzbl	4(%rax), %eax
+ 184 01c5 888597FB 		movb	%al, -1129(%rbp)
+ 184      FFFF
+  59:printConfig.c **** 	while ( interfaceNum-- ) {
+ 185              		.loc 2 59 8
+ 186 01cb E9EE0100 		jmp	.L6
+ 186      00
+ 187              	.L9:
+  60:printConfig.c **** 		interfaceDesc = (struct libusb_interface_descriptor *)ptr;
+ 188              		.loc 2 60 17
+ 189 01d0 488B85A0 		movq	-1120(%rbp), %rax
+ 189      FBFFFF
+ 190 01d7 488985B0 		movq	%rax, -1104(%rbp)
+ 190      FBFFFF
+  61:printConfig.c **** 		fprintf(
+  62:printConfig.c **** 			stream,
+  63:printConfig.c **** 			"    interfaceDescriptor {\n        bLength = 0x%02X\n        bDescriptorType = 0x%02X\n        
+  64:printConfig.c **** 			interfaceDesc->bLength,
+  65:printConfig.c **** 			interfaceDesc->bDescriptorType,
+  66:printConfig.c **** 			interfaceDesc->bInterfaceNumber,
+  67:printConfig.c **** 			interfaceDesc->bAlternateSetting,
+  68:printConfig.c **** 			interfaceDesc->bNumEndpoints,
+  69:printConfig.c **** 			interfaceDesc->bInterfaceClass,
+  70:printConfig.c **** 			interfaceDesc->bInterfaceSubClass,
+  71:printConfig.c **** 			interfaceDesc->bInterfaceProtocol,
+  72:printConfig.c **** 			interfaceDesc->iInterface
+ 191              		.loc 2 72 17
+ 192 01de 488B85B0 		movq	-1104(%rbp), %rax
+ 192      FBFFFF
+ 193 01e5 0FB64008 		movzbl	8(%rax), %eax
+  61:printConfig.c **** 		fprintf(
+ 194              		.loc 2 61 3
+ 195 01e9 440FB6D0 		movzbl	%al, %r10d
+  71:printConfig.c **** 			interfaceDesc->iInterface
+ 196              		.loc 2 71 17
+ 197 01ed 488B85B0 		movq	-1104(%rbp), %rax
+ 197      FBFFFF
+ 198 01f4 0FB64007 		movzbl	7(%rax), %eax
+  61:printConfig.c **** 		fprintf(
+ 199              		.loc 2 61 3
+ 200 01f8 440FB6C8 		movzbl	%al, %r9d
+  70:printConfig.c **** 			interfaceDesc->bInterfaceProtocol,
+ 201              		.loc 2 70 17
+ 202 01fc 488B85B0 		movq	-1104(%rbp), %rax
+ 202      FBFFFF
+ 203 0203 0FB64006 		movzbl	6(%rax), %eax
+  61:printConfig.c **** 		fprintf(
+ 204              		.loc 2 61 3
+ 205 0207 440FB6C0 		movzbl	%al, %r8d
+  69:printConfig.c **** 			interfaceDesc->bInterfaceSubClass,
+ 206              		.loc 2 69 17
+ 207 020b 488B85B0 		movq	-1104(%rbp), %rax
+ 207      FBFFFF
+ 208 0212 0FB64005 		movzbl	5(%rax), %eax
+  61:printConfig.c **** 			stream,
+ 209              		.loc 2 61 3
+ 210 0216 0FB6F8   		movzbl	%al, %edi
+  68:printConfig.c **** 			interfaceDesc->bInterfaceClass,
+ 211              		.loc 2 68 17
+ 212 0219 488B85B0 		movq	-1104(%rbp), %rax
+ 212      FBFFFF
+ 213 0220 0FB64004 		movzbl	4(%rax), %eax
+  61:printConfig.c **** 			stream,
+ 214              		.loc 2 61 3
+ 215 0224 0FB6F0   		movzbl	%al, %esi
+  67:printConfig.c **** 			interfaceDesc->bNumEndpoints,
+ 216              		.loc 2 67 17
+ 217 0227 488B85B0 		movq	-1104(%rbp), %rax
+ 217      FBFFFF
+ 218 022e 0FB64003 		movzbl	3(%rax), %eax
+  61:printConfig.c **** 			stream,
+ 219              		.loc 2 61 3
+ 220 0232 0FB6D8   		movzbl	%al, %ebx
+  66:printConfig.c **** 			interfaceDesc->bAlternateSetting,
+ 221              		.loc 2 66 17
+ 222 0235 488B85B0 		movq	-1104(%rbp), %rax
+ 222      FBFFFF
+ 223 023c 0FB64002 		movzbl	2(%rax), %eax
+  61:printConfig.c **** 			stream,
+ 224              		.loc 2 61 3
+ 225 0240 440FB6D8 		movzbl	%al, %r11d
+  65:printConfig.c **** 			interfaceDesc->bInterfaceNumber,
+ 226              		.loc 2 65 17
+ 227 0244 488B85B0 		movq	-1104(%rbp), %rax
+ 227      FBFFFF
+ 228 024b 0FB64001 		movzbl	1(%rax), %eax
+  61:printConfig.c **** 			stream,
+ 229              		.loc 2 61 3
+ 230 024f 0FB6C8   		movzbl	%al, %ecx
+  64:printConfig.c **** 			interfaceDesc->bDescriptorType,
+ 231              		.loc 2 64 17
+ 232 0252 488B85B0 		movq	-1104(%rbp), %rax
+ 232      FBFFFF
+ 233 0259 0FB600   		movzbl	(%rax), %eax
+  61:printConfig.c **** 			stream,
+ 234              		.loc 2 61 3
+ 235 025c 0FB6D0   		movzbl	%al, %edx
+ 236 025f 488B8580 		movq	-1152(%rbp), %rax
+ 236      FBFFFF
+ 237 0266 4883EC08 		subq	$8, %rsp
+ 238 026a 4152     		pushq	%r10
+ 239 026c 4151     		pushq	%r9
+ 240 026e 4150     		pushq	%r8
+ 241 0270 57       		pushq	%rdi
+ 242 0271 56       		pushq	%rsi
+ 243 0272 4189D9   		movl	%ebx, %r9d
+ 244 0275 4589D8   		movl	%r11d, %r8d
+ 245 0278 488D3500 		leaq	.LC2(%rip), %rsi
+ 245      000000
+ 246 027f 4889C7   		movq	%rax, %rdi
+ 247 0282 B8000000 		movl	$0, %eax
+ 247      00
+ 248 0287 E8000000 		call	fprintf@PLT
+ 248      00
+ 249 028c 4883C430 		addq	$48, %rsp
+  73:printConfig.c **** 		);
+  74:printConfig.c **** 		ptr += interfaceDesc->bLength;			
+ 250              		.loc 2 74 23
+ 251 0290 488B85B0 		movq	-1104(%rbp), %rax
+ 251      FBFFFF
+ 252 0297 0FB600   		movzbl	(%rax), %eax
+ 253 029a 0FB6C0   		movzbl	%al, %eax
+ 254              		.loc 2 74 7
+ 255 029d 480185A0 		addq	%rax, -1120(%rbp)
+ 255      FBFFFF
+  75:printConfig.c **** 		endpointNum = interfaceDesc->bNumEndpoints;
+ 256              		.loc 2 75 15
+ 257 02a4 488B85B0 		movq	-1104(%rbp), %rax
+ 257      FBFFFF
+ 258 02ab 0FB64004 		movzbl	4(%rax), %eax
+ 259 02af 888596FB 		movb	%al, -1130(%rbp)
+ 259      FFFF
+  76:printConfig.c **** 		while ( endpointNum-- ) {
+ 260              		.loc 2 76 9
+ 261 02b5 E9C90000 		jmp	.L7
+ 261      00
+ 262              	.L8:
+  77:printConfig.c **** 			endpointDesc = (struct libusb_endpoint_descriptor *)ptr;
+ 263              		.loc 2 77 17
+ 264 02ba 488B85A0 		movq	-1120(%rbp), %rax
+ 264      FBFFFF
+ 265 02c1 488985B8 		movq	%rax, -1096(%rbp)
+ 265      FBFFFF
+  78:printConfig.c **** 			fprintf(
+  79:printConfig.c **** 				stream,
+  80:printConfig.c **** 				"        endpointDescriptor {\n            bLength = 0x%02X\n            bDescriptorType = 0x%0
+  81:printConfig.c **** 				endpointDesc->bLength,
+  82:printConfig.c **** 				endpointDesc->bDescriptorType,
+  83:printConfig.c **** 				endpointDesc->bEndpointAddress,
+  84:printConfig.c **** 				endpointDesc->bmAttributes,
+  85:printConfig.c **** 				littleEndian16(endpointDesc->wMaxPacketSize),
+  86:printConfig.c **** 				endpointDesc->bInterval,
+  87:printConfig.c **** 				endpointDesc->bRefresh,
+  88:printConfig.c **** 				endpointDesc->bSynchAddress
+ 266              		.loc 2 88 17
+ 267 02c8 488B85B8 		movq	-1096(%rbp), %rax
+ 267      FBFFFF
+ 268 02cf 0FB64008 		movzbl	8(%rax), %eax
+  78:printConfig.c **** 			fprintf(
+ 269              		.loc 2 78 4
+ 270 02d3 440FB6E8 		movzbl	%al, %r13d
+  87:printConfig.c **** 				endpointDesc->bSynchAddress
+ 271              		.loc 2 87 17
+ 272 02d7 488B85B8 		movq	-1096(%rbp), %rax
+ 272      FBFFFF
+ 273 02de 0FB64007 		movzbl	7(%rax), %eax
+  78:printConfig.c **** 			fprintf(
+ 274              		.loc 2 78 4
+ 275 02e2 440FB6E0 		movzbl	%al, %r12d
+  86:printConfig.c **** 				endpointDesc->bRefresh,
+ 276              		.loc 2 86 17
+ 277 02e6 488B85B8 		movq	-1096(%rbp), %rax
+ 277      FBFFFF
+ 278 02ed 0FB64006 		movzbl	6(%rax), %eax
+  78:printConfig.c **** 			fprintf(
+ 279              		.loc 2 78 4
+ 280 02f1 0FB6D8   		movzbl	%al, %ebx
+  85:printConfig.c **** 				endpointDesc->bInterval,
+ 281              		.loc 2 85 32
+ 282 02f4 488B85B8 		movq	-1096(%rbp), %rax
+ 282      FBFFFF
+ 283 02fb 0FB74004 		movzwl	4(%rax), %eax
+  85:printConfig.c **** 				endpointDesc->bInterval,
+ 284              		.loc 2 85 5
+ 285 02ff 0FB7C0   		movzwl	%ax, %eax
+ 286 0302 89C7     		movl	%eax, %edi
+ 287 0304 E8F7FCFF 		call	littleEndian16
+ 287      FF
+  78:printConfig.c **** 				stream,
+ 288              		.loc 2 78 4
+ 289 0309 0FB7F0   		movzwl	%ax, %esi
+  84:printConfig.c **** 				littleEndian16(endpointDesc->wMaxPacketSize),
+ 290              		.loc 2 84 17
+ 291 030c 488B85B8 		movq	-1096(%rbp), %rax
+ 291      FBFFFF
+ 292 0313 0FB64003 		movzbl	3(%rax), %eax
+  78:printConfig.c **** 				stream,
+ 293              		.loc 2 78 4
+ 294 0317 440FB6C0 		movzbl	%al, %r8d
+  83:printConfig.c **** 				endpointDesc->bmAttributes,
+ 295              		.loc 2 83 17
+ 296 031b 488B85B8 		movq	-1096(%rbp), %rax
+ 296      FBFFFF
+ 297 0322 0FB64002 		movzbl	2(%rax), %eax
+  78:printConfig.c **** 				stream,
+ 298              		.loc 2 78 4
+ 299 0326 0FB6F8   		movzbl	%al, %edi
+  82:printConfig.c **** 				endpointDesc->bEndpointAddress,
+ 300              		.loc 2 82 17
+ 301 0329 488B85B8 		movq	-1096(%rbp), %rax
+ 301      FBFFFF
+ 302 0330 0FB64001 		movzbl	1(%rax), %eax
+  78:printConfig.c **** 				stream,
+ 303              		.loc 2 78 4
+ 304 0334 0FB6C8   		movzbl	%al, %ecx
+  81:printConfig.c **** 				endpointDesc->bDescriptorType,
+ 305              		.loc 2 81 17
+ 306 0337 488B85B8 		movq	-1096(%rbp), %rax
+ 306      FBFFFF
+ 307 033e 0FB600   		movzbl	(%rax), %eax
+  78:printConfig.c **** 				stream,
+ 308              		.loc 2 78 4
+ 309 0341 0FB6D0   		movzbl	%al, %edx
+ 310 0344 488B8580 		movq	-1152(%rbp), %rax
+ 310      FBFFFF
+ 311 034b 4155     		pushq	%r13
+ 312 034d 4154     		pushq	%r12
+ 313 034f 53       		pushq	%rbx
+ 314 0350 56       		pushq	%rsi
+ 315 0351 4589C1   		movl	%r8d, %r9d
+ 316 0354 4189F8   		movl	%edi, %r8d
+ 317 0357 488D3500 		leaq	.LC3(%rip), %rsi
+ 317      000000
+ 318 035e 4889C7   		movq	%rax, %rdi
+ 319 0361 B8000000 		movl	$0, %eax
+ 319      00
+ 320 0366 E8000000 		call	fprintf@PLT
+ 320      00
+ 321 036b 4883C420 		addq	$32, %rsp
+  89:printConfig.c **** 			);
+  90:printConfig.c **** 			ptr += endpointDesc->bLength;
+ 322              		.loc 2 90 23
+ 323 036f 488B85B8 		movq	-1096(%rbp), %rax
+ 323      FBFFFF
+ 324 0376 0FB600   		movzbl	(%rax), %eax
+ 325 0379 0FB6C0   		movzbl	%al, %eax
+ 326              		.loc 2 90 8
+ 327 037c 480185A0 		addq	%rax, -1120(%rbp)
+ 327      FBFFFF
+ 328              	.L7:
+  76:printConfig.c **** 			endpointDesc = (struct libusb_endpoint_descriptor *)ptr;
+ 329              		.loc 2 76 22
+ 330 0383 0FB68596 		movzbl	-1130(%rbp), %eax
+ 330      FBFFFF
+ 331 038a 8D50FF   		leal	-1(%rax), %edx
+ 332 038d 889596FB 		movb	%dl, -1130(%rbp)
+ 332      FFFF
+  76:printConfig.c **** 			endpointDesc = (struct libusb_endpoint_descriptor *)ptr;
+ 333              		.loc 2 76 11
+ 334 0393 84C0     		testb	%al, %al
+ 335 0395 0F851FFF 		jne	.L8
+ 335      FFFF
+  91:printConfig.c **** 		}
+  92:printConfig.c **** 		fprintf(stream, "    }\n");
+ 336              		.loc 2 92 3
+ 337 039b 488B8580 		movq	-1152(%rbp), %rax
+ 337      FBFFFF
+ 338 03a2 4889C1   		movq	%rax, %rcx
+ 339 03a5 BA060000 		movl	$6, %edx
+ 339      00
+ 340 03aa BE010000 		movl	$1, %esi
+ 340      00
+ 341 03af 488D0500 		leaq	.LC4(%rip), %rax
+ 341      000000
+ 342 03b6 4889C7   		movq	%rax, %rdi
+ 343 03b9 E8000000 		call	fwrite@PLT
+ 343      00
+ 344              	.L6:
+  59:printConfig.c **** 		interfaceDesc = (struct libusb_interface_descriptor *)ptr;
+ 345              		.loc 2 59 22
+ 346 03be 0FB68597 		movzbl	-1129(%rbp), %eax
+ 346      FBFFFF
+ 347 03c5 8D50FF   		leal	-1(%rax), %edx
+ 348 03c8 889597FB 		movb	%dl, -1129(%rbp)
+ 348      FFFF
+  59:printConfig.c **** 		interfaceDesc = (struct libusb_interface_descriptor *)ptr;
+ 349              		.loc 2 59 10
+ 350 03ce 84C0     		testb	%al, %al
+ 351 03d0 0F85FAFD 		jne	.L9
+ 351      FFFF
+  93:printConfig.c **** 	}
+  94:printConfig.c **** 	fprintf(stream, "}\n");
+ 352              		.loc 2 94 2
+ 353 03d6 488B8580 		movq	-1152(%rbp), %rax
+ 353      FBFFFF
+ 354 03dd 4889C1   		movq	%rax, %rcx
+ 355 03e0 BA020000 		movl	$2, %edx
+ 355      00
+ 356 03e5 BE010000 		movl	$1, %esi
+ 356      00
+ 357 03ea 488D0500 		leaq	.LC5(%rip), %rax
+ 357      000000
+ 358 03f1 4889C7   		movq	%rax, %rdi
+ 359 03f4 E8000000 		call	fwrite@PLT
+ 359      00
+ 360              	.L5:
+  95:printConfig.c **** cleanup:
+  96:printConfig.c **** 	return retVal;
+ 361              		.loc 2 96 9
+ 362 03f9 8B8598FB 		movl	-1128(%rbp), %eax
+ 362      FFFF
+  97:printConfig.c **** }
+ 363              		.loc 2 97 1
+ 364 03ff 488B55C8 		movq	-56(%rbp), %rdx
+ 365 0403 64482B14 		subq	%fs:40, %rdx
+ 365      25280000 
+ 365      00
+ 366 040c 7405     		je	.L11
+ 367 040e E8000000 		call	__stack_chk_fail@PLT
+ 367      00
+ 368              	.L11:
+ 369 0413 488D65D8 		leaq	-40(%rbp), %rsp
+ 370 0417 5B       		popq	%rbx
+ 371 0418 415C     		popq	%r12
+ 372 041a 415D     		popq	%r13
+ 373 041c 415E     		popq	%r14
+ 374 041e 415F     		popq	%r15
+ 375 0420 5D       		popq	%rbp
+ 376              		.cfi_def_cfa 7, 8
+ 377 0421 C3       		ret
+ 378              		.cfi_endproc
+ 379              	.LFE19:
+ 381              	.Letext0:
+ 382              		.file 3 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+ 383              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 384              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h"
+ 385              		.file 6 "/usr/include/x86_64-linux-gnu/bits/types/FILE.h"
+ 386              		.file 7 "libusbwrap.h"
+ 387              		.file 8 "unbounded_queue.h"
+ 388              		.file 9 "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h"
+ 389              		.file 10 "/usr/include/libusb-1.0/libusb.h"
+ 390              		.file 11 "private.h"
+ 391              		.file 12 "/usr/include/stdio.h"
+ 392              		.file 13 "/home/pong/FPGALink/makestuff/libs/liberror/liberror.h"
+ 2374              		.section	.note.gnu.property,"a"
+ 2375              		.align 8
+ 2376 0000 04000000 		.long	1f - 0f
+ 2377 0004 10000000 		.long	4f - 1f
+ 2378 0008 05000000 		.long	5
+ 2379              	0:
+ 2380 000c 474E5500 		.string	"GNU"
+ 2381              	1:
+ 2382              		.align 8
+ 2383 0010 020000C0 		.long	0xc0000002
+ 2384 0014 04000000 		.long	3f - 2f
+ 2385              	2:
+ 2386 0018 03000000 		.long	0x3
+ 2387              	3:
+ 2388 001c 00000000 		.align 8
+ 2389              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 printConfig.c
+     /tmp/ccYNJFN9.s:6      .text:0000000000000000 littleEndian16
+     /tmp/ccYNJFN9.s:49     .text:0000000000000010 usbPrintConfiguration
+
+UNDEFINED SYMBOLS
+libusb_control_transfer
+libusb_error_name
+errRender
+fprintf
+fwrite
+__stack_chk_fail

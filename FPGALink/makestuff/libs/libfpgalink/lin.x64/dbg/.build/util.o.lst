@@ -1,0 +1,399 @@
+   1              		.file	"util.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libfpgalink" "util.c"
+   5              		.globl	flSleep
+   7              	flSleep:
+   8              	.LFB10:
+   9              		.file 1 "util.c"
+   1:util.c        **** /*
+   2:util.c        ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:util.c        ****  *
+   4:util.c        ****  * This program is free software: you can redistribute it and/or modify
+   5:util.c        ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:util.c        ****  * the Free Software Foundation, either version 3 of the License, or
+   7:util.c        ****  * (at your option) any later version.
+   8:util.c        ****  *
+   9:util.c        ****  * This program is distributed in the hope that it will be useful,
+  10:util.c        ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:util.c        ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:util.c        ****  * GNU Lesser General Public License for more details.
+  13:util.c        ****  *
+  14:util.c        ****  * You should have received a copy of the GNU Lesser General Public License
+  15:util.c        ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:util.c        ****  */
+  17:util.c        **** #include <makestuff.h>
+  18:util.c        **** #ifdef WIN32
+  19:util.c        **** 	#include <Windows.h>
+  20:util.c        **** #else
+  21:util.c        **** 	#define _BSD_SOURCE
+  22:util.c        **** 	#include <unistd.h>
+  23:util.c        **** #endif
+  24:util.c        **** #include <stdio.h>
+  25:util.c        **** #include <stdlib.h>
+  26:util.c        **** #include <liberror.h>
+  27:util.c        **** #include <libusbwrap.h>
+  28:util.c        **** #include "private.h"
+  29:util.c        **** #include "vendorCommands.h"
+  30:util.c        **** 
+  31:util.c        **** /*
+  32:util.c        ****  * Platform-agnostic millisecond sleep function
+  33:util.c        ****  */
+  34:util.c        **** DLLEXPORT(void) flSleep(uint32 ms) {
+  10              		.loc 1 34 36
+  11              		.cfi_startproc
+  12 0000 F30F1EFA 		endbr64
+  13 0004 55       		pushq	%rbp
+  14              		.cfi_def_cfa_offset 16
+  15              		.cfi_offset 6, -16
+  16 0005 4889E5   		movq	%rsp, %rbp
+  17              		.cfi_def_cfa_register 6
+  18 0008 4883EC10 		subq	$16, %rsp
+  19 000c 897DFC   		movl	%edi, -4(%rbp)
+  35:util.c        **** 	#ifdef WIN32
+  36:util.c        **** 		Sleep(ms);
+  37:util.c        **** 	#else
+  38:util.c        **** 		usleep(1000*ms);
+  20              		.loc 1 38 3
+  21 000f 8B45FC   		movl	-4(%rbp), %eax
+  22 0012 69C0E803 		imull	$1000, %eax, %eax
+  22      0000
+  23 0018 89C7     		movl	%eax, %edi
+  24 001a E8000000 		call	usleep@PLT
+  24      00
+  39:util.c        **** 	#endif
+  40:util.c        **** }
+  25              		.loc 1 40 1
+  26 001f 90       		nop
+  27 0020 C9       		leave
+  28              		.cfi_def_cfa 7, 8
+  29 0021 C3       		ret
+  30              		.cfi_endproc
+  31              	.LFE10:
+  33              		.section	.rodata
+  34              	.LC0:
+  35 0000 726200   		.string	"rb"
+  36              		.text
+  37              		.globl	flLoadFile
+  39              	flLoadFile:
+  40              	.LFB11:
+  41:util.c        **** 
+  42:util.c        **** /*
+  43:util.c        ****  * Allocate a buffer big enough to fit file into, then read the file into it, then write the file
+  44:util.c        ****  * length to the location pointed to by 'length'. Naturally, responsibility for the allocated
+  45:util.c        ****  * buffer passes to the caller, and must be freed by a call to flFreeFile().
+  46:util.c        ****  */
+  47:util.c        **** DLLEXPORT(uint8*) flLoadFile(const char *name, size_t *length) {
+  41              		.loc 1 47 64
+  42              		.cfi_startproc
+  43 0022 F30F1EFA 		endbr64
+  44 0026 55       		pushq	%rbp
+  45              		.cfi_def_cfa_offset 16
+  46              		.cfi_offset 6, -16
+  47 0027 4889E5   		movq	%rsp, %rbp
+  48              		.cfi_def_cfa_register 6
+  49 002a 4883EC30 		subq	$48, %rsp
+  50 002e 48897DD8 		movq	%rdi, -40(%rbp)
+  51 0032 488975D0 		movq	%rsi, -48(%rbp)
+  48:util.c        **** 	FILE *file;
+  49:util.c        **** 	uint8 *buffer;
+  50:util.c        **** 	size_t fileLen;
+  51:util.c        **** 	size_t returnCode;
+  52:util.c        **** 
+  53:util.c        **** 	file = fopen(name, "rb");
+  52              		.loc 1 53 9
+  53 0036 488B45D8 		movq	-40(%rbp), %rax
+  54 003a 488D1500 		leaq	.LC0(%rip), %rdx
+  54      000000
+  55 0041 4889D6   		movq	%rdx, %rsi
+  56 0044 4889C7   		movq	%rax, %rdi
+  57 0047 E8000000 		call	fopen@PLT
+  57      00
+  58 004c 488945E0 		movq	%rax, -32(%rbp)
+  54:util.c        **** 	if ( !file ) {
+  59              		.loc 1 54 5
+  60 0050 48837DE0 		cmpq	$0, -32(%rbp)
+  60      00
+  61 0055 750A     		jne	.L3
+  55:util.c        **** 		return NULL;
+  62              		.loc 1 55 10
+  63 0057 B8000000 		movl	$0, %eax
+  63      00
+  64 005c E9C10000 		jmp	.L4
+  64      00
+  65              	.L3:
+  56:util.c        **** 	}
+  57:util.c        **** 	
+  58:util.c        **** 	fseek(file, 0, SEEK_END);
+  66              		.loc 1 58 2
+  67 0061 488B45E0 		movq	-32(%rbp), %rax
+  68 0065 BA020000 		movl	$2, %edx
+  68      00
+  69 006a BE000000 		movl	$0, %esi
+  69      00
+  70 006f 4889C7   		movq	%rax, %rdi
+  71 0072 E8000000 		call	fseek@PLT
+  71      00
+  59:util.c        **** 	fileLen = (size_t)ftell(file);
+  72              		.loc 1 59 20
+  73 0077 488B45E0 		movq	-32(%rbp), %rax
+  74 007b 4889C7   		movq	%rax, %rdi
+  75 007e E8000000 		call	ftell@PLT
+  75      00
+  76              		.loc 1 59 10
+  77 0083 488945E8 		movq	%rax, -24(%rbp)
+  60:util.c        **** 	fseek(file, 0, SEEK_SET);
+  78              		.loc 1 60 2
+  79 0087 488B45E0 		movq	-32(%rbp), %rax
+  80 008b BA000000 		movl	$0, %edx
+  80      00
+  81 0090 BE000000 		movl	$0, %esi
+  81      00
+  82 0095 4889C7   		movq	%rax, %rdi
+  83 0098 E8000000 		call	fseek@PLT
+  83      00
+  61:util.c        **** 
+  62:util.c        **** 	// Allocate enough space for an extra byte just in case the file size is odd
+  63:util.c        **** 	buffer = (uint8 *)malloc(fileLen + 1);
+  84              		.loc 1 63 20
+  85 009d 488B45E8 		movq	-24(%rbp), %rax
+  86 00a1 4883C001 		addq	$1, %rax
+  87 00a5 4889C7   		movq	%rax, %rdi
+  88 00a8 E8000000 		call	malloc@PLT
+  88      00
+  89 00ad 488945F0 		movq	%rax, -16(%rbp)
+  64:util.c        **** 	if ( !buffer ) {
+  90              		.loc 1 64 5
+  91 00b1 48837DF0 		cmpq	$0, -16(%rbp)
+  91      00
+  92 00b6 7513     		jne	.L5
+  65:util.c        **** 		fclose(file);
+  93              		.loc 1 65 3
+  94 00b8 488B45E0 		movq	-32(%rbp), %rax
+  95 00bc 4889C7   		movq	%rax, %rdi
+  96 00bf E8000000 		call	fclose@PLT
+  96      00
+  66:util.c        **** 		return NULL;
+  97              		.loc 1 66 10
+  98 00c4 B8000000 		movl	$0, %eax
+  98      00
+  99 00c9 EB57     		jmp	.L4
+ 100              	.L5:
+  67:util.c        **** 	}
+  68:util.c        **** 	returnCode = fread(buffer, 1, fileLen, file);
+ 101              		.loc 1 68 15
+ 102 00cb 488B4DE0 		movq	-32(%rbp), %rcx
+ 103 00cf 488B55E8 		movq	-24(%rbp), %rdx
+ 104 00d3 488B45F0 		movq	-16(%rbp), %rax
+ 105 00d7 BE010000 		movl	$1, %esi
+ 105      00
+ 106 00dc 4889C7   		movq	%rax, %rdi
+ 107 00df E8000000 		call	fread@PLT
+ 107      00
+ 108 00e4 488945F8 		movq	%rax, -8(%rbp)
+  69:util.c        **** 	if ( returnCode == fileLen && length != NULL ) {
+ 109              		.loc 1 69 5
+ 110 00e8 488B45F8 		movq	-8(%rbp), %rax
+ 111 00ec 483B45E8 		cmpq	-24(%rbp), %rax
+ 112 00f0 7512     		jne	.L6
+ 113              		.loc 1 69 29 discriminator 1
+ 114 00f2 48837DD0 		cmpq	$0, -48(%rbp)
+ 114      00
+ 115 00f7 740B     		je	.L6
+  70:util.c        **** 		*length = fileLen;
+ 116              		.loc 1 70 11
+ 117 00f9 488B45D0 		movq	-48(%rbp), %rax
+ 118 00fd 488B55E8 		movq	-24(%rbp), %rdx
+ 119 0101 488910   		movq	%rdx, (%rax)
+ 120              	.L6:
+  71:util.c        **** 	}
+  72:util.c        **** 	buffer[fileLen] = '\0';
+ 121              		.loc 1 72 8
+ 122 0104 488B55F0 		movq	-16(%rbp), %rdx
+ 123 0108 488B45E8 		movq	-24(%rbp), %rax
+ 124 010c 4801D0   		addq	%rdx, %rax
+ 125              		.loc 1 72 18
+ 126 010f C60000   		movb	$0, (%rax)
+  73:util.c        **** 	fclose(file);
+ 127              		.loc 1 73 2
+ 128 0112 488B45E0 		movq	-32(%rbp), %rax
+ 129 0116 4889C7   		movq	%rax, %rdi
+ 130 0119 E8000000 		call	fclose@PLT
+ 130      00
+  74:util.c        **** 	return buffer;
+ 131              		.loc 1 74 9
+ 132 011e 488B45F0 		movq	-16(%rbp), %rax
+ 133              	.L4:
+  75:util.c        **** }
+ 134              		.loc 1 75 1
+ 135 0122 C9       		leave
+ 136              		.cfi_def_cfa 7, 8
+ 137 0123 C3       		ret
+ 138              		.cfi_endproc
+ 139              	.LFE11:
+ 141              		.globl	flFreeFile
+ 143              	flFreeFile:
+ 144              	.LFB12:
+  76:util.c        **** 
+  77:util.c        **** DLLEXPORT(void) flFreeFile(uint8 *buffer) {
+ 145              		.loc 1 77 43
+ 146              		.cfi_startproc
+ 147 0124 F30F1EFA 		endbr64
+ 148 0128 55       		pushq	%rbp
+ 149              		.cfi_def_cfa_offset 16
+ 150              		.cfi_offset 6, -16
+ 151 0129 4889E5   		movq	%rsp, %rbp
+ 152              		.cfi_def_cfa_register 6
+ 153 012c 4883EC10 		subq	$16, %rsp
+ 154 0130 48897DF8 		movq	%rdi, -8(%rbp)
+  78:util.c        **** 	free((void*)buffer);
+ 155              		.loc 1 78 2
+ 156 0134 488B45F8 		movq	-8(%rbp), %rax
+ 157 0138 4889C7   		movq	%rax, %rdi
+ 158 013b E8000000 		call	free@PLT
+ 158      00
+  79:util.c        **** }
+ 159              		.loc 1 79 1
+ 160 0140 90       		nop
+ 161 0141 C9       		leave
+ 162              		.cfi_def_cfa 7, 8
+ 163 0142 C3       		ret
+ 164              		.cfi_endproc
+ 165              	.LFE12:
+ 167              		.section	.rodata
+ 168              	.LC1:
+ 169 0003 666C426F 		.string	"flBootloader()"
+ 169      6F746C6F 
+ 169      61646572 
+ 169      282900
+ 170              		.text
+ 171              		.globl	flBootloader
+ 173              	flBootloader:
+ 174              	.LFB13:
+  80:util.c        **** 
+  81:util.c        **** DLLEXPORT(FLStatus) flBootloader(
+  82:util.c        **** 	struct FLContext *handle, const char **error)
+  83:util.c        **** {
+ 175              		.loc 1 83 1
+ 176              		.cfi_startproc
+ 177 0143 F30F1EFA 		endbr64
+ 178 0147 55       		pushq	%rbp
+ 179              		.cfi_def_cfa_offset 16
+ 180              		.cfi_offset 6, -16
+ 181 0148 4889E5   		movq	%rsp, %rbp
+ 182              		.cfi_def_cfa_register 6
+ 183 014b 4883EC20 		subq	$32, %rsp
+ 184 014f 48897DE8 		movq	%rdi, -24(%rbp)
+ 185 0153 488975E0 		movq	%rsi, -32(%rbp)
+  84:util.c        **** 	FLStatus retVal = FL_SUCCESS;
+ 186              		.loc 1 84 11
+ 187 0157 C745F800 		movl	$0, -8(%rbp)
+ 187      000000
+  85:util.c        **** 	USBStatus uStatus = usbControlWrite(
+ 188              		.loc 1 85 22
+ 189 015e 488B45E8 		movq	-24(%rbp), %rax
+ 190 0162 488B00   		movq	(%rax), %rax
+ 191 0165 FF75E0   		pushq	-32(%rbp)
+ 192 0168 68E80300 		pushq	$1000
+ 192      00
+ 193 016d 41B90000 		movl	$0, %r9d
+ 193      0000
+ 194 0173 41B80000 		movl	$0, %r8d
+ 194      0000
+ 195 0179 B9000000 		movl	$0, %ecx
+ 195      00
+ 196 017e BA000000 		movl	$0, %edx
+ 196      00
+ 197 0183 BE870000 		movl	$135, %esi
+ 197      00
+ 198 0188 4889C7   		movq	%rax, %rdi
+ 199 018b E8000000 		call	usbControlWrite@PLT
+ 199      00
+ 200 0190 4883C410 		addq	$16, %rsp
+ 201 0194 8945FC   		movl	%eax, -4(%rbp)
+  86:util.c        **** 		handle->device,
+  87:util.c        **** 		CMD_BOOTLOADER,  // bRequest
+  88:util.c        **** 		0x0000,          // wValue
+  89:util.c        **** 		0x0000,          // wIndex
+  90:util.c        **** 		NULL,            // buffer to receive current state of ports
+  91:util.c        **** 		0,               // wLength
+  92:util.c        **** 		1000,            // timeout (ms)
+  93:util.c        **** 		error
+  94:util.c        **** 	);
+  95:util.c        **** 	CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flBootloader()");
+ 202              		.loc 1 95 2
+ 203 0197 837DFC00 		cmpl	$0, -4(%rbp)
+ 204 019b 741F     		je	.L11
+ 205              		.loc 1 95 2 is_stmt 0 discriminator 1
+ 206 019d 488B45E0 		movq	-32(%rbp), %rax
+ 207 01a1 488D1500 		leaq	.LC1(%rip), %rdx
+ 207      000000
+ 208 01a8 4889D6   		movq	%rdx, %rsi
+ 209 01ab 4889C7   		movq	%rax, %rdi
+ 210 01ae E8000000 		call	errPrefix@PLT
+ 210      00
+ 211 01b3 C745F802 		movl	$2, -8(%rbp)
+ 211      000000
+ 212 01ba EB01     		jmp	.L9
+ 213              	.L11:
+  96:util.c        **** cleanup:
+ 214              		.loc 1 96 1 is_stmt 1
+ 215 01bc 90       		nop
+ 216              	.L9:
+  97:util.c        **** 	return retVal;
+ 217              		.loc 1 97 9
+ 218 01bd 8B45F8   		movl	-8(%rbp), %eax
+  98:util.c        **** }
+ 219              		.loc 1 98 1
+ 220 01c0 C9       		leave
+ 221              		.cfi_def_cfa 7, 8
+ 222 01c1 C3       		ret
+ 223              		.cfi_endproc
+ 224              	.LFE13:
+ 226              	.Letext0:
+ 227              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+ 228              		.file 3 "/home/pong/FPGALink/makestuff/common/makestuff.h"
+ 229              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 230              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h"
+ 231              		.file 6 "/usr/include/x86_64-linux-gnu/bits/types/FILE.h"
+ 232              		.file 7 "/home/pong/FPGALink/makestuff/libs/libusbwrap/libusbwrap.h"
+ 233              		.file 8 "libfpgalink.h"
+ 234              		.file 9 "private.h"
+ 235              		.file 10 "/home/pong/FPGALink/makestuff/libs/liberror/liberror.h"
+ 236              		.file 11 "/usr/include/stdlib.h"
+ 237              		.file 12 "/usr/include/stdio.h"
+ 238              		.file 13 "/usr/include/unistd.h"
+ 2048              		.section	.note.gnu.property,"a"
+ 2049              		.align 8
+ 2050 0000 04000000 		.long	1f - 0f
+ 2051 0004 10000000 		.long	4f - 1f
+ 2052 0008 05000000 		.long	5
+ 2053              	0:
+ 2054 000c 474E5500 		.string	"GNU"
+ 2055              	1:
+ 2056              		.align 8
+ 2057 0010 020000C0 		.long	0xc0000002
+ 2058 0014 04000000 		.long	3f - 2f
+ 2059              	2:
+ 2060 0018 03000000 		.long	0x3
+ 2061              	3:
+ 2062 001c 00000000 		.align 8
+ 2063              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 util.c
+     /tmp/ccEevSnC.s:7      .text:0000000000000000 flSleep
+     /tmp/ccEevSnC.s:39     .text:0000000000000022 flLoadFile
+     /tmp/ccEevSnC.s:143    .text:0000000000000124 flFreeFile
+     /tmp/ccEevSnC.s:173    .text:0000000000000143 flBootloader
+
+UNDEFINED SYMBOLS
+usleep
+fopen
+fseek
+ftell
+malloc
+fclose
+fread
+free
+usbControlWrite
+errPrefix

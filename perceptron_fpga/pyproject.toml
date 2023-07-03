@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "perceptron-fpga"
+version = "0.1.0"
+description = ""
+authors = ["juanPabloMiceli <micelijuanpablo@gmail.com>"]
+readme = "README.md"
+packages = [{include = "perceptron_fpga"}]
+
+[tool.poetry.dependencies]
+python = ">=3.8, <3.11"
+tensorflow = "^2.12.0"
+scikit-learn = "^1.3.0"
+opencv-python = "^4.8.0.74"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

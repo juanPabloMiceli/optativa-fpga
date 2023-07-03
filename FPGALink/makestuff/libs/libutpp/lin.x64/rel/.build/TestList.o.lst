@@ -1,0 +1,95 @@
+   1              		.file	"TestList.cpp"
+   2              		.text
+   3              		.align 2
+   4              		.p2align 4
+   5              		.globl	_ZN8UnitTest8TestListC2Ev
+   7              	_ZN8UnitTest8TestListC2Ev:
+   8              	.LFB1:
+   9              		.cfi_startproc
+  10 0000 F30F1EFA 		endbr64
+  11 0004 660FEFC0 		pxor	%xmm0, %xmm0
+  12 0008 0F1107   		movups	%xmm0, (%rdi)
+  13 000b C3       		ret
+  14              		.cfi_endproc
+  15              	.LFE1:
+  17              		.globl	_ZN8UnitTest8TestListC1Ev
+  18              		.set	_ZN8UnitTest8TestListC1Ev,_ZN8UnitTest8TestListC2Ev
+  19              		.align 2
+  20 000c 0F1F4000 		.p2align 4
+  21              		.globl	_ZN8UnitTest8TestList3AddEPNS_4TestE
+  23              	_ZN8UnitTest8TestList3AddEPNS_4TestE:
+  24              	.LFB3:
+  25              		.cfi_startproc
+  26 0010 F30F1EFA 		endbr64
+  27 0014 488B4708 		movq	8(%rdi), %rax
+  28 0018 4885C0   		testq	%rax, %rax
+  29 001b 7413     		je	.L6
+  30 001d 48897028 		movq	%rsi, 40(%rax)
+  31 0021 48897708 		movq	%rsi, 8(%rdi)
+  32 0025 C3       		ret
+  33 0026 662E0F1F 		.p2align 4,,10
+  33      84000000 
+  33      0000
+  34              		.p2align 3
+  35              	.L6:
+  36 0030 488937   		movq	%rsi, (%rdi)
+  37 0033 48897708 		movq	%rsi, 8(%rdi)
+  38 0037 C3       		ret
+  39              		.cfi_endproc
+  40              	.LFE3:
+  42              		.align 2
+  43 0038 0F1F8400 		.p2align 4
+  43      00000000 
+  44              		.globl	_ZNK8UnitTest8TestList7GetHeadEv
+  46              	_ZNK8UnitTest8TestList7GetHeadEv:
+  47              	.LFB4:
+  48              		.cfi_startproc
+  49 0040 F30F1EFA 		endbr64
+  50 0044 488B07   		movq	(%rdi), %rax
+  51 0047 C3       		ret
+  52              		.cfi_endproc
+  53              	.LFE4:
+  55              		.align 2
+  56 0048 0F1F8400 		.p2align 4
+  56      00000000 
+  57              		.globl	_ZN8UnitTest9ListAdderC2ERNS_8TestListEPNS_4TestE
+  59              	_ZN8UnitTest9ListAdderC2ERNS_8TestListEPNS_4TestE:
+  60              	.LFB6:
+  61              		.cfi_startproc
+  62 0050 F30F1EFA 		endbr64
+  63 0054 4889F7   		movq	%rsi, %rdi
+  64 0057 4889D6   		movq	%rdx, %rsi
+  65 005a E9000000 		jmp	_ZN8UnitTest8TestList3AddEPNS_4TestE@PLT
+  65      00
+  66              		.cfi_endproc
+  67              	.LFE6:
+  69              		.globl	_ZN8UnitTest9ListAdderC1ERNS_8TestListEPNS_4TestE
+  70              		.set	_ZN8UnitTest9ListAdderC1ERNS_8TestListEPNS_4TestE,_ZN8UnitTest9ListAdderC2ERNS_8TestListEPNS_
+  71              		.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+  72              		.section	.note.GNU-stack,"",@progbits
+  73              		.section	.note.gnu.property,"a"
+  74              		.align 8
+  75 0000 04000000 		.long	1f - 0f
+  76 0004 10000000 		.long	4f - 1f
+  77 0008 05000000 		.long	5
+  78              	0:
+  79 000c 474E5500 		.string	"GNU"
+  80              	1:
+  81              		.align 8
+  82 0010 020000C0 		.long	0xc0000002
+  83 0014 04000000 		.long	3f - 2f
+  84              	2:
+  85 0018 03000000 		.long	0x3
+  86              	3:
+  87 001c 00000000 		.align 8
+  88              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 TestList.cpp
+     /tmp/ccdpR0dD.s:7      .text:0000000000000000 _ZN8UnitTest8TestListC2Ev
+     /tmp/ccdpR0dD.s:7      .text:0000000000000000 _ZN8UnitTest8TestListC1Ev
+     /tmp/ccdpR0dD.s:23     .text:0000000000000010 _ZN8UnitTest8TestList3AddEPNS_4TestE
+     /tmp/ccdpR0dD.s:46     .text:0000000000000040 _ZNK8UnitTest8TestList7GetHeadEv
+     /tmp/ccdpR0dD.s:59     .text:0000000000000050 _ZN8UnitTest9ListAdderC2ERNS_8TestListEPNS_4TestE
+     /tmp/ccdpR0dD.s:59     .text:0000000000000050 _ZN8UnitTest9ListAdderC1ERNS_8TestListEPNS_4TestE
+
+NO UNDEFINED SYMBOLS

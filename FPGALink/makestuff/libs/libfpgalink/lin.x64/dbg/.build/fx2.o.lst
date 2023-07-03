@@ -1,0 +1,1886 @@
+   1              		.file	"fx2.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libfpgalink" "fx2.c"
+   5              		.section	.rodata
+   6              		.align 8
+   7              	.LC0:
+   8 0000 666C4C6F 		.string	"flLoadStandardFirmware(): The supplied VID:PID:DID \"%s\" is invalid; it should look like
+   8      61645374 
+   8      616E6461 
+   8      72644669 
+   8      726D7761 
+   9              	.LC1:
+  10 0074 666C4C6F 		.string	"flLoadStandardFirmware()"
+  10      61645374 
+  10      616E6461 
+  10      72644669 
+  10      726D7761 
+  11              		.text
+  12              		.globl	flLoadStandardFirmware
+  14              	flLoadStandardFirmware:
+  15              	.LFB4:
+  16              		.file 1 "fx2.c"
+   1:fx2.c         **** /*
+   2:fx2.c         ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:fx2.c         ****  *
+   4:fx2.c         ****  * This program is free software: you can redistribute it and/or modify
+   5:fx2.c         ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:fx2.c         ****  * the Free Software Foundation, either version 3 of the License, or
+   7:fx2.c         ****  * (at your option) any later version.
+   8:fx2.c         ****  *
+   9:fx2.c         ****  * This program is distributed in the hope that it will be useful,
+  10:fx2.c         ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:fx2.c         ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:fx2.c         ****  * GNU Lesser General Public License for more details.
+  13:fx2.c         ****  *
+  14:fx2.c         ****  * You should have received a copy of the GNU Lesser General Public License
+  15:fx2.c         ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:fx2.c         ****  */
+  17:fx2.c         **** #include <stdlib.h>
+  18:fx2.c         **** #include <string.h>
+  19:fx2.c         **** #include <makestuff.h>
+  20:fx2.c         **** #include <libfx2loader.h>
+  21:fx2.c         **** #include <liberror.h>
+  22:fx2.c         **** #include <libusbwrap.h>
+  23:fx2.c         **** #include "vendorCommands.h"
+  24:fx2.c         **** #include "libfpgalink.h"
+  25:fx2.c         **** #include "private.h"
+  26:fx2.c         **** #include "firmware.h"
+  27:fx2.c         **** 
+  28:fx2.c         **** // Load the standard FPGALink firmware into the FX2 at currentVid/currentPid.
+  29:fx2.c         **** DLLEXPORT(FLStatus) flLoadStandardFirmware(
+  30:fx2.c         **** 	const char *curVidPid, const char *newVidPid, const char **error)
+  31:fx2.c         **** {
+  17              		.loc 1 31 1
+  18              		.cfi_startproc
+  19 0000 F30F1EFA 		endbr64
+  20 0004 55       		pushq	%rbp
+  21              		.cfi_def_cfa_offset 16
+  22              		.cfi_offset 6, -16
+  23 0005 4889E5   		movq	%rsp, %rbp
+  24              		.cfi_def_cfa_register 6
+  25 0008 4883C480 		addq	$-128, %rsp
+  26 000c 48897D98 		movq	%rdi, -104(%rbp)
+  27 0010 48897590 		movq	%rsi, -112(%rbp)
+  28 0014 48895588 		movq	%rdx, -120(%rbp)
+  29              		.loc 1 31 1
+  30 0018 64488B04 		movq	%fs:40, %rax
+  30      25280000 
+  30      00
+  31 0021 488945F8 		movq	%rax, -8(%rbp)
+  32 0025 31C0     		xorl	%eax, %eax
+  32:fx2.c         **** 	FLStatus flStatus, retVal = FL_SUCCESS;
+  33              		.loc 1 32 21
+  34 0027 C745B400 		movl	$0, -76(%rbp)
+  34      000000
+  33:fx2.c         **** 	struct Buffer ramBuf = {0,};
+  35              		.loc 1 33 16
+  36 002e 48C745D0 		movq	$0, -48(%rbp)
+  36      00000000 
+  37 0036 48C745D8 		movq	$0, -40(%rbp)
+  37      00000000 
+  38 003e 48C745E0 		movq	$0, -32(%rbp)
+  38      00000000 
+  39 0046 48C745E8 		movq	$0, -24(%rbp)
+  39      00000000 
+  34:fx2.c         **** 	BufferStatus bStatus;
+  35:fx2.c         **** 	FX2Status fxStatus;
+  36:fx2.c         **** 	struct USBDevice *device = NULL;
+  40              		.loc 1 36 20
+  41 004e 48C745C8 		movq	$0, -56(%rbp)
+  41      00000000 
+  37:fx2.c         **** 	USBStatus uStatus;
+  38:fx2.c         **** 	uint16 newVid, newPid, newDid;
+  39:fx2.c         **** 	CHECK_STATUS(
+  42              		.loc 1 39 2
+  43 0056 488B4590 		movq	-112(%rbp), %rax
+  44 005a 4889C7   		movq	%rax, %rdi
+  45 005d E8000000 		call	usbValidateVidPid@PLT
+  45      00
+  46 0062 83F001   		xorl	$1, %eax
+  47 0065 84C0     		testb	%al, %al
+  48 0067 742B     		je	.L2
+  49              		.loc 1 39 2 is_stmt 0 discriminator 1
+  50 0069 488B5590 		movq	-112(%rbp), %rdx
+  51 006d 488B4588 		movq	-120(%rbp), %rax
+  52 0071 488D0D00 		leaq	.LC0(%rip), %rcx
+  52      000000
+  53 0078 4889CE   		movq	%rcx, %rsi
+  54 007b 4889C7   		movq	%rax, %rdi
+  55 007e B8000000 		movl	$0, %eax
+  55      00
+  56 0083 E8000000 		call	errRender@PLT
+  56      00
+  57 0088 C745B402 		movl	$2, -76(%rbp)
+  57      000000
+  58 008f E9A50100 		jmp	.L3
+  58      00
+  59              	.L2:
+  40:fx2.c         **** 		!usbValidateVidPid(newVidPid), FL_USB_ERR, cleanup,
+  41:fx2.c         **** 		"flLoadStandardFirmware(): The supplied VID:PID:DID \"%s\" is invalid; it should look like 1D50:6
+  42:fx2.c         **** 		newVidPid);
+  43:fx2.c         **** 	newVid = (uint16)strtoul(newVidPid, NULL, 16);
+  60              		.loc 1 43 19 is_stmt 1
+  61 0094 488B4590 		movq	-112(%rbp), %rax
+  62 0098 BA100000 		movl	$16, %edx
+  62      00
+  63 009d BE000000 		movl	$0, %esi
+  63      00
+  64 00a2 4889C7   		movq	%rax, %rdi
+  65 00a5 E8000000 		call	strtoul@PLT
+  65      00
+  66              		.loc 1 43 9
+  67 00aa 668945AE 		movw	%ax, -82(%rbp)
+  44:fx2.c         **** 	newPid = (uint16)strtoul(newVidPid+5, NULL, 16);
+  68              		.loc 1 44 19
+  69 00ae 488B4590 		movq	-112(%rbp), %rax
+  70 00b2 4883C005 		addq	$5, %rax
+  71 00b6 BA100000 		movl	$16, %edx
+  71      00
+  72 00bb BE000000 		movl	$0, %esi
+  72      00
+  73 00c0 4889C7   		movq	%rax, %rdi
+  74 00c3 E8000000 		call	strtoul@PLT
+  74      00
+  75              		.loc 1 44 9
+  76 00c8 668945B0 		movw	%ax, -80(%rbp)
+  45:fx2.c         **** 	newDid = (uint16)((strlen(newVidPid) == 14) ? strtoul(newVidPid+10, NULL, 16) : 0x0000);
+  77              		.loc 1 45 21
+  78 00cc 488B4590 		movq	-112(%rbp), %rax
+  79 00d0 4889C7   		movq	%rax, %rdi
+  80 00d3 E8000000 		call	strlen@PLT
+  80      00
+  81              		.loc 1 45 11
+  82 00d8 4883F80E 		cmpq	$14, %rax
+  83 00dc 751C     		jne	.L4
+  84              		.loc 1 45 48 discriminator 1
+  85 00de 488B4590 		movq	-112(%rbp), %rax
+  86 00e2 4883C00A 		addq	$10, %rax
+  87 00e6 BA100000 		movl	$16, %edx
+  87      00
+  88 00eb BE000000 		movl	$0, %esi
+  88      00
+  89 00f0 4889C7   		movq	%rax, %rdi
+  90 00f3 E8000000 		call	strtoul@PLT
+  90      00
+  91 00f8 EB05     		jmp	.L5
+  92              	.L4:
+  93              		.loc 1 45 11 discriminator 2
+  94 00fa B8000000 		movl	$0, %eax
+  94      00
+  95              	.L5:
+  96              		.loc 1 45 9 discriminator 4
+  97 00ff 668945B2 		movw	%ax, -78(%rbp)
+  46:fx2.c         **** 	uStatus = usbOpenDevice(curVidPid, 1, 0, 0, &device, error);
+  98              		.loc 1 46 12 discriminator 4
+  99 0103 488B4D88 		movq	-120(%rbp), %rcx
+ 100 0107 488D55C8 		leaq	-56(%rbp), %rdx
+ 101 010b 488B4598 		movq	-104(%rbp), %rax
+ 102 010f 4989C9   		movq	%rcx, %r9
+ 103 0112 4989D0   		movq	%rdx, %r8
+ 104 0115 B9000000 		movl	$0, %ecx
+ 104      00
+ 105 011a BA000000 		movl	$0, %edx
+ 105      00
+ 106 011f BE010000 		movl	$1, %esi
+ 106      00
+ 107 0124 4889C7   		movq	%rax, %rdi
+ 108 0127 E8000000 		call	usbOpenDevice@PLT
+ 108      00
+ 109 012c 8945B8   		movl	%eax, -72(%rbp)
+  47:fx2.c         **** 	CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flLoadStandardFirmware()");
+ 110              		.loc 1 47 2 discriminator 4
+ 111 012f 837DB800 		cmpl	$0, -72(%rbp)
+ 112 0133 7422     		je	.L6
+ 113              		.loc 1 47 2 is_stmt 0 discriminator 1
+ 114 0135 488B4588 		movq	-120(%rbp), %rax
+ 115 0139 488D1500 		leaq	.LC1(%rip), %rdx
+ 115      000000
+ 116 0140 4889D6   		movq	%rdx, %rsi
+ 117 0143 4889C7   		movq	%rax, %rdi
+ 118 0146 E8000000 		call	errPrefix@PLT
+ 118      00
+ 119 014b C745B402 		movl	$2, -76(%rbp)
+ 119      000000
+ 120 0152 E9E20000 		jmp	.L3
+ 120      00
+ 121              	.L6:
+  48:fx2.c         **** 	bStatus = bufInitialise(&ramBuf, 0x4000, 0x00, error);
+ 122              		.loc 1 48 12 is_stmt 1
+ 123 0157 488B5588 		movq	-120(%rbp), %rdx
+ 124 015b 488D45D0 		leaq	-48(%rbp), %rax
+ 125 015f 4889D1   		movq	%rdx, %rcx
+ 126 0162 BA000000 		movl	$0, %edx
+ 126      00
+ 127 0167 BE004000 		movl	$16384, %esi
+ 127      00
+ 128 016c 4889C7   		movq	%rax, %rdi
+ 129 016f E8000000 		call	bufInitialise@PLT
+ 129      00
+ 130 0174 8945BC   		movl	%eax, -68(%rbp)
+  49:fx2.c         **** 	CHECK_STATUS(bStatus, FL_ALLOC_ERR, cleanup, "flLoadStandardFirmware()");
+ 131              		.loc 1 49 2
+ 132 0177 837DBC00 		cmpl	$0, -68(%rbp)
+ 133 017b 7422     		je	.L7
+ 134              		.loc 1 49 2 is_stmt 0 discriminator 1
+ 135 017d 488B4588 		movq	-120(%rbp), %rax
+ 136 0181 488D1500 		leaq	.LC1(%rip), %rdx
+ 136      000000
+ 137 0188 4889D6   		movq	%rdx, %rsi
+ 138 018b 4889C7   		movq	%rax, %rdi
+ 139 018e E8000000 		call	errPrefix@PLT
+ 139      00
+ 140 0193 C745B401 		movl	$1, -76(%rbp)
+ 140      000000
+ 141 019a E99A0000 		jmp	.L3
+ 141      00
+ 142              	.L7:
+  50:fx2.c         **** 	flStatus = copyFirmwareAndRewriteIDs(
+ 143              		.loc 1 50 13 is_stmt 1
+ 144 019f 0FB74DB2 		movzwl	-78(%rbp), %ecx
+ 145 01a3 0FB755B0 		movzwl	-80(%rbp), %edx
+ 146 01a7 0FB745AE 		movzwl	-82(%rbp), %eax
+ 147 01ab 488B7D88 		movq	-120(%rbp), %rdi
+ 148 01af 488D75D0 		leaq	-48(%rbp), %rsi
+ 149 01b3 4989F9   		movq	%rdi, %r9
+ 150 01b6 4989F0   		movq	%rsi, %r8
+ 151 01b9 89C6     		movl	%eax, %esi
+ 152 01bb 488B0500 		movq	ramFirmware@GOTPCREL(%rip), %rax
+ 152      000000
+ 153 01c2 4889C7   		movq	%rax, %rdi
+ 154 01c5 E8000000 		call	copyFirmwareAndRewriteIDs@PLT
+ 154      00
+ 155 01ca 8945C0   		movl	%eax, -64(%rbp)
+  51:fx2.c         **** 		&ramFirmware, newVid, newPid, newDid,
+  52:fx2.c         **** 		&ramBuf, error);
+  53:fx2.c         **** 	CHECK_STATUS(flStatus, flStatus, cleanup, "flLoadStandardFirmware()");
+ 156              		.loc 1 53 2
+ 157 01cd 837DC000 		cmpl	$0, -64(%rbp)
+ 158 01d1 741E     		je	.L8
+ 159              		.loc 1 53 2 is_stmt 0 discriminator 1
+ 160 01d3 488B4588 		movq	-120(%rbp), %rax
+ 161 01d7 488D1500 		leaq	.LC1(%rip), %rdx
+ 161      000000
+ 162 01de 4889D6   		movq	%rdx, %rsi
+ 163 01e1 4889C7   		movq	%rax, %rdi
+ 164 01e4 E8000000 		call	errPrefix@PLT
+ 164      00
+ 165 01e9 8B45C0   		movl	-64(%rbp), %eax
+ 166 01ec 8945B4   		movl	%eax, -76(%rbp)
+ 167 01ef EB48     		jmp	.L3
+ 168              	.L8:
+  54:fx2.c         **** 	fxStatus = fx2WriteRAM(device, ramBuf.data, (uint32)ramBuf.length, error);
+ 169              		.loc 1 54 60 is_stmt 1
+ 170 01f1 488B45D8 		movq	-40(%rbp), %rax
+ 171              		.loc 1 54 13
+ 172 01f5 89C7     		movl	%eax, %edi
+ 173              		.loc 1 54 39
+ 174 01f7 488B75D0 		movq	-48(%rbp), %rsi
+ 175              		.loc 1 54 13
+ 176 01fb 488B45C8 		movq	-56(%rbp), %rax
+ 177 01ff 488B5588 		movq	-120(%rbp), %rdx
+ 178 0203 4889D1   		movq	%rdx, %rcx
+ 179 0206 89FA     		movl	%edi, %edx
+ 180 0208 4889C7   		movq	%rax, %rdi
+ 181 020b E8000000 		call	fx2WriteRAM@PLT
+ 181      00
+ 182 0210 8945C4   		movl	%eax, -60(%rbp)
+  55:fx2.c         **** 	CHECK_STATUS(fxStatus, FL_FX2_ERR, cleanup, "flLoadStandardFirmware()");
+ 183              		.loc 1 55 2
+ 184 0213 837DC400 		cmpl	$0, -60(%rbp)
+ 185 0217 741F     		je	.L12
+ 186              		.loc 1 55 2 is_stmt 0 discriminator 1
+ 187 0219 488B4588 		movq	-120(%rbp), %rax
+ 188 021d 488D1500 		leaq	.LC1(%rip), %rdx
+ 188      000000
+ 189 0224 4889D6   		movq	%rdx, %rsi
+ 190 0227 4889C7   		movq	%rax, %rdi
+ 191 022a E8000000 		call	errPrefix@PLT
+ 191      00
+ 192 022f C745B405 		movl	$5, -76(%rbp)
+ 192      000000
+ 193 0236 EB01     		jmp	.L3
+ 194              	.L12:
+  56:fx2.c         **** cleanup:
+ 195              		.loc 1 56 1 is_stmt 1
+ 196 0238 90       		nop
+ 197              	.L3:
+  57:fx2.c         **** 	bufDestroy(&ramBuf);
+ 198              		.loc 1 57 2
+ 199 0239 488D45D0 		leaq	-48(%rbp), %rax
+ 200 023d 4889C7   		movq	%rax, %rdi
+ 201 0240 E8000000 		call	bufDestroy@PLT
+ 201      00
+  58:fx2.c         **** 	if ( device ) {
+ 202              		.loc 1 58 7
+ 203 0245 488B45C8 		movq	-56(%rbp), %rax
+ 204              		.loc 1 58 5
+ 205 0249 4885C0   		testq	%rax, %rax
+ 206 024c 7411     		je	.L9
+  59:fx2.c         **** 		usbCloseDevice(device, 0);
+ 207              		.loc 1 59 3
+ 208 024e 488B45C8 		movq	-56(%rbp), %rax
+ 209 0252 BE000000 		movl	$0, %esi
+ 209      00
+ 210 0257 4889C7   		movq	%rax, %rdi
+ 211 025a E8000000 		call	usbCloseDevice@PLT
+ 211      00
+ 212              	.L9:
+  60:fx2.c         **** 	}
+  61:fx2.c         **** 	return retVal;
+ 213              		.loc 1 61 9
+ 214 025f 8B45B4   		movl	-76(%rbp), %eax
+  62:fx2.c         **** }
+ 215              		.loc 1 62 1
+ 216 0262 488B55F8 		movq	-8(%rbp), %rdx
+ 217 0266 64482B14 		subq	%fs:40, %rdx
+ 217      25280000 
+ 217      00
+ 218 026f 7405     		je	.L11
+ 219 0271 E8000000 		call	__stack_chk_fail@PLT
+ 219      00
+ 220              	.L11:
+ 221 0276 C9       		leave
+ 222              		.cfi_def_cfa 7, 8
+ 223 0277 C3       		ret
+ 224              		.cfi_endproc
+ 225              	.LFE4:
+ 227              		.section	.rodata
+ 228 008d 000000   		.align 8
+ 229              	.LC2:
+ 230 0090 666C466C 		.string	"flFlashStandardFirmware(): The supplied new VID:PID \"%s\" is invalid; it should look lik
+ 230      61736853 
+ 230      74616E64 
+ 230      61726446 
+ 230      69726D77 
+ 231              	.LC3:
+ 232 0105 666C466C 		.string	"flFlashStandardFirmware()"
+ 232      61736853 
+ 232      74616E64 
+ 232      61726446 
+ 232      69726D77 
+ 233              		.text
+ 234              		.globl	flFlashStandardFirmware
+ 236              	flFlashStandardFirmware:
+ 237              	.LFB5:
+  63:fx2.c         **** 
+  64:fx2.c         **** // Write the standard firmware into the FX2's external EEPROM
+  65:fx2.c         **** DLLEXPORT(FLStatus) flFlashStandardFirmware(
+  66:fx2.c         **** 	struct FLContext *handle, const char *newVidPid, const char **error)
+  67:fx2.c         **** {
+ 238              		.loc 1 67 1
+ 239              		.cfi_startproc
+ 240 0278 F30F1EFA 		endbr64
+ 241 027c 55       		pushq	%rbp
+ 242              		.cfi_def_cfa_offset 16
+ 243              		.cfi_offset 6, -16
+ 244 027d 4889E5   		movq	%rsp, %rbp
+ 245              		.cfi_def_cfa_register 6
+ 246 0280 4883EC70 		subq	$112, %rsp
+ 247 0284 48897DA8 		movq	%rdi, -88(%rbp)
+ 248 0288 488975A0 		movq	%rsi, -96(%rbp)
+ 249 028c 48895598 		movq	%rdx, -104(%rbp)
+ 250              		.loc 1 67 1
+ 251 0290 64488B04 		movq	%fs:40, %rax
+ 251      25280000 
+ 251      00
+ 252 0299 488945F8 		movq	%rax, -8(%rbp)
+ 253 029d 31C0     		xorl	%eax, %eax
+  68:fx2.c         **** 	FLStatus flStatus, retVal = FL_SUCCESS;
+ 254              		.loc 1 68 21
+ 255 029f C745C000 		movl	$0, -64(%rbp)
+ 255      000000
+  69:fx2.c         **** 	struct Buffer i2cBuf = {0,};
+ 256              		.loc 1 69 16
+ 257 02a6 48C745D0 		movq	$0, -48(%rbp)
+ 257      00000000 
+ 258 02ae 48C745D8 		movq	$0, -40(%rbp)
+ 258      00000000 
+ 259 02b6 48C745E0 		movq	$0, -32(%rbp)
+ 259      00000000 
+ 260 02be 48C745E8 		movq	$0, -24(%rbp)
+ 260      00000000 
+  70:fx2.c         **** 	BufferStatus bStatus;
+  71:fx2.c         **** 	FX2Status fxStatus;
+  72:fx2.c         **** 	uint16 newVid, newPid, newDid;
+  73:fx2.c         **** 	CHECK_STATUS(
+ 261              		.loc 1 73 2
+ 262 02c6 488B45A0 		movq	-96(%rbp), %rax
+ 263 02ca 4889C7   		movq	%rax, %rdi
+ 264 02cd E8000000 		call	usbValidateVidPid@PLT
+ 264      00
+ 265 02d2 83F001   		xorl	$1, %eax
+ 266 02d5 84C0     		testb	%al, %al
+ 267 02d7 742B     		je	.L14
+ 268              		.loc 1 73 2 is_stmt 0 discriminator 1
+ 269 02d9 488B55A0 		movq	-96(%rbp), %rdx
+ 270 02dd 488B4598 		movq	-104(%rbp), %rax
+ 271 02e1 488D0D00 		leaq	.LC2(%rip), %rcx
+ 271      000000
+ 272 02e8 4889CE   		movq	%rcx, %rsi
+ 273 02eb 4889C7   		movq	%rax, %rdi
+ 274 02ee B8000000 		movl	$0, %eax
+ 274      00
+ 275 02f3 E8000000 		call	errRender@PLT
+ 275      00
+ 276 02f8 C745C002 		movl	$2, -64(%rbp)
+ 276      000000
+ 277 02ff E9540100 		jmp	.L15
+ 277      00
+ 278              	.L14:
+  74:fx2.c         **** 		!usbValidateVidPid(newVidPid), FL_USB_ERR, cleanup,
+  75:fx2.c         **** 		"flFlashStandardFirmware(): The supplied new VID:PID \"%s\" is invalid; it should look like 1D50:
+  76:fx2.c         **** 		newVidPid);
+  77:fx2.c         **** 	newVid = (uint16)strtoul(newVidPid, NULL, 16);
+ 279              		.loc 1 77 19 is_stmt 1
+ 280 0304 488B45A0 		movq	-96(%rbp), %rax
+ 281 0308 BA100000 		movl	$16, %edx
+ 281      00
+ 282 030d BE000000 		movl	$0, %esi
+ 282      00
+ 283 0312 4889C7   		movq	%rax, %rdi
+ 284 0315 E8000000 		call	strtoul@PLT
+ 284      00
+ 285              		.loc 1 77 9
+ 286 031a 668945BA 		movw	%ax, -70(%rbp)
+  78:fx2.c         **** 	newPid = (uint16)strtoul(newVidPid+5, NULL, 16);
+ 287              		.loc 1 78 19
+ 288 031e 488B45A0 		movq	-96(%rbp), %rax
+ 289 0322 4883C005 		addq	$5, %rax
+ 290 0326 BA100000 		movl	$16, %edx
+ 290      00
+ 291 032b BE000000 		movl	$0, %esi
+ 291      00
+ 292 0330 4889C7   		movq	%rax, %rdi
+ 293 0333 E8000000 		call	strtoul@PLT
+ 293      00
+ 294              		.loc 1 78 9
+ 295 0338 668945BC 		movw	%ax, -68(%rbp)
+  79:fx2.c         **** 	newDid = (uint16)((strlen(newVidPid) == 14) ? strtoul(newVidPid+10, NULL, 16) : 0x0000);
+ 296              		.loc 1 79 21
+ 297 033c 488B45A0 		movq	-96(%rbp), %rax
+ 298 0340 4889C7   		movq	%rax, %rdi
+ 299 0343 E8000000 		call	strlen@PLT
+ 299      00
+ 300              		.loc 1 79 11
+ 301 0348 4883F80E 		cmpq	$14, %rax
+ 302 034c 751C     		jne	.L16
+ 303              		.loc 1 79 48 discriminator 1
+ 304 034e 488B45A0 		movq	-96(%rbp), %rax
+ 305 0352 4883C00A 		addq	$10, %rax
+ 306 0356 BA100000 		movl	$16, %edx
+ 306      00
+ 307 035b BE000000 		movl	$0, %esi
+ 307      00
+ 308 0360 4889C7   		movq	%rax, %rdi
+ 309 0363 E8000000 		call	strtoul@PLT
+ 309      00
+ 310 0368 EB05     		jmp	.L17
+ 311              	.L16:
+ 312              		.loc 1 79 11 discriminator 2
+ 313 036a B8000000 		movl	$0, %eax
+ 313      00
+ 314              	.L17:
+ 315              		.loc 1 79 9 discriminator 4
+ 316 036f 668945BE 		movw	%ax, -66(%rbp)
+  80:fx2.c         **** 	bStatus = bufInitialise(&i2cBuf, 0x4000, 0x00, error);
+ 317              		.loc 1 80 12 discriminator 4
+ 318 0373 488B5598 		movq	-104(%rbp), %rdx
+ 319 0377 488D45D0 		leaq	-48(%rbp), %rax
+ 320 037b 4889D1   		movq	%rdx, %rcx
+ 321 037e BA000000 		movl	$0, %edx
+ 321      00
+ 322 0383 BE004000 		movl	$16384, %esi
+ 322      00
+ 323 0388 4889C7   		movq	%rax, %rdi
+ 324 038b E8000000 		call	bufInitialise@PLT
+ 324      00
+ 325 0390 8945C4   		movl	%eax, -60(%rbp)
+  81:fx2.c         **** 	CHECK_STATUS(bStatus, FL_ALLOC_ERR, cleanup, "flFlashStandardFirmware()");
+ 326              		.loc 1 81 2 discriminator 4
+ 327 0393 837DC400 		cmpl	$0, -60(%rbp)
+ 328 0397 7422     		je	.L18
+ 329              		.loc 1 81 2 is_stmt 0 discriminator 1
+ 330 0399 488B4598 		movq	-104(%rbp), %rax
+ 331 039d 488D1500 		leaq	.LC3(%rip), %rdx
+ 331      000000
+ 332 03a4 4889D6   		movq	%rdx, %rsi
+ 333 03a7 4889C7   		movq	%rax, %rdi
+ 334 03aa E8000000 		call	errPrefix@PLT
+ 334      00
+ 335 03af C745C001 		movl	$1, -64(%rbp)
+ 335      000000
+ 336 03b6 E99D0000 		jmp	.L15
+ 336      00
+ 337              	.L18:
+  82:fx2.c         **** 	flStatus = copyFirmwareAndRewriteIDs(
+ 338              		.loc 1 82 13 is_stmt 1
+ 339 03bb 0FB74DBE 		movzwl	-66(%rbp), %ecx
+ 340 03bf 0FB755BC 		movzwl	-68(%rbp), %edx
+ 341 03c3 0FB745BA 		movzwl	-70(%rbp), %eax
+ 342 03c7 488B7D98 		movq	-104(%rbp), %rdi
+ 343 03cb 488D75D0 		leaq	-48(%rbp), %rsi
+ 344 03cf 4989F9   		movq	%rdi, %r9
+ 345 03d2 4989F0   		movq	%rsi, %r8
+ 346 03d5 89C6     		movl	%eax, %esi
+ 347 03d7 488B0500 		movq	eepromNoBootFirmware@GOTPCREL(%rip), %rax
+ 347      000000
+ 348 03de 4889C7   		movq	%rax, %rdi
+ 349 03e1 E8000000 		call	copyFirmwareAndRewriteIDs@PLT
+ 349      00
+ 350 03e6 8945C8   		movl	%eax, -56(%rbp)
+  83:fx2.c         **** 		&eepromNoBootFirmware, newVid, newPid, newDid,
+  84:fx2.c         **** 		&i2cBuf, error);
+  85:fx2.c         **** 	CHECK_STATUS(flStatus, flStatus, cleanup, "flFlashStandardFirmware()");
+ 351              		.loc 1 85 2
+ 352 03e9 837DC800 		cmpl	$0, -56(%rbp)
+ 353 03ed 741E     		je	.L19
+ 354              		.loc 1 85 2 is_stmt 0 discriminator 1
+ 355 03ef 488B4598 		movq	-104(%rbp), %rax
+ 356 03f3 488D1500 		leaq	.LC3(%rip), %rdx
+ 356      000000
+ 357 03fa 4889D6   		movq	%rdx, %rsi
+ 358 03fd 4889C7   		movq	%rax, %rdi
+ 359 0400 E8000000 		call	errPrefix@PLT
+ 359      00
+ 360 0405 8B45C8   		movl	-56(%rbp), %eax
+ 361 0408 8945C0   		movl	%eax, -64(%rbp)
+ 362 040b EB4B     		jmp	.L15
+ 363              	.L19:
+  86:fx2.c         **** 
+  87:fx2.c         **** 	fxStatus = fx2WriteEEPROM(handle->device, i2cBuf.data, (uint32)i2cBuf.length, error);
+ 364              		.loc 1 87 71 is_stmt 1
+ 365 040d 488B45D8 		movq	-40(%rbp), %rax
+ 366              		.loc 1 87 13
+ 367 0411 89C7     		movl	%eax, %edi
+ 368              		.loc 1 87 50
+ 369 0413 488B75D0 		movq	-48(%rbp), %rsi
+ 370              		.loc 1 87 13
+ 371 0417 488B45A8 		movq	-88(%rbp), %rax
+ 372 041b 488B00   		movq	(%rax), %rax
+ 373 041e 488B5598 		movq	-104(%rbp), %rdx
+ 374 0422 4889D1   		movq	%rdx, %rcx
+ 375 0425 89FA     		movl	%edi, %edx
+ 376 0427 4889C7   		movq	%rax, %rdi
+ 377 042a E8000000 		call	fx2WriteEEPROM@PLT
+ 377      00
+ 378 042f 8945CC   		movl	%eax, -52(%rbp)
+  88:fx2.c         **** 	CHECK_STATUS(fxStatus, FL_FX2_ERR, cleanup, "flFlashStandardFirmware()");
+ 379              		.loc 1 88 2
+ 380 0432 837DCC00 		cmpl	$0, -52(%rbp)
+ 381 0436 741F     		je	.L22
+ 382              		.loc 1 88 2 is_stmt 0 discriminator 1
+ 383 0438 488B4598 		movq	-104(%rbp), %rax
+ 384 043c 488D1500 		leaq	.LC3(%rip), %rdx
+ 384      000000
+ 385 0443 4889D6   		movq	%rdx, %rsi
+ 386 0446 4889C7   		movq	%rax, %rdi
+ 387 0449 E8000000 		call	errPrefix@PLT
+ 387      00
+ 388 044e C745C005 		movl	$5, -64(%rbp)
+ 388      000000
+ 389 0455 EB01     		jmp	.L15
+ 390              	.L22:
+  89:fx2.c         **** cleanup:
+ 391              		.loc 1 89 1 is_stmt 1
+ 392 0457 90       		nop
+ 393              	.L15:
+  90:fx2.c         **** 	bufDestroy(&i2cBuf);
+ 394              		.loc 1 90 2
+ 395 0458 488D45D0 		leaq	-48(%rbp), %rax
+ 396 045c 4889C7   		movq	%rax, %rdi
+ 397 045f E8000000 		call	bufDestroy@PLT
+ 397      00
+  91:fx2.c         **** 	return retVal;
+ 398              		.loc 1 91 9
+ 399 0464 8B45C0   		movl	-64(%rbp), %eax
+  92:fx2.c         **** }
+ 400              		.loc 1 92 1
+ 401 0467 488B55F8 		movq	-8(%rbp), %rdx
+ 402 046b 64482B14 		subq	%fs:40, %rdx
+ 402      25280000 
+ 402      00
+ 403 0474 7405     		je	.L21
+ 404 0476 E8000000 		call	__stack_chk_fail@PLT
+ 404      00
+ 405              	.L21:
+ 406 047b C9       		leave
+ 407              		.cfi_def_cfa 7, 8
+ 408 047c C3       		ret
+ 409              		.cfi_endproc
+ 410              	.LFE5:
+ 412              		.section	.rodata
+ 413              	.LC4:
+ 414 011f 2E686578 		.string	".hex"
+ 414      00
+ 415              	.LC5:
+ 416 0124 2E696878 		.string	".ihx"
+ 416      00
+ 417 0129 00000000 		.align 8
+ 417      000000
+ 418              	.LC6:
+ 419 0130 666C4C6F 		.string	"flLoadCustomFirmware(): Filename should have .hex or .ihx extension"
+ 419      61644375 
+ 419      73746F6D 
+ 419      4669726D 
+ 419      77617265 
+ 420              	.LC7:
+ 421 0174 666C4C6F 		.string	"flLoadCustomFirmware()"
+ 421      61644375 
+ 421      73746F6D 
+ 421      4669726D 
+ 421      77617265 
+ 422              		.text
+ 423              		.globl	flLoadCustomFirmware
+ 425              	flLoadCustomFirmware:
+ 426              	.LFB6:
+  93:fx2.c         **** 
+  94:fx2.c         **** // Load custom firmware (.hex) into the FX2's RAM
+  95:fx2.c         **** DLLEXPORT(FLStatus) flLoadCustomFirmware(
+  96:fx2.c         **** 	const char *curVidPid, const char *fwFile, const char **error)
+  97:fx2.c         **** {
+ 427              		.loc 1 97 1
+ 428              		.cfi_startproc
+ 429 047d F30F1EFA 		endbr64
+ 430 0481 55       		pushq	%rbp
+ 431              		.cfi_def_cfa_offset 16
+ 432              		.cfi_offset 6, -16
+ 433 0482 4889E5   		movq	%rsp, %rbp
+ 434              		.cfi_def_cfa_register 6
+ 435 0485 4883C480 		addq	$-128, %rsp
+ 436 0489 48897D98 		movq	%rdi, -104(%rbp)
+ 437 048d 48897590 		movq	%rsi, -112(%rbp)
+ 438 0491 48895588 		movq	%rdx, -120(%rbp)
+ 439              		.loc 1 97 1
+ 440 0495 64488B04 		movq	%fs:40, %rax
+ 440      25280000 
+ 440      00
+ 441 049e 488945F8 		movq	%rax, -8(%rbp)
+ 442 04a2 31C0     		xorl	%eax, %eax
+  98:fx2.c         **** 	FLStatus retVal = FL_SUCCESS;
+ 443              		.loc 1 98 11
+ 444 04a4 C745B000 		movl	$0, -80(%rbp)
+ 444      000000
+  99:fx2.c         **** 	struct Buffer fwBuf = {0,};
+ 445              		.loc 1 99 16
+ 446 04ab 48C745D0 		movq	$0, -48(%rbp)
+ 446      00000000 
+ 447 04b3 48C745D8 		movq	$0, -40(%rbp)
+ 447      00000000 
+ 448 04bb 48C745E0 		movq	$0, -32(%rbp)
+ 448      00000000 
+ 449 04c3 48C745E8 		movq	$0, -24(%rbp)
+ 449      00000000 
+ 100:fx2.c         **** 	BufferStatus bStatus;
+ 101:fx2.c         **** 	FX2Status fxStatus;
+ 102:fx2.c         **** 	struct USBDevice *device = NULL;
+ 450              		.loc 1 102 20
+ 451 04cb 48C745C0 		movq	$0, -64(%rbp)
+ 451      00000000 
+ 103:fx2.c         **** 	USBStatus uStatus;
+ 104:fx2.c         **** 	const char *const ext = fwFile + strlen(fwFile) - 4;
+ 452              		.loc 1 104 35
+ 453 04d3 488B4590 		movq	-112(%rbp), %rax
+ 454 04d7 4889C7   		movq	%rax, %rdi
+ 455 04da E8000000 		call	strlen@PLT
+ 455      00
+ 456              		.loc 1 104 50
+ 457 04df 488D50FC 		leaq	-4(%rax), %rdx
+ 458              		.loc 1 104 20
+ 459 04e3 488B4590 		movq	-112(%rbp), %rax
+ 460 04e7 4801D0   		addq	%rdx, %rax
+ 461 04ea 488945C8 		movq	%rax, -56(%rbp)
+ 105:fx2.c         **** 	const bool isHex = (strcmp(".hex", ext) == 0) || (strcmp(".ihx", ext) == 0);
+ 462              		.loc 1 105 22
+ 463 04ee 488B45C8 		movq	-56(%rbp), %rax
+ 464 04f2 4889C6   		movq	%rax, %rsi
+ 465 04f5 488D0500 		leaq	.LC4(%rip), %rax
+ 465      000000
+ 466 04fc 4889C7   		movq	%rax, %rdi
+ 467 04ff E8000000 		call	strcmp@PLT
+ 467      00
+ 468              		.loc 1 105 48
+ 469 0504 85C0     		testl	%eax, %eax
+ 470 0506 741A     		je	.L24
+ 471              		.loc 1 105 52 discriminator 2
+ 472 0508 488B45C8 		movq	-56(%rbp), %rax
+ 473 050c 4889C6   		movq	%rax, %rsi
+ 474 050f 488D0500 		leaq	.LC5(%rip), %rax
+ 474      000000
+ 475 0516 4889C7   		movq	%rax, %rdi
+ 476 0519 E8000000 		call	strcmp@PLT
+ 476      00
+ 477              		.loc 1 105 48 discriminator 2
+ 478 051e 85C0     		testl	%eax, %eax
+ 479 0520 7507     		jne	.L25
+ 480              	.L24:
+ 481              		.loc 1 105 48 is_stmt 0 discriminator 3
+ 482 0522 B8010000 		movl	$1, %eax
+ 482      00
+ 483 0527 EB05     		jmp	.L26
+ 484              	.L25:
+ 485              		.loc 1 105 48 discriminator 4
+ 486 0529 B8000000 		movl	$0, %eax
+ 486      00
+ 487              	.L26:
+ 488              		.loc 1 105 13 is_stmt 1 discriminator 6
+ 489 052e 8845AF   		movb	%al, -81(%rbp)
+ 490 0531 8065AF01 		andb	$1, -81(%rbp)
+ 106:fx2.c         **** 	CHECK_STATUS(
+ 491              		.loc 1 106 2 discriminator 6
+ 492 0535 0FB645AF 		movzbl	-81(%rbp), %eax
+ 493 0539 83F001   		xorl	$1, %eax
+ 494 053c 84C0     		testb	%al, %al
+ 495 053e 7422     		je	.L27
+ 496              		.loc 1 106 2 is_stmt 0 discriminator 1
+ 497 0540 488B4588 		movq	-120(%rbp), %rax
+ 498 0544 488D1500 		leaq	.LC6(%rip), %rdx
+ 498      000000
+ 499 054b 4889D6   		movq	%rdx, %rsi
+ 500 054e 4889C7   		movq	%rax, %rdi
+ 501 0551 E8000000 		call	errPrefix@PLT
+ 501      00
+ 502 0556 C745B006 		movl	$6, -80(%rbp)
+ 502      000000
+ 503 055d E9250100 		jmp	.L28
+ 503      00
+ 504              	.L27:
+ 107:fx2.c         **** 		!isHex, FL_FILE_ERR, cleanup,
+ 108:fx2.c         **** 		"flLoadCustomFirmware(): Filename should have .hex or .ihx extension");
+ 109:fx2.c         **** 	uStatus = usbOpenDevice(curVidPid, 1, 0, 0, &device, error);
+ 505              		.loc 1 109 12 is_stmt 1
+ 506 0562 488B4D88 		movq	-120(%rbp), %rcx
+ 507 0566 488D55C0 		leaq	-64(%rbp), %rdx
+ 508 056a 488B4598 		movq	-104(%rbp), %rax
+ 509 056e 4989C9   		movq	%rcx, %r9
+ 510 0571 4989D0   		movq	%rdx, %r8
+ 511 0574 B9000000 		movl	$0, %ecx
+ 511      00
+ 512 0579 BA000000 		movl	$0, %edx
+ 512      00
+ 513 057e BE010000 		movl	$1, %esi
+ 513      00
+ 514 0583 4889C7   		movq	%rax, %rdi
+ 515 0586 E8000000 		call	usbOpenDevice@PLT
+ 515      00
+ 516 058b 8945B4   		movl	%eax, -76(%rbp)
+ 110:fx2.c         **** 	CHECK_STATUS(uStatus, FL_USB_ERR, cleanup, "flLoadCustomFirmware()");
+ 517              		.loc 1 110 2
+ 518 058e 837DB400 		cmpl	$0, -76(%rbp)
+ 519 0592 7422     		je	.L29
+ 520              		.loc 1 110 2 is_stmt 0 discriminator 1
+ 521 0594 488B4588 		movq	-120(%rbp), %rax
+ 522 0598 488D1500 		leaq	.LC7(%rip), %rdx
+ 522      000000
+ 523 059f 4889D6   		movq	%rdx, %rsi
+ 524 05a2 4889C7   		movq	%rax, %rdi
+ 525 05a5 E8000000 		call	errPrefix@PLT
+ 525      00
+ 526 05aa C745B002 		movl	$2, -80(%rbp)
+ 526      000000
+ 527 05b1 E9D10000 		jmp	.L28
+ 527      00
+ 528              	.L29:
+ 111:fx2.c         **** 	bStatus = bufInitialise(&fwBuf, 8192, 0x00, error);
+ 529              		.loc 1 111 12 is_stmt 1
+ 530 05b6 488B5588 		movq	-120(%rbp), %rdx
+ 531 05ba 488D45D0 		leaq	-48(%rbp), %rax
+ 532 05be 4889D1   		movq	%rdx, %rcx
+ 533 05c1 BA000000 		movl	$0, %edx
+ 533      00
+ 534 05c6 BE002000 		movl	$8192, %esi
+ 534      00
+ 535 05cb 4889C7   		movq	%rax, %rdi
+ 536 05ce E8000000 		call	bufInitialise@PLT
+ 536      00
+ 537 05d3 8945B8   		movl	%eax, -72(%rbp)
+ 112:fx2.c         **** 	CHECK_STATUS(bStatus, FL_ALLOC_ERR, cleanup, "flLoadCustomFirmware()");
+ 538              		.loc 1 112 2
+ 539 05d6 837DB800 		cmpl	$0, -72(%rbp)
+ 540 05da 7422     		je	.L30
+ 541              		.loc 1 112 2 is_stmt 0 discriminator 1
+ 542 05dc 488B4588 		movq	-120(%rbp), %rax
+ 543 05e0 488D1500 		leaq	.LC7(%rip), %rdx
+ 543      000000
+ 544 05e7 4889D6   		movq	%rdx, %rsi
+ 545 05ea 4889C7   		movq	%rax, %rdi
+ 546 05ed E8000000 		call	errPrefix@PLT
+ 546      00
+ 547 05f2 C745B001 		movl	$1, -80(%rbp)
+ 547      000000
+ 548 05f9 E9890000 		jmp	.L28
+ 548      00
+ 549              	.L30:
+ 113:fx2.c         **** 	bStatus = bufReadFromIntelHexFile(&fwBuf, NULL, fwFile, error);
+ 550              		.loc 1 113 12 is_stmt 1
+ 551 05fe 488B4D88 		movq	-120(%rbp), %rcx
+ 552 0602 488B5590 		movq	-112(%rbp), %rdx
+ 553 0606 488D45D0 		leaq	-48(%rbp), %rax
+ 554 060a BE000000 		movl	$0, %esi
+ 554      00
+ 555 060f 4889C7   		movq	%rax, %rdi
+ 556 0612 E8000000 		call	bufReadFromIntelHexFile@PLT
+ 556      00
+ 557 0617 8945B8   		movl	%eax, -72(%rbp)
+ 114:fx2.c         **** 	CHECK_STATUS(bStatus, FL_FILE_ERR, cleanup, "flLoadCustomFirmware()");
+ 558              		.loc 1 114 2
+ 559 061a 837DB800 		cmpl	$0, -72(%rbp)
+ 560 061e 741F     		je	.L31
+ 561              		.loc 1 114 2 is_stmt 0 discriminator 1
+ 562 0620 488B4588 		movq	-120(%rbp), %rax
+ 563 0624 488D1500 		leaq	.LC7(%rip), %rdx
+ 563      000000
+ 564 062b 4889D6   		movq	%rdx, %rsi
+ 565 062e 4889C7   		movq	%rax, %rdi
+ 566 0631 E8000000 		call	errPrefix@PLT
+ 566      00
+ 567 0636 C745B006 		movl	$6, -80(%rbp)
+ 567      000000
+ 568 063d EB48     		jmp	.L28
+ 569              	.L31:
+ 115:fx2.c         **** 	fxStatus = fx2WriteRAM(device, fwBuf.data, (uint32)fwBuf.length, error);
+ 570              		.loc 1 115 58 is_stmt 1
+ 571 063f 488B45D8 		movq	-40(%rbp), %rax
+ 572              		.loc 1 115 13
+ 573 0643 89C7     		movl	%eax, %edi
+ 574              		.loc 1 115 38
+ 575 0645 488B75D0 		movq	-48(%rbp), %rsi
+ 576              		.loc 1 115 13
+ 577 0649 488B45C0 		movq	-64(%rbp), %rax
+ 578 064d 488B5588 		movq	-120(%rbp), %rdx
+ 579 0651 4889D1   		movq	%rdx, %rcx
+ 580 0654 89FA     		movl	%edi, %edx
+ 581 0656 4889C7   		movq	%rax, %rdi
+ 582 0659 E8000000 		call	fx2WriteRAM@PLT
+ 582      00
+ 583 065e 8945BC   		movl	%eax, -68(%rbp)
+ 116:fx2.c         **** 	CHECK_STATUS(fxStatus, FL_FX2_ERR, cleanup, "flLoadCustomFirmware()");
+ 584              		.loc 1 116 2
+ 585 0661 837DBC00 		cmpl	$0, -68(%rbp)
+ 586 0665 741F     		je	.L35
+ 587              		.loc 1 116 2 is_stmt 0 discriminator 1
+ 588 0667 488B4588 		movq	-120(%rbp), %rax
+ 589 066b 488D1500 		leaq	.LC7(%rip), %rdx
+ 589      000000
+ 590 0672 4889D6   		movq	%rdx, %rsi
+ 591 0675 4889C7   		movq	%rax, %rdi
+ 592 0678 E8000000 		call	errPrefix@PLT
+ 592      00
+ 593 067d C745B005 		movl	$5, -80(%rbp)
+ 593      000000
+ 594 0684 EB01     		jmp	.L28
+ 595              	.L35:
+ 117:fx2.c         **** cleanup:
+ 596              		.loc 1 117 1 is_stmt 1
+ 597 0686 90       		nop
+ 598              	.L28:
+ 118:fx2.c         **** 	bufDestroy(&fwBuf);
+ 599              		.loc 1 118 2
+ 600 0687 488D45D0 		leaq	-48(%rbp), %rax
+ 601 068b 4889C7   		movq	%rax, %rdi
+ 602 068e E8000000 		call	bufDestroy@PLT
+ 602      00
+ 119:fx2.c         **** 	if ( device ) {
+ 603              		.loc 1 119 7
+ 604 0693 488B45C0 		movq	-64(%rbp), %rax
+ 605              		.loc 1 119 5
+ 606 0697 4885C0   		testq	%rax, %rax
+ 607 069a 7411     		je	.L32
+ 120:fx2.c         **** 		usbCloseDevice(device, 0);
+ 608              		.loc 1 120 3
+ 609 069c 488B45C0 		movq	-64(%rbp), %rax
+ 610 06a0 BE000000 		movl	$0, %esi
+ 610      00
+ 611 06a5 4889C7   		movq	%rax, %rdi
+ 612 06a8 E8000000 		call	usbCloseDevice@PLT
+ 612      00
+ 613              	.L32:
+ 121:fx2.c         **** 	}
+ 122:fx2.c         **** 	return retVal;
+ 614              		.loc 1 122 9
+ 615 06ad 8B45B0   		movl	-80(%rbp), %eax
+ 123:fx2.c         **** }
+ 616              		.loc 1 123 1
+ 617 06b0 488B55F8 		movq	-8(%rbp), %rdx
+ 618 06b4 64482B14 		subq	%fs:40, %rdx
+ 618      25280000 
+ 618      00
+ 619 06bd 7405     		je	.L34
+ 620 06bf E8000000 		call	__stack_chk_fail@PLT
+ 620      00
+ 621              	.L34:
+ 622 06c4 C9       		leave
+ 623              		.cfi_def_cfa 7, 8
+ 624 06c5 C3       		ret
+ 625              		.cfi_endproc
+ 626              	.LFE6:
+ 628              		.section	.rodata
+ 629              	.LC8:
+ 630 018b 2E696963 		.string	".iic"
+ 630      00
+ 631              		.align 8
+ 632              	.LC9:
+ 633 0190 666C466C 		.string	"flFlashCustomFirmware(): Filename should have .hex, .ihx or .iic extension"
+ 633      61736843 
+ 633      7573746F 
+ 633      6D466972 
+ 633      6D776172 
+ 634              	.LC10:
+ 635 01db 666C466C 		.string	"flFlashCustomFirmware()"
+ 635      61736843 
+ 635      7573746F 
+ 635      6D466972 
+ 635      6D776172 
+ 636              		.text
+ 637              		.globl	flFlashCustomFirmware
+ 639              	flFlashCustomFirmware:
+ 640              	.LFB7:
+ 124:fx2.c         **** 
+ 125:fx2.c         **** // Flash custom firmware (.hex or .iic) into the FX2's EEPROM
+ 126:fx2.c         **** DLLEXPORT(FLStatus) flFlashCustomFirmware(
+ 127:fx2.c         **** 	struct FLContext *handle, const char *fwFile, const char **error)
+ 128:fx2.c         **** {
+ 641              		.loc 1 128 1
+ 642              		.cfi_startproc
+ 643 06c6 F30F1EFA 		endbr64
+ 644 06ca 55       		pushq	%rbp
+ 645              		.cfi_def_cfa_offset 16
+ 646              		.cfi_offset 6, -16
+ 647 06cb 4889E5   		movq	%rsp, %rbp
+ 648              		.cfi_def_cfa_register 6
+ 649 06ce 4881ECB0 		subq	$176, %rsp
+ 649      000000
+ 650 06d5 4889BD68 		movq	%rdi, -152(%rbp)
+ 650      FFFFFF
+ 651 06dc 4889B560 		movq	%rsi, -160(%rbp)
+ 651      FFFFFF
+ 652 06e3 48899558 		movq	%rdx, -168(%rbp)
+ 652      FFFFFF
+ 653              		.loc 1 128 1
+ 654 06ea 64488B04 		movq	%fs:40, %rax
+ 654      25280000 
+ 654      00
+ 655 06f3 488945F8 		movq	%rax, -8(%rbp)
+ 656 06f7 31C0     		xorl	%eax, %eax
+ 129:fx2.c         **** 	FLStatus retVal = FL_SUCCESS;
+ 657              		.loc 1 129 11
+ 658 06f9 C78578FF 		movl	$0, -136(%rbp)
+ 658      FFFF0000 
+ 658      0000
+ 130:fx2.c         **** 	struct Buffer fwData = {0,};
+ 659              		.loc 1 130 16
+ 660 0703 48C74590 		movq	$0, -112(%rbp)
+ 660      00000000 
+ 661 070b 48C74598 		movq	$0, -104(%rbp)
+ 661      00000000 
+ 662 0713 48C745A0 		movq	$0, -96(%rbp)
+ 662      00000000 
+ 663 071b 48C745A8 		movq	$0, -88(%rbp)
+ 663      00000000 
+ 131:fx2.c         **** 	struct Buffer fwMask = {0,};
+ 664              		.loc 1 131 16
+ 665 0723 48C745B0 		movq	$0, -80(%rbp)
+ 665      00000000 
+ 666 072b 48C745B8 		movq	$0, -72(%rbp)
+ 666      00000000 
+ 667 0733 48C745C0 		movq	$0, -64(%rbp)
+ 667      00000000 
+ 668 073b 48C745C8 		movq	$0, -56(%rbp)
+ 668      00000000 
+ 132:fx2.c         **** 	struct Buffer iicBuf = {0,};
+ 669              		.loc 1 132 16
+ 670 0743 48C745D0 		movq	$0, -48(%rbp)
+ 670      00000000 
+ 671 074b 48C745D8 		movq	$0, -40(%rbp)
+ 671      00000000 
+ 672 0753 48C745E0 		movq	$0, -32(%rbp)
+ 672      00000000 
+ 673 075b 48C745E8 		movq	$0, -24(%rbp)
+ 673      00000000 
+ 133:fx2.c         **** 	BufferStatus bStatus;
+ 134:fx2.c         **** 	FX2Status fxStatus;
+ 135:fx2.c         **** 	I2CStatus iStatus;
+ 136:fx2.c         **** 	const char *const ext = fwFile + strlen(fwFile) - 4;
+ 674              		.loc 1 136 35
+ 675 0763 488B8560 		movq	-160(%rbp), %rax
+ 675      FFFFFF
+ 676 076a 4889C7   		movq	%rax, %rdi
+ 677 076d E8000000 		call	strlen@PLT
+ 677      00
+ 678              		.loc 1 136 50
+ 679 0772 488D50FC 		leaq	-4(%rax), %rdx
+ 680              		.loc 1 136 20
+ 681 0776 488B8560 		movq	-160(%rbp), %rax
+ 681      FFFFFF
+ 682 077d 4801D0   		addq	%rdx, %rax
+ 683 0780 48894588 		movq	%rax, -120(%rbp)
+ 137:fx2.c         **** 	const bool isHex = (strcmp(".hex", ext) == 0) || (strcmp(".ihx", ext) == 0);
+ 684              		.loc 1 137 22
+ 685 0784 488B4588 		movq	-120(%rbp), %rax
+ 686 0788 4889C6   		movq	%rax, %rsi
+ 687 078b 488D0500 		leaq	.LC4(%rip), %rax
+ 687      000000
+ 688 0792 4889C7   		movq	%rax, %rdi
+ 689 0795 E8000000 		call	strcmp@PLT
+ 689      00
+ 690              		.loc 1 137 48
+ 691 079a 85C0     		testl	%eax, %eax
+ 692 079c 741A     		je	.L37
+ 693              		.loc 1 137 52 discriminator 2
+ 694 079e 488B4588 		movq	-120(%rbp), %rax
+ 695 07a2 4889C6   		movq	%rax, %rsi
+ 696 07a5 488D0500 		leaq	.LC5(%rip), %rax
+ 696      000000
+ 697 07ac 4889C7   		movq	%rax, %rdi
+ 698 07af E8000000 		call	strcmp@PLT
+ 698      00
+ 699              		.loc 1 137 48 discriminator 2
+ 700 07b4 85C0     		testl	%eax, %eax
+ 701 07b6 7507     		jne	.L38
+ 702              	.L37:
+ 703              		.loc 1 137 48 is_stmt 0 discriminator 3
+ 704 07b8 B8010000 		movl	$1, %eax
+ 704      00
+ 705 07bd EB05     		jmp	.L39
+ 706              	.L38:
+ 707              		.loc 1 137 48 discriminator 4
+ 708 07bf B8000000 		movl	$0, %eax
+ 708      00
+ 709              	.L39:
+ 710              		.loc 1 137 13 is_stmt 1 discriminator 6
+ 711 07c4 888576FF 		movb	%al, -138(%rbp)
+ 711      FFFF
+ 712 07ca 80A576FF 		andb	$1, -138(%rbp)
+ 712      FFFF01
+ 138:fx2.c         **** 	const bool isI2C = (strcmp(".iic", ext) == 0);
+ 713              		.loc 1 138 22 discriminator 6
+ 714 07d1 488B4588 		movq	-120(%rbp), %rax
+ 715 07d5 4889C6   		movq	%rax, %rsi
+ 716 07d8 488D0500 		leaq	.LC8(%rip), %rax
+ 716      000000
+ 717 07df 4889C7   		movq	%rax, %rdi
+ 718 07e2 E8000000 		call	strcmp@PLT
+ 718      00
+ 719              		.loc 1 138 13 discriminator 6
+ 720 07e7 85C0     		testl	%eax, %eax
+ 721 07e9 0F94C0   		sete	%al
+ 722 07ec 888577FF 		movb	%al, -137(%rbp)
+ 722      FFFF
+ 139:fx2.c         **** 	CHECK_STATUS(
+ 723              		.loc 1 139 2 discriminator 6
+ 724 07f2 0FB68576 		movzbl	-138(%rbp), %eax
+ 724      FFFFFF
+ 725 07f9 83F001   		xorl	$1, %eax
+ 726 07fc 84C0     		testb	%al, %al
+ 727 07fe 7436     		je	.L40
+ 728              		.loc 1 139 2 is_stmt 0 discriminator 1
+ 729 0800 0FB68577 		movzbl	-137(%rbp), %eax
+ 729      FFFFFF
+ 730 0807 83F001   		xorl	$1, %eax
+ 731 080a 84C0     		testb	%al, %al
+ 732 080c 7428     		je	.L40
+ 733              		.loc 1 139 2 discriminator 2
+ 734 080e 488B8558 		movq	-168(%rbp), %rax
+ 734      FFFFFF
+ 735 0815 488D1500 		leaq	.LC9(%rip), %rdx
+ 735      000000
+ 736 081c 4889D6   		movq	%rdx, %rsi
+ 737 081f 4889C7   		movq	%rax, %rdi
+ 738 0822 E8000000 		call	errPrefix@PLT
+ 738      00
+ 739 0827 C78578FF 		movl	$5, -136(%rbp)
+ 739      FFFF0500 
+ 739      0000
+ 740 0831 E9B30200 		jmp	.L41
+ 740      00
+ 741              	.L40:
+ 140:fx2.c         **** 		!isHex && !isI2C, FL_FX2_ERR, cleanup,
+ 141:fx2.c         **** 		"flFlashCustomFirmware(): Filename should have .hex, .ihx or .iic extension");
+ 142:fx2.c         **** 	bStatus = bufInitialise(&iicBuf, 8192, 0x00, error);
+ 742              		.loc 1 142 12 is_stmt 1
+ 743 0836 488B9558 		movq	-168(%rbp), %rdx
+ 743      FFFFFF
+ 744 083d 488D45D0 		leaq	-48(%rbp), %rax
+ 745 0841 4889D1   		movq	%rdx, %rcx
+ 746 0844 BA000000 		movl	$0, %edx
+ 746      00
+ 747 0849 BE002000 		movl	$8192, %esi
+ 747      00
+ 748 084e 4889C7   		movq	%rax, %rdi
+ 749 0851 E8000000 		call	bufInitialise@PLT
+ 749      00
+ 750 0856 89857CFF 		movl	%eax, -132(%rbp)
+ 750      FFFF
+ 143:fx2.c         **** 	CHECK_STATUS(bStatus, FL_ALLOC_ERR, cleanup, "flFlashCustomFirmware()");
+ 751              		.loc 1 143 2
+ 752 085c 83BD7CFF 		cmpl	$0, -132(%rbp)
+ 752      FFFF00
+ 753 0863 7428     		je	.L42
+ 754              		.loc 1 143 2 is_stmt 0 discriminator 1
+ 755 0865 488B8558 		movq	-168(%rbp), %rax
+ 755      FFFFFF
+ 756 086c 488D1500 		leaq	.LC10(%rip), %rdx
+ 756      000000
+ 757 0873 4889D6   		movq	%rdx, %rsi
+ 758 0876 4889C7   		movq	%rax, %rdi
+ 759 0879 E8000000 		call	errPrefix@PLT
+ 759      00
+ 760 087e C78578FF 		movl	$1, -136(%rbp)
+ 760      FFFF0100 
+ 760      0000
+ 761 0888 E95C0200 		jmp	.L41
+ 761      00
+ 762              	.L42:
+ 144:fx2.c         **** 	if ( isHex ) {
+ 763              		.loc 1 144 5 is_stmt 1
+ 764 088d 80BD76FF 		cmpb	$0, -138(%rbp)
+ 764      FFFF00
+ 765 0894 0F849E01 		je	.L43
+ 765      0000
+ 145:fx2.c         **** 		// Load the .hex file, populate iicBuf:
+ 146:fx2.c         **** 		bStatus = bufInitialise(&fwData, 8192, 0x00, error);
+ 766              		.loc 1 146 13
+ 767 089a 488B9558 		movq	-168(%rbp), %rdx
+ 767      FFFFFF
+ 768 08a1 488D4590 		leaq	-112(%rbp), %rax
+ 769 08a5 4889D1   		movq	%rdx, %rcx
+ 770 08a8 BA000000 		movl	$0, %edx
+ 770      00
+ 771 08ad BE002000 		movl	$8192, %esi
+ 771      00
+ 772 08b2 4889C7   		movq	%rax, %rdi
+ 773 08b5 E8000000 		call	bufInitialise@PLT
+ 773      00
+ 774 08ba 89857CFF 		movl	%eax, -132(%rbp)
+ 774      FFFF
+ 147:fx2.c         **** 		CHECK_STATUS(bStatus, FL_ALLOC_ERR, cleanup, "flFlashCustomFirmware()");
+ 775              		.loc 1 147 3
+ 776 08c0 83BD7CFF 		cmpl	$0, -132(%rbp)
+ 776      FFFF00
+ 777 08c7 7428     		je	.L44
+ 778              		.loc 1 147 3 is_stmt 0 discriminator 1
+ 779 08c9 488B8558 		movq	-168(%rbp), %rax
+ 779      FFFFFF
+ 780 08d0 488D1500 		leaq	.LC10(%rip), %rdx
+ 780      000000
+ 781 08d7 4889D6   		movq	%rdx, %rsi
+ 782 08da 4889C7   		movq	%rax, %rdi
+ 783 08dd E8000000 		call	errPrefix@PLT
+ 783      00
+ 784 08e2 C78578FF 		movl	$1, -136(%rbp)
+ 784      FFFF0100 
+ 784      0000
+ 785 08ec E9F80100 		jmp	.L41
+ 785      00
+ 786              	.L44:
+ 148:fx2.c         **** 		bStatus = bufInitialise(&fwMask, 8192, 0x00, error);
+ 787              		.loc 1 148 13 is_stmt 1
+ 788 08f1 488B9558 		movq	-168(%rbp), %rdx
+ 788      FFFFFF
+ 789 08f8 488D45B0 		leaq	-80(%rbp), %rax
+ 790 08fc 4889D1   		movq	%rdx, %rcx
+ 791 08ff BA000000 		movl	$0, %edx
+ 791      00
+ 792 0904 BE002000 		movl	$8192, %esi
+ 792      00
+ 793 0909 4889C7   		movq	%rax, %rdi
+ 794 090c E8000000 		call	bufInitialise@PLT
+ 794      00
+ 795 0911 89857CFF 		movl	%eax, -132(%rbp)
+ 795      FFFF
+ 149:fx2.c         **** 		CHECK_STATUS(bStatus, FL_ALLOC_ERR, cleanup, "flFlashCustomFirmware()");
+ 796              		.loc 1 149 3
+ 797 0917 83BD7CFF 		cmpl	$0, -132(%rbp)
+ 797      FFFF00
+ 798 091e 7428     		je	.L45
+ 799              		.loc 1 149 3 is_stmt 0 discriminator 1
+ 800 0920 488B8558 		movq	-168(%rbp), %rax
+ 800      FFFFFF
+ 801 0927 488D1500 		leaq	.LC10(%rip), %rdx
+ 801      000000
+ 802 092e 4889D6   		movq	%rdx, %rsi
+ 803 0931 4889C7   		movq	%rax, %rdi
+ 804 0934 E8000000 		call	errPrefix@PLT
+ 804      00
+ 805 0939 C78578FF 		movl	$1, -136(%rbp)
+ 805      FFFF0100 
+ 805      0000
+ 806 0943 E9A10100 		jmp	.L41
+ 806      00
+ 807              	.L45:
+ 150:fx2.c         **** 		bStatus = bufReadFromIntelHexFile(&fwData, &fwMask, fwFile, error);
+ 808              		.loc 1 150 13 is_stmt 1
+ 809 0948 488B8D58 		movq	-168(%rbp), %rcx
+ 809      FFFFFF
+ 810 094f 488B9560 		movq	-160(%rbp), %rdx
+ 810      FFFFFF
+ 811 0956 488D75B0 		leaq	-80(%rbp), %rsi
+ 812 095a 488D4590 		leaq	-112(%rbp), %rax
+ 813 095e 4889C7   		movq	%rax, %rdi
+ 814 0961 E8000000 		call	bufReadFromIntelHexFile@PLT
+ 814      00
+ 815 0966 89857CFF 		movl	%eax, -132(%rbp)
+ 815      FFFF
+ 151:fx2.c         **** 		CHECK_STATUS(bStatus, FL_FILE_ERR, cleanup, "flFlashCustomFirmware()");
+ 816              		.loc 1 151 3
+ 817 096c 83BD7CFF 		cmpl	$0, -132(%rbp)
+ 817      FFFF00
+ 818 0973 7428     		je	.L46
+ 819              		.loc 1 151 3 is_stmt 0 discriminator 1
+ 820 0975 488B8558 		movq	-168(%rbp), %rax
+ 820      FFFFFF
+ 821 097c 488D1500 		leaq	.LC10(%rip), %rdx
+ 821      000000
+ 822 0983 4889D6   		movq	%rdx, %rsi
+ 823 0986 4889C7   		movq	%rax, %rdi
+ 824 0989 E8000000 		call	errPrefix@PLT
+ 824      00
+ 825 098e C78578FF 		movl	$6, -136(%rbp)
+ 825      FFFF0600 
+ 825      0000
+ 826 0998 E94C0100 		jmp	.L41
+ 826      00
+ 827              	.L46:
+ 152:fx2.c         **** 		i2cInitialise(&iicBuf, 0x0000, 0x0000, 0x0000, CONFIG_BYTE_400KHZ);
+ 828              		.loc 1 152 3 is_stmt 1
+ 829 099d 488D45D0 		leaq	-48(%rbp), %rax
+ 830 09a1 41B80100 		movl	$1, %r8d
+ 830      0000
+ 831 09a7 B9000000 		movl	$0, %ecx
+ 831      00
+ 832 09ac BA000000 		movl	$0, %edx
+ 832      00
+ 833 09b1 BE000000 		movl	$0, %esi
+ 833      00
+ 834 09b6 4889C7   		movq	%rax, %rdi
+ 835 09b9 E8000000 		call	i2cInitialise@PLT
+ 835      00
+ 153:fx2.c         **** 		iStatus = i2cWritePromRecords(&iicBuf, &fwData, &fwMask, error);
+ 836              		.loc 1 153 13
+ 837 09be 488B8D58 		movq	-168(%rbp), %rcx
+ 837      FFFFFF
+ 838 09c5 488D55B0 		leaq	-80(%rbp), %rdx
+ 839 09c9 488D7590 		leaq	-112(%rbp), %rsi
+ 840 09cd 488D45D0 		leaq	-48(%rbp), %rax
+ 841 09d1 4889C7   		movq	%rax, %rdi
+ 842 09d4 E8000000 		call	i2cWritePromRecords@PLT
+ 842      00
+ 843 09d9 894580   		movl	%eax, -128(%rbp)
+ 154:fx2.c         **** 		CHECK_STATUS(iStatus, FL_FX2_ERR, cleanup, "flFlashCustomFirmware()");
+ 844              		.loc 1 154 3
+ 845 09dc 837D8000 		cmpl	$0, -128(%rbp)
+ 846 09e0 7428     		je	.L47
+ 847              		.loc 1 154 3 is_stmt 0 discriminator 1
+ 848 09e2 488B8558 		movq	-168(%rbp), %rax
+ 848      FFFFFF
+ 849 09e9 488D1500 		leaq	.LC10(%rip), %rdx
+ 849      000000
+ 850 09f0 4889D6   		movq	%rdx, %rsi
+ 851 09f3 4889C7   		movq	%rax, %rdi
+ 852 09f6 E8000000 		call	errPrefix@PLT
+ 852      00
+ 853 09fb C78578FF 		movl	$5, -136(%rbp)
+ 853      FFFF0500 
+ 853      0000
+ 854 0a05 E9DF0000 		jmp	.L41
+ 854      00
+ 855              	.L47:
+ 155:fx2.c         **** 		iStatus = i2cFinalise(&iicBuf, error);
+ 856              		.loc 1 155 13 is_stmt 1
+ 857 0a0a 488B9558 		movq	-168(%rbp), %rdx
+ 857      FFFFFF
+ 858 0a11 488D45D0 		leaq	-48(%rbp), %rax
+ 859 0a15 4889D6   		movq	%rdx, %rsi
+ 860 0a18 4889C7   		movq	%rax, %rdi
+ 861 0a1b E8000000 		call	i2cFinalise@PLT
+ 861      00
+ 862 0a20 894580   		movl	%eax, -128(%rbp)
+ 156:fx2.c         **** 		CHECK_STATUS(iStatus, FL_FX2_ERR, cleanup);
+ 863              		.loc 1 156 3
+ 864 0a23 837D8000 		cmpl	$0, -128(%rbp)
+ 865 0a27 7469     		je	.L48
+ 866              		.loc 1 156 3 is_stmt 0 discriminator 1
+ 867 0a29 C78578FF 		movl	$5, -136(%rbp)
+ 867      FFFF0500 
+ 867      0000
+ 868 0a33 E9B10000 		jmp	.L41
+ 868      00
+ 869              	.L43:
+ 157:fx2.c         **** 	} else if ( isI2C ) {
+ 870              		.loc 1 157 12 is_stmt 1
+ 871 0a38 80BD77FF 		cmpb	$0, -137(%rbp)
+ 871      FFFF00
+ 872 0a3f 7451     		je	.L48
+ 158:fx2.c         **** 		// Load the .iic file into the iicBuf:
+ 159:fx2.c         **** 		bStatus = bufAppendFromBinaryFile(&iicBuf, fwFile, error);
+ 873              		.loc 1 159 13
+ 874 0a41 488B9558 		movq	-168(%rbp), %rdx
+ 874      FFFFFF
+ 875 0a48 488B8D60 		movq	-160(%rbp), %rcx
+ 875      FFFFFF
+ 876 0a4f 488D45D0 		leaq	-48(%rbp), %rax
+ 877 0a53 4889CE   		movq	%rcx, %rsi
+ 878 0a56 4889C7   		movq	%rax, %rdi
+ 879 0a59 E8000000 		call	bufAppendFromBinaryFile@PLT
+ 879      00
+ 880 0a5e 89857CFF 		movl	%eax, -132(%rbp)
+ 880      FFFF
+ 160:fx2.c         **** 		CHECK_STATUS(bStatus, FL_FILE_ERR, cleanup, "flFlashCustomFirmware()");
+ 881              		.loc 1 160 3
+ 882 0a64 83BD7CFF 		cmpl	$0, -132(%rbp)
+ 882      FFFF00
+ 883 0a6b 7425     		je	.L48
+ 884              		.loc 1 160 3 is_stmt 0 discriminator 1
+ 885 0a6d 488B8558 		movq	-168(%rbp), %rax
+ 885      FFFFFF
+ 886 0a74 488D1500 		leaq	.LC10(%rip), %rdx
+ 886      000000
+ 887 0a7b 4889D6   		movq	%rdx, %rsi
+ 888 0a7e 4889C7   		movq	%rax, %rdi
+ 889 0a81 E8000000 		call	errPrefix@PLT
+ 889      00
+ 890 0a86 C78578FF 		movl	$6, -136(%rbp)
+ 890      FFFF0600 
+ 890      0000
+ 891 0a90 EB57     		jmp	.L41
+ 892              	.L48:
+ 161:fx2.c         **** 	}
+ 162:fx2.c         **** 	fxStatus = fx2WriteEEPROM(handle->device, iicBuf.data, (uint32)iicBuf.length, error);
+ 893              		.loc 1 162 71 is_stmt 1
+ 894 0a92 488B45D8 		movq	-40(%rbp), %rax
+ 895              		.loc 1 162 13
+ 896 0a96 89C7     		movl	%eax, %edi
+ 897              		.loc 1 162 50
+ 898 0a98 488B75D0 		movq	-48(%rbp), %rsi
+ 899              		.loc 1 162 13
+ 900 0a9c 488B8568 		movq	-152(%rbp), %rax
+ 900      FFFFFF
+ 901 0aa3 488B00   		movq	(%rax), %rax
+ 902 0aa6 488B9558 		movq	-168(%rbp), %rdx
+ 902      FFFFFF
+ 903 0aad 4889D1   		movq	%rdx, %rcx
+ 904 0ab0 89FA     		movl	%edi, %edx
+ 905 0ab2 4889C7   		movq	%rax, %rdi
+ 906 0ab5 E8000000 		call	fx2WriteEEPROM@PLT
+ 906      00
+ 907 0aba 894584   		movl	%eax, -124(%rbp)
+ 163:fx2.c         **** 	CHECK_STATUS(fxStatus, FL_FX2_ERR, cleanup, "flFlashCustomFirmware()");
+ 908              		.loc 1 163 2
+ 909 0abd 837D8400 		cmpl	$0, -124(%rbp)
+ 910 0ac1 7425     		je	.L51
+ 911              		.loc 1 163 2 is_stmt 0 discriminator 1
+ 912 0ac3 488B8558 		movq	-168(%rbp), %rax
+ 912      FFFFFF
+ 913 0aca 488D1500 		leaq	.LC10(%rip), %rdx
+ 913      000000
+ 914 0ad1 4889D6   		movq	%rdx, %rsi
+ 915 0ad4 4889C7   		movq	%rax, %rdi
+ 916 0ad7 E8000000 		call	errPrefix@PLT
+ 916      00
+ 917 0adc C78578FF 		movl	$5, -136(%rbp)
+ 917      FFFF0500 
+ 917      0000
+ 918 0ae6 EB01     		jmp	.L41
+ 919              	.L51:
+ 164:fx2.c         **** cleanup:
+ 920              		.loc 1 164 1 is_stmt 1
+ 921 0ae8 90       		nop
+ 922              	.L41:
+ 165:fx2.c         **** 	bufDestroy(&iicBuf);
+ 923              		.loc 1 165 2
+ 924 0ae9 488D45D0 		leaq	-48(%rbp), %rax
+ 925 0aed 4889C7   		movq	%rax, %rdi
+ 926 0af0 E8000000 		call	bufDestroy@PLT
+ 926      00
+ 166:fx2.c         **** 	bufDestroy(&fwMask);
+ 927              		.loc 1 166 2
+ 928 0af5 488D45B0 		leaq	-80(%rbp), %rax
+ 929 0af9 4889C7   		movq	%rax, %rdi
+ 930 0afc E8000000 		call	bufDestroy@PLT
+ 930      00
+ 167:fx2.c         **** 	bufDestroy(&fwData);
+ 931              		.loc 1 167 2
+ 932 0b01 488D4590 		leaq	-112(%rbp), %rax
+ 933 0b05 4889C7   		movq	%rax, %rdi
+ 934 0b08 E8000000 		call	bufDestroy@PLT
+ 934      00
+ 168:fx2.c         **** 	return retVal;
+ 935              		.loc 1 168 9
+ 936 0b0d 8B8578FF 		movl	-136(%rbp), %eax
+ 936      FFFF
+ 169:fx2.c         **** }
+ 937              		.loc 1 169 1
+ 938 0b13 488B55F8 		movq	-8(%rbp), %rdx
+ 939 0b17 64482B14 		subq	%fs:40, %rdx
+ 939      25280000 
+ 939      00
+ 940 0b20 7405     		je	.L50
+ 941 0b22 E8000000 		call	__stack_chk_fail@PLT
+ 941      00
+ 942              	.L50:
+ 943 0b27 C9       		leave
+ 944              		.cfi_def_cfa 7, 8
+ 945 0b28 C3       		ret
+ 946              		.cfi_endproc
+ 947              	.LFE7:
+ 949              		.section	.rodata
+ 950 01f3 00000000 		.align 8
+ 950      00
+ 951              	.LC11:
+ 952 01f8 666C5361 		.string	"flSaveFirmware(): Filename should have .iic extension"
+ 952      76654669 
+ 952      726D7761 
+ 952      72652829 
+ 952      3A204669 
+ 953              	.LC12:
+ 954 022e 666C5361 		.string	"flSaveFirmware()"
+ 954      76654669 
+ 954      726D7761 
+ 954      72652829 
+ 954      00
+ 955              		.text
+ 956              		.globl	flSaveFirmware
+ 958              	flSaveFirmware:
+ 959              	.LFB8:
+ 170:fx2.c         **** 
+ 171:fx2.c         **** // Save the EEPROM to an .iic file
+ 172:fx2.c         **** DLLEXPORT(FLStatus) flSaveFirmware(
+ 173:fx2.c         **** 	struct FLContext *handle, uint32 eepromSize, const char *saveFile, const char **error)
+ 174:fx2.c         **** {
+ 960              		.loc 1 174 1
+ 961              		.cfi_startproc
+ 962 0b29 F30F1EFA 		endbr64
+ 963 0b2d 55       		pushq	%rbp
+ 964              		.cfi_def_cfa_offset 16
+ 965              		.cfi_offset 6, -16
+ 966 0b2e 4889E5   		movq	%rsp, %rbp
+ 967              		.cfi_def_cfa_register 6
+ 968 0b31 4883EC70 		subq	$112, %rsp
+ 969 0b35 48897DA8 		movq	%rdi, -88(%rbp)
+ 970 0b39 8975A4   		movl	%esi, -92(%rbp)
+ 971 0b3c 48895598 		movq	%rdx, -104(%rbp)
+ 972 0b40 48894D90 		movq	%rcx, -112(%rbp)
+ 973              		.loc 1 174 1
+ 974 0b44 64488B04 		movq	%fs:40, %rax
+ 974      25280000 
+ 974      00
+ 975 0b4d 488945F8 		movq	%rax, -8(%rbp)
+ 976 0b51 31C0     		xorl	%eax, %eax
+ 175:fx2.c         **** 	FLStatus retVal = FL_SUCCESS;
+ 977              		.loc 1 175 11
+ 978 0b53 C745BC00 		movl	$0, -68(%rbp)
+ 978      000000
+ 176:fx2.c         **** 	struct Buffer i2cBuf = {0,};
+ 979              		.loc 1 176 16
+ 980 0b5a 48C745D0 		movq	$0, -48(%rbp)
+ 980      00000000 
+ 981 0b62 48C745D8 		movq	$0, -40(%rbp)
+ 981      00000000 
+ 982 0b6a 48C745E0 		movq	$0, -32(%rbp)
+ 982      00000000 
+ 983 0b72 48C745E8 		movq	$0, -24(%rbp)
+ 983      00000000 
+ 177:fx2.c         **** 	BufferStatus bStatus;
+ 178:fx2.c         **** 	FX2Status fxStatus;
+ 179:fx2.c         **** 	const char *const ext = saveFile + strlen(saveFile) - 4;
+ 984              		.loc 1 179 37
+ 985 0b7a 488B4598 		movq	-104(%rbp), %rax
+ 986 0b7e 4889C7   		movq	%rax, %rdi
+ 987 0b81 E8000000 		call	strlen@PLT
+ 987      00
+ 988              		.loc 1 179 54
+ 989 0b86 488D50FC 		leaq	-4(%rax), %rdx
+ 990              		.loc 1 179 20
+ 991 0b8a 488B4598 		movq	-104(%rbp), %rax
+ 992 0b8e 4801D0   		addq	%rdx, %rax
+ 993 0b91 488945C8 		movq	%rax, -56(%rbp)
+ 180:fx2.c         **** 	CHECK_STATUS(
+ 994              		.loc 1 180 2
+ 995 0b95 488B45C8 		movq	-56(%rbp), %rax
+ 996 0b99 4889C6   		movq	%rax, %rsi
+ 997 0b9c 488D0500 		leaq	.LC8(%rip), %rax
+ 997      000000
+ 998 0ba3 4889C7   		movq	%rax, %rdi
+ 999 0ba6 E8000000 		call	strcmp@PLT
+ 999      00
+ 1000 0bab 85C0     		testl	%eax, %eax
+ 1001 0bad 7422     		je	.L53
+ 1002              		.loc 1 180 2 is_stmt 0 discriminator 1
+ 1003 0baf 488B4590 		movq	-112(%rbp), %rax
+ 1004 0bb3 488D1500 		leaq	.LC11(%rip), %rdx
+ 1004      000000
+ 1005 0bba 4889D6   		movq	%rdx, %rsi
+ 1006 0bbd 4889C7   		movq	%rax, %rdi
+ 1007 0bc0 E8000000 		call	errPrefix@PLT
+ 1007      00
+ 1008 0bc5 C745BC05 		movl	$5, -68(%rbp)
+ 1008      000000
+ 1009 0bcc E9D80000 		jmp	.L54
+ 1009      00
+ 1010              	.L53:
+ 181:fx2.c         **** 		strcmp(".iic", ext), FL_FX2_ERR, cleanup,
+ 182:fx2.c         **** 		"flSaveFirmware(): Filename should have .iic extension");
+ 183:fx2.c         **** 	eepromSize <<= 7;  // convert from kbits to bytes
+ 1011              		.loc 1 183 13 is_stmt 1
+ 1012 0bd1 C165A407 		sall	$7, -92(%rbp)
+ 184:fx2.c         **** 	bStatus = bufInitialise(&i2cBuf, eepromSize, 0x00, error);
+ 1013              		.loc 1 184 12
+ 1014 0bd5 8B75A4   		movl	-92(%rbp), %esi
+ 1015 0bd8 488B5590 		movq	-112(%rbp), %rdx
+ 1016 0bdc 488D45D0 		leaq	-48(%rbp), %rax
+ 1017 0be0 4889D1   		movq	%rdx, %rcx
+ 1018 0be3 BA000000 		movl	$0, %edx
+ 1018      00
+ 1019 0be8 4889C7   		movq	%rax, %rdi
+ 1020 0beb E8000000 		call	bufInitialise@PLT
+ 1020      00
+ 1021 0bf0 8945C0   		movl	%eax, -64(%rbp)
+ 185:fx2.c         **** 	CHECK_STATUS(bStatus, FL_ALLOC_ERR, cleanup, "flSaveFirmware()");
+ 1022              		.loc 1 185 2
+ 1023 0bf3 837DC000 		cmpl	$0, -64(%rbp)
+ 1024 0bf7 7422     		je	.L55
+ 1025              		.loc 1 185 2 is_stmt 0 discriminator 1
+ 1026 0bf9 488B4590 		movq	-112(%rbp), %rax
+ 1027 0bfd 488D1500 		leaq	.LC12(%rip), %rdx
+ 1027      000000
+ 1028 0c04 4889D6   		movq	%rdx, %rsi
+ 1029 0c07 4889C7   		movq	%rax, %rdi
+ 1030 0c0a E8000000 		call	errPrefix@PLT
+ 1030      00
+ 1031 0c0f C745BC01 		movl	$1, -68(%rbp)
+ 1031      000000
+ 1032 0c16 E98E0000 		jmp	.L54
+ 1032      00
+ 1033              	.L55:
+ 186:fx2.c         **** 	fxStatus = fx2ReadEEPROM(handle->device, eepromSize, &i2cBuf, error);
+ 1034              		.loc 1 186 13 is_stmt 1
+ 1035 0c1b 488B45A8 		movq	-88(%rbp), %rax
+ 1036 0c1f 488B00   		movq	(%rax), %rax
+ 1037 0c22 488B4D90 		movq	-112(%rbp), %rcx
+ 1038 0c26 488D55D0 		leaq	-48(%rbp), %rdx
+ 1039 0c2a 8B75A4   		movl	-92(%rbp), %esi
+ 1040 0c2d 4889C7   		movq	%rax, %rdi
+ 1041 0c30 E8000000 		call	fx2ReadEEPROM@PLT
+ 1041      00
+ 1042 0c35 8945C4   		movl	%eax, -60(%rbp)
+ 187:fx2.c         **** 	CHECK_STATUS(fxStatus, FL_FX2_ERR, cleanup, "flSaveFirmware()");
+ 1043              		.loc 1 187 2
+ 1044 0c38 837DC400 		cmpl	$0, -60(%rbp)
+ 1045 0c3c 741F     		je	.L56
+ 1046              		.loc 1 187 2 is_stmt 0 discriminator 1
+ 1047 0c3e 488B4590 		movq	-112(%rbp), %rax
+ 1048 0c42 488D1500 		leaq	.LC12(%rip), %rdx
+ 1048      000000
+ 1049 0c49 4889D6   		movq	%rdx, %rsi
+ 1050 0c4c 4889C7   		movq	%rax, %rdi
+ 1051 0c4f E8000000 		call	errPrefix@PLT
+ 1051      00
+ 1052 0c54 C745BC05 		movl	$5, -68(%rbp)
+ 1052      000000
+ 1053 0c5b EB4C     		jmp	.L54
+ 1054              	.L56:
+ 188:fx2.c         **** 	bStatus = bufWriteBinaryFile(&i2cBuf, saveFile, 0UL, i2cBuf.length, error);
+ 1055              		.loc 1 188 12 is_stmt 1
+ 1056 0c5d 488B55D8 		movq	-40(%rbp), %rdx
+ 1057 0c61 488B4D90 		movq	-112(%rbp), %rcx
+ 1058 0c65 488B7598 		movq	-104(%rbp), %rsi
+ 1059 0c69 488D45D0 		leaq	-48(%rbp), %rax
+ 1060 0c6d 4989C8   		movq	%rcx, %r8
+ 1061 0c70 4889D1   		movq	%rdx, %rcx
+ 1062 0c73 BA000000 		movl	$0, %edx
+ 1062      00
+ 1063 0c78 4889C7   		movq	%rax, %rdi
+ 1064 0c7b E8000000 		call	bufWriteBinaryFile@PLT
+ 1064      00
+ 1065 0c80 8945C0   		movl	%eax, -64(%rbp)
+ 189:fx2.c         **** 	CHECK_STATUS(bStatus, FL_FILE_ERR, cleanup, "flSaveFirmware()");
+ 1066              		.loc 1 189 2
+ 1067 0c83 837DC000 		cmpl	$0, -64(%rbp)
+ 1068 0c87 741F     		je	.L59
+ 1069              		.loc 1 189 2 is_stmt 0 discriminator 1
+ 1070 0c89 488B4590 		movq	-112(%rbp), %rax
+ 1071 0c8d 488D1500 		leaq	.LC12(%rip), %rdx
+ 1071      000000
+ 1072 0c94 4889D6   		movq	%rdx, %rsi
+ 1073 0c97 4889C7   		movq	%rax, %rdi
+ 1074 0c9a E8000000 		call	errPrefix@PLT
+ 1074      00
+ 1075 0c9f C745BC06 		movl	$6, -68(%rbp)
+ 1075      000000
+ 1076 0ca6 EB01     		jmp	.L54
+ 1077              	.L59:
+ 190:fx2.c         **** cleanup:
+ 1078              		.loc 1 190 1 is_stmt 1
+ 1079 0ca8 90       		nop
+ 1080              	.L54:
+ 191:fx2.c         **** 	bufDestroy(&i2cBuf);
+ 1081              		.loc 1 191 2
+ 1082 0ca9 488D45D0 		leaq	-48(%rbp), %rax
+ 1083 0cad 4889C7   		movq	%rax, %rdi
+ 1084 0cb0 E8000000 		call	bufDestroy@PLT
+ 1084      00
+ 192:fx2.c         **** 	return retVal;
+ 1085              		.loc 1 192 9
+ 1086 0cb5 8B45BC   		movl	-68(%rbp), %eax
+ 193:fx2.c         **** }
+ 1087              		.loc 1 193 1
+ 1088 0cb8 488B55F8 		movq	-8(%rbp), %rdx
+ 1089 0cbc 64482B14 		subq	%fs:40, %rdx
+ 1089      25280000 
+ 1089      00
+ 1090 0cc5 7405     		je	.L58
+ 1091 0cc7 E8000000 		call	__stack_chk_fail@PLT
+ 1091      00
+ 1092              	.L58:
+ 1093 0ccc C9       		leave
+ 1094              		.cfi_def_cfa 7, 8
+ 1095 0ccd C3       		ret
+ 1096              		.cfi_endproc
+ 1097              	.LFE8:
+ 1099              		.section	.rodata
+ 1100              	.LC13:
+ 1101 023f 636F7079 		.string	"copyFirmwareAndRewriteIDs()"
+ 1101      4669726D 
+ 1101      77617265 
+ 1101      416E6452 
+ 1101      65777269 
+ 1102              		.text
+ 1103              		.globl	copyFirmwareAndRewriteIDs
+ 1105              	copyFirmwareAndRewriteIDs:
+ 1106              	.LFB9:
+ 194:fx2.c         **** 
+ 195:fx2.c         **** FLStatus copyFirmwareAndRewriteIDs(
+ 196:fx2.c         **** 	const struct FirmwareInfo *fwInfo, uint16 vid, uint16 pid, uint16 did,
+ 197:fx2.c         **** 	struct Buffer *dest, const char **error)
+ 198:fx2.c         **** {
+ 1107              		.loc 1 198 1
+ 1108              		.cfi_startproc
+ 1109 0cce F30F1EFA 		endbr64
+ 1110 0cd2 55       		pushq	%rbp
+ 1111              		.cfi_def_cfa_offset 16
+ 1112              		.cfi_offset 6, -16
+ 1113 0cd3 4889E5   		movq	%rsp, %rbp
+ 1114              		.cfi_def_cfa_register 6
+ 1115 0cd6 4883EC40 		subq	$64, %rsp
+ 1116 0cda 48897DE8 		movq	%rdi, -24(%rbp)
+ 1117 0cde 89C8     		movl	%ecx, %eax
+ 1118 0ce0 4C8945D0 		movq	%r8, -48(%rbp)
+ 1119 0ce4 4C894DC8 		movq	%r9, -56(%rbp)
+ 1120 0ce8 89F1     		movl	%esi, %ecx
+ 1121 0cea 66894DE4 		movw	%cx, -28(%rbp)
+ 1122 0cee 668955E0 		movw	%dx, -32(%rbp)
+ 1123 0cf2 668945DC 		movw	%ax, -36(%rbp)
+ 199:fx2.c         **** 	FLStatus retVal = FL_SUCCESS;  // Can return FL_ALLOC_ERR, FL_FX2_ERR and FL_INTERNAL_ERR
+ 1124              		.loc 1 199 11
+ 1125 0cf6 C745F800 		movl	$0, -8(%rbp)
+ 1125      000000
+ 200:fx2.c         **** 	BufferStatus bStatus;
+ 201:fx2.c         **** 	bStatus = bufAppendBlock(dest, fwInfo->data, fwInfo->length, error);
+ 1126              		.loc 1 201 53
+ 1127 0cfd 488B45E8 		movq	-24(%rbp), %rax
+ 1128 0d01 0FB74008 		movzwl	8(%rax), %eax
+ 1129              		.loc 1 201 12
+ 1130 0d05 0FB7D0   		movzwl	%ax, %edx
+ 1131              		.loc 1 201 39
+ 1132 0d08 488B45E8 		movq	-24(%rbp), %rax
+ 1133 0d0c 488B30   		movq	(%rax), %rsi
+ 1134              		.loc 1 201 12
+ 1135 0d0f 488B4DC8 		movq	-56(%rbp), %rcx
+ 1136 0d13 488B45D0 		movq	-48(%rbp), %rax
+ 1137 0d17 4889C7   		movq	%rax, %rdi
+ 1138 0d1a E8000000 		call	bufAppendBlock@PLT
+ 1138      00
+ 1139 0d1f 8945FC   		movl	%eax, -4(%rbp)
+ 202:fx2.c         **** 	CHECK_STATUS(bStatus, FL_ALLOC_ERR, cleanup, "copyFirmwareAndRewriteIDs()");
+ 1140              		.loc 1 202 2
+ 1141 0d22 837DFC00 		cmpl	$0, -4(%rbp)
+ 1142 0d26 7422     		je	.L61
+ 1143              		.loc 1 202 2 is_stmt 0 discriminator 1
+ 1144 0d28 488B45C8 		movq	-56(%rbp), %rax
+ 1145 0d2c 488D1500 		leaq	.LC13(%rip), %rdx
+ 1145      000000
+ 1146 0d33 4889D6   		movq	%rdx, %rsi
+ 1147 0d36 4889C7   		movq	%rax, %rdi
+ 1148 0d39 E8000000 		call	errPrefix@PLT
+ 1148      00
+ 1149 0d3e C745F801 		movl	$1, -8(%rbp)
+ 1149      000000
+ 1150 0d45 E9CE0000 		jmp	.L62
+ 1150      00
+ 1151              	.L61:
+ 203:fx2.c         **** 	dest->data[fwInfo->vp]     = (uint8)(vid & 0xFF);
+ 1152              		.loc 1 203 6 is_stmt 1
+ 1153 0d4a 488B45D0 		movq	-48(%rbp), %rax
+ 1154 0d4e 488B10   		movq	(%rax), %rdx
+ 1155              		.loc 1 203 19
+ 1156 0d51 488B45E8 		movq	-24(%rbp), %rax
+ 1157 0d55 0FB7400A 		movzwl	10(%rax), %eax
+ 1158 0d59 0FB7C0   		movzwl	%ax, %eax
+ 1159              		.loc 1 203 12
+ 1160 0d5c 4801D0   		addq	%rdx, %rax
+ 1161              		.loc 1 203 31
+ 1162 0d5f 0FB755E4 		movzwl	-28(%rbp), %edx
+ 1163              		.loc 1 203 29
+ 1164 0d63 8810     		movb	%dl, (%rax)
+ 204:fx2.c         **** 	dest->data[fwInfo->vp + 1] = (uint8)(vid >> 8);
+ 1165              		.loc 1 204 31
+ 1166 0d65 0FB745E4 		movzwl	-28(%rbp), %eax
+ 1167 0d69 66C1E808 		shrw	$8, %ax
+ 1168 0d6d 89C1     		movl	%eax, %ecx
+ 1169              		.loc 1 204 6
+ 1170 0d6f 488B45D0 		movq	-48(%rbp), %rax
+ 1171 0d73 488B10   		movq	(%rax), %rdx
+ 1172              		.loc 1 204 19
+ 1173 0d76 488B45E8 		movq	-24(%rbp), %rax
+ 1174 0d7a 0FB7400A 		movzwl	10(%rax), %eax
+ 1175 0d7e 0FB7C0   		movzwl	%ax, %eax
+ 1176              		.loc 1 204 12
+ 1177 0d81 4883C001 		addq	$1, %rax
+ 1178 0d85 4801D0   		addq	%rdx, %rax
+ 1179              		.loc 1 204 31
+ 1180 0d88 89CA     		movl	%ecx, %edx
+ 1181              		.loc 1 204 29
+ 1182 0d8a 8810     		movb	%dl, (%rax)
+ 205:fx2.c         **** 	dest->data[fwInfo->vp + 2] = (uint8)(pid & 0xFF);
+ 1183              		.loc 1 205 6
+ 1184 0d8c 488B45D0 		movq	-48(%rbp), %rax
+ 1185 0d90 488B10   		movq	(%rax), %rdx
+ 1186              		.loc 1 205 19
+ 1187 0d93 488B45E8 		movq	-24(%rbp), %rax
+ 1188 0d97 0FB7400A 		movzwl	10(%rax), %eax
+ 1189 0d9b 0FB7C0   		movzwl	%ax, %eax
+ 1190              		.loc 1 205 12
+ 1191 0d9e 4883C002 		addq	$2, %rax
+ 1192 0da2 4801D0   		addq	%rdx, %rax
+ 1193              		.loc 1 205 31
+ 1194 0da5 0FB755E0 		movzwl	-32(%rbp), %edx
+ 1195              		.loc 1 205 29
+ 1196 0da9 8810     		movb	%dl, (%rax)
+ 206:fx2.c         **** 	dest->data[fwInfo->vp + 3] = (uint8)(pid >> 8);
+ 1197              		.loc 1 206 31
+ 1198 0dab 0FB745E0 		movzwl	-32(%rbp), %eax
+ 1199 0daf 66C1E808 		shrw	$8, %ax
+ 1200 0db3 89C1     		movl	%eax, %ecx
+ 1201              		.loc 1 206 6
+ 1202 0db5 488B45D0 		movq	-48(%rbp), %rax
+ 1203 0db9 488B10   		movq	(%rax), %rdx
+ 1204              		.loc 1 206 19
+ 1205 0dbc 488B45E8 		movq	-24(%rbp), %rax
+ 1206 0dc0 0FB7400A 		movzwl	10(%rax), %eax
+ 1207 0dc4 0FB7C0   		movzwl	%ax, %eax
+ 1208              		.loc 1 206 12
+ 1209 0dc7 4883C003 		addq	$3, %rax
+ 1210 0dcb 4801D0   		addq	%rdx, %rax
+ 1211              		.loc 1 206 31
+ 1212 0dce 89CA     		movl	%ecx, %edx
+ 1213              		.loc 1 206 29
+ 1214 0dd0 8810     		movb	%dl, (%rax)
+ 207:fx2.c         **** 	dest->data[fwInfo->vp + 4] = (uint8)(did & 0xFF);
+ 1215              		.loc 1 207 6
+ 1216 0dd2 488B45D0 		movq	-48(%rbp), %rax
+ 1217 0dd6 488B10   		movq	(%rax), %rdx
+ 1218              		.loc 1 207 19
+ 1219 0dd9 488B45E8 		movq	-24(%rbp), %rax
+ 1220 0ddd 0FB7400A 		movzwl	10(%rax), %eax
+ 1221 0de1 0FB7C0   		movzwl	%ax, %eax
+ 1222              		.loc 1 207 12
+ 1223 0de4 4883C004 		addq	$4, %rax
+ 1224 0de8 4801D0   		addq	%rdx, %rax
+ 1225              		.loc 1 207 31
+ 1226 0deb 0FB755DC 		movzwl	-36(%rbp), %edx
+ 1227              		.loc 1 207 29
+ 1228 0def 8810     		movb	%dl, (%rax)
+ 208:fx2.c         **** 	dest->data[fwInfo->vp + 5] = (uint8)(did >> 8);
+ 1229              		.loc 1 208 31
+ 1230 0df1 0FB745DC 		movzwl	-36(%rbp), %eax
+ 1231 0df5 66C1E808 		shrw	$8, %ax
+ 1232 0df9 89C1     		movl	%eax, %ecx
+ 1233              		.loc 1 208 6
+ 1234 0dfb 488B45D0 		movq	-48(%rbp), %rax
+ 1235 0dff 488B10   		movq	(%rax), %rdx
+ 1236              		.loc 1 208 19
+ 1237 0e02 488B45E8 		movq	-24(%rbp), %rax
+ 1238 0e06 0FB7400A 		movzwl	10(%rax), %eax
+ 1239 0e0a 0FB7C0   		movzwl	%ax, %eax
+ 1240              		.loc 1 208 12
+ 1241 0e0d 4883C005 		addq	$5, %rax
+ 1242 0e11 4801D0   		addq	%rdx, %rax
+ 1243              		.loc 1 208 31
+ 1244 0e14 89CA     		movl	%ecx, %edx
+ 1245              		.loc 1 208 29
+ 1246 0e16 8810     		movb	%dl, (%rax)
+ 1247              	.L62:
+ 209:fx2.c         **** cleanup:
+ 210:fx2.c         **** 	return retVal;
+ 1248              		.loc 1 210 9
+ 1249 0e18 8B45F8   		movl	-8(%rbp), %eax
+ 211:fx2.c         **** }
+ 1250              		.loc 1 211 1
+ 1251 0e1b C9       		leave
+ 1252              		.cfi_def_cfa 7, 8
+ 1253 0e1c C3       		ret
+ 1254              		.cfi_endproc
+ 1255              	.LFE9:
+ 1257              	.Letext0:
+ 1258              		.file 2 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
+ 1259              		.file 3 "/home/pong/FPGALink/makestuff/common/makestuff.h"
+ 1260              		.file 4 "/home/pong/FPGALink/makestuff/libs/libfx2loader/libfx2loader.h"
+ 1261              		.file 5 "/home/pong/FPGALink/makestuff/libs/libusbwrap/libusbwrap.h"
+ 1262              		.file 6 "libfpgalink.h"
+ 1263              		.file 7 "/home/pong/FPGALink/makestuff/libs/libbuffer/libbuffer.h"
+ 1264              		.file 8 "firmware.h"
+ 1265              		.file 9 "private.h"
+ 1266              		.file 10 "/usr/include/string.h"
+ 1267              		.file 11 "/home/pong/FPGALink/makestuff/libs/liberror/liberror.h"
+ 1268              		.file 12 "/usr/include/stdlib.h"
+ 3658              		.section	.note.gnu.property,"a"
+ 3659              		.align 8
+ 3660 0000 04000000 		.long	1f - 0f
+ 3661 0004 10000000 		.long	4f - 1f
+ 3662 0008 05000000 		.long	5
+ 3663              	0:
+ 3664 000c 474E5500 		.string	"GNU"
+ 3665              	1:
+ 3666              		.align 8
+ 3667 0010 020000C0 		.long	0xc0000002
+ 3668 0014 04000000 		.long	3f - 2f
+ 3669              	2:
+ 3670 0018 03000000 		.long	0x3
+ 3671              	3:
+ 3672 001c 00000000 		.align 8
+ 3673              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fx2.c
+     /tmp/ccS0xe7C.s:14     .text:0000000000000000 flLoadStandardFirmware
+     /tmp/ccS0xe7C.s:1105   .text:0000000000000cce copyFirmwareAndRewriteIDs
+     /tmp/ccS0xe7C.s:236    .text:0000000000000278 flFlashStandardFirmware
+     /tmp/ccS0xe7C.s:425    .text:000000000000047d flLoadCustomFirmware
+     /tmp/ccS0xe7C.s:639    .text:00000000000006c6 flFlashCustomFirmware
+     /tmp/ccS0xe7C.s:958    .text:0000000000000b29 flSaveFirmware
+
+UNDEFINED SYMBOLS
+usbValidateVidPid
+errRender
+strtoul
+strlen
+usbOpenDevice
+errPrefix
+bufInitialise
+_GLOBAL_OFFSET_TABLE_
+ramFirmware
+fx2WriteRAM
+bufDestroy
+usbCloseDevice
+__stack_chk_fail
+eepromNoBootFirmware
+fx2WriteEEPROM
+strcmp
+bufReadFromIntelHexFile
+i2cInitialise
+i2cWritePromRecords
+i2cFinalise
+bufAppendFromBinaryFile
+fx2ReadEEPROM
+bufWriteBinaryFile
+bufAppendBlock

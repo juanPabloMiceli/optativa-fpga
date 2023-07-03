@@ -1,0 +1,341 @@
+   1              		.file	"ram.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.file 0 "/home/pong/FPGALink/makestuff/libs/libfx2loader" "ram.c"
+   5              		.section	.rodata
+   6              		.align 8
+   7              	.LC0:
+   8 0000 66783257 		.string	"fx2WriteRAM(): Failed to put the CPU in reset"
+   8      72697465 
+   8      52414D28 
+   8      293A2046 
+   8      61696C65 
+   9 002e 0000     		.align 8
+  10              	.LC1:
+  11 0030 66783257 		.string	"fx2WriteRAM(): Failed to write block of bytes"
+  11      72697465 
+  11      52414D28 
+  11      293A2046 
+  11      61696C65 
+  12 005e 0000     		.align 8
+  13              	.LC2:
+  14 0060 66783257 		.string	"fx2WriteRAM(): Failed to write final block"
+  14      72697465 
+  14      52414D28 
+  14      293A2046 
+  14      61696C65 
+  15              		.text
+  16              		.globl	fx2WriteRAM
+  18              	fx2WriteRAM:
+  19              	.LFB4:
+  20              		.file 1 "ram.c"
+   1:ram.c         **** /*
+   2:ram.c         ****  * Copyright (C) 2009-2012 Chris McClelland
+   3:ram.c         ****  *
+   4:ram.c         ****  * This program is free software: you can redistribute it and/or modify
+   5:ram.c         ****  * it under the terms of the GNU Lesser General Public License as published by
+   6:ram.c         ****  * the Free Software Foundation, either version 3 of the License, or
+   7:ram.c         ****  * (at your option) any later version.
+   8:ram.c         ****  *
+   9:ram.c         ****  * This program is distributed in the hope that it will be useful,
+  10:ram.c         ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:ram.c         ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  12:ram.c         ****  * GNU Lesser General Public License for more details.
+  13:ram.c         ****  *
+  14:ram.c         ****  * You should have received a copy of the GNU Lesser General Public License
+  15:ram.c         ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  16:ram.c         ****  */
+  17:ram.c         **** #include <makestuff.h>
+  18:ram.c         **** #include <libusbwrap.h>
+  19:ram.c         **** #include <liberror.h>
+  20:ram.c         **** #include "libfx2loader.h"
+  21:ram.c         **** #include "vendorCommands.h"
+  22:ram.c         **** 
+  23:ram.c         **** #define BLOCK_SIZE 4096
+  24:ram.c         **** 
+  25:ram.c         **** // Write the supplied reader buffer to RAM, using the supplied VID/PID.
+  26:ram.c         **** //
+  27:ram.c         **** DLLEXPORT(FX2Status) fx2WriteRAM(
+  28:ram.c         **** 	struct USBDevice *device, const uint8 *bufPtr, uint32 numBytes, const char **error)
+  29:ram.c         **** {
+  21              		.loc 1 29 1
+  22              		.cfi_startproc
+  23 0000 F30F1EFA 		endbr64
+  24 0004 55       		pushq	%rbp
+  25              		.cfi_def_cfa_offset 16
+  26              		.cfi_offset 6, -16
+  27 0005 4889E5   		movq	%rsp, %rbp
+  28              		.cfi_def_cfa_register 6
+  29 0008 4883EC40 		subq	$64, %rsp
+  30 000c 48897DD8 		movq	%rdi, -40(%rbp)
+  31 0010 488975D0 		movq	%rsi, -48(%rbp)
+  32 0014 8955CC   		movl	%edx, -52(%rbp)
+  33 0017 48894DC0 		movq	%rcx, -64(%rbp)
+  34              		.loc 1 29 1
+  35 001b 64488B04 		movq	%fs:40, %rax
+  35      25280000 
+  35      00
+  36 0024 488945F8 		movq	%rax, -8(%rbp)
+  37 0028 31C0     		xorl	%eax, %eax
+  30:ram.c         **** 	FX2Status retVal = FX2_SUCCESS;
+  38              		.loc 1 30 12
+  39 002a C745F000 		movl	$0, -16(%rbp)
+  39      000000
+  31:ram.c         **** 	uint16 address = 0x0000;
+  40              		.loc 1 31 9
+  41 0031 66C745EE 		movw	$0, -18(%rbp)
+  41      0000
+  32:ram.c         **** 	uint8 byte = 0x01;
+  42              		.loc 1 32 8
+  43 0037 C645ED01 		movb	$1, -19(%rbp)
+  33:ram.c         **** 	USBStatus uStatus = usbControlWrite(
+  44              		.loc 1 33 22
+  45 003b 488D55ED 		leaq	-19(%rbp), %rdx
+  46 003f 488B45D8 		movq	-40(%rbp), %rax
+  47 0043 FF75C0   		pushq	-64(%rbp)
+  48 0046 68881300 		pushq	$5000
+  48      00
+  49 004b 41B90100 		movl	$1, %r9d
+  49      0000
+  50 0051 4989D0   		movq	%rdx, %r8
+  51 0054 B9000000 		movl	$0, %ecx
+  51      00
+  52 0059 BA00E600 		movl	$58880, %edx
+  52      00
+  53 005e BEA00000 		movl	$160, %esi
+  53      00
+  54 0063 4889C7   		movq	%rax, %rdi
+  55 0066 E8000000 		call	usbControlWrite@PLT
+  55      00
+  56 006b 4883C410 		addq	$16, %rsp
+  57 006f 8945F4   		movl	%eax, -12(%rbp)
+  34:ram.c         **** 		device,
+  35:ram.c         **** 		CMD_READ_WRITE_RAM, // bRequest: RAM access
+  36:ram.c         **** 		0xE600,             // wValue: address to write (FX2 CPUCS)
+  37:ram.c         **** 		0x0000,             // wIndex: unused
+  38:ram.c         **** 		&byte,              // data = 0x01: hold 8051 in reset
+  39:ram.c         **** 		1,                  // wLength: just one byte
+  40:ram.c         **** 		5000,               // timeout
+  41:ram.c         **** 		error
+  42:ram.c         **** 	);
+  43:ram.c         **** 	CHECK_STATUS(uStatus, FX2_USB_ERR, cleanup, "fx2WriteRAM(): Failed to put the CPU in reset");
+  58              		.loc 1 43 2
+  59 0072 837DF400 		cmpl	$0, -12(%rbp)
+  60 0076 0F849500 		je	.L4
+  60      0000
+  61              		.loc 1 43 2 is_stmt 0 discriminator 1
+  62 007c 488B45C0 		movq	-64(%rbp), %rax
+  63 0080 488D1500 		leaq	.LC0(%rip), %rdx
+  63      000000
+  64 0087 4889D6   		movq	%rdx, %rsi
+  65 008a 4889C7   		movq	%rax, %rdi
+  66 008d E8000000 		call	errPrefix@PLT
+  66      00
+  67 0092 C745F001 		movl	$1, -16(%rbp)
+  67      000000
+  68 0099 E9140100 		jmp	.L3
+  68      00
+  69              	.L6:
+  44:ram.c         **** 	while ( numBytes > BLOCK_SIZE ) {
+  45:ram.c         **** 		uStatus = usbControlWrite(
+  70              		.loc 1 45 13 is_stmt 1
+  71 009e 0FB755EE 		movzwl	-18(%rbp), %edx
+  72 00a2 488B4DD0 		movq	-48(%rbp), %rcx
+  73 00a6 488B45D8 		movq	-40(%rbp), %rax
+  74 00aa FF75C0   		pushq	-64(%rbp)
+  75 00ad 68881300 		pushq	$5000
+  75      00
+  76 00b2 41B90010 		movl	$4096, %r9d
+  76      0000
+  77 00b8 4989C8   		movq	%rcx, %r8
+  78 00bb B9000000 		movl	$0, %ecx
+  78      00
+  79 00c0 BEA00000 		movl	$160, %esi
+  79      00
+  80 00c5 4889C7   		movq	%rax, %rdi
+  81 00c8 E8000000 		call	usbControlWrite@PLT
+  81      00
+  82 00cd 4883C410 		addq	$16, %rsp
+  83 00d1 8945F4   		movl	%eax, -12(%rbp)
+  46:ram.c         **** 			device,
+  47:ram.c         **** 			CMD_READ_WRITE_RAM, // bRequest: RAM access
+  48:ram.c         **** 			address,            // wValue: RAM address to write
+  49:ram.c         **** 			0x0000,             // wIndex: unused
+  50:ram.c         **** 			bufPtr,             // data to be written
+  51:ram.c         **** 			BLOCK_SIZE,         // wLength: BLOCK_SIZE block
+  52:ram.c         **** 			5000,               // timeout
+  53:ram.c         **** 			error
+  54:ram.c         **** 		);
+  55:ram.c         **** 		CHECK_STATUS(uStatus, FX2_USB_ERR, cleanup, "fx2WriteRAM(): Failed to write block of bytes");
+  84              		.loc 1 55 3
+  85 00d4 837DF400 		cmpl	$0, -12(%rbp)
+  86 00d8 7422     		je	.L5
+  87              		.loc 1 55 3 is_stmt 0 discriminator 1
+  88 00da 488B45C0 		movq	-64(%rbp), %rax
+  89 00de 488D1500 		leaq	.LC1(%rip), %rdx
+  89      000000
+  90 00e5 4889D6   		movq	%rdx, %rsi
+  91 00e8 4889C7   		movq	%rax, %rdi
+  92 00eb E8000000 		call	errPrefix@PLT
+  92      00
+  93 00f0 C745F001 		movl	$1, -16(%rbp)
+  93      000000
+  94 00f7 E9B60000 		jmp	.L3
+  94      00
+  95              	.L5:
+  56:ram.c         **** 		numBytes -= BLOCK_SIZE;
+  96              		.loc 1 56 12 is_stmt 1
+  97 00fc 816DCC00 		subl	$4096, -52(%rbp)
+  97      100000
+  57:ram.c         **** 		bufPtr += BLOCK_SIZE;
+  98              		.loc 1 57 10
+  99 0103 488145D0 		addq	$4096, -48(%rbp)
+  99      00100000 
+  58:ram.c         **** 		address = (uint16)(address + BLOCK_SIZE);
+ 100              		.loc 1 58 11
+ 101 010b 668145EE 		addw	$4096, -18(%rbp)
+ 101      0010
+ 102              	.L4:
+  44:ram.c         **** 		uStatus = usbControlWrite(
+ 103              		.loc 1 44 19
+ 104 0111 817DCC00 		cmpl	$4096, -52(%rbp)
+ 104      100000
+ 105 0118 7784     		ja	.L6
+  59:ram.c         **** 	}
+  60:ram.c         **** 
+  61:ram.c         **** 	// Write final chunk of data
+  62:ram.c         **** 	uStatus = usbControlWrite(
+  63:ram.c         **** 		device,
+  64:ram.c         **** 		CMD_READ_WRITE_RAM, // bRequest: RAM access
+  65:ram.c         **** 		address,            // wValue: RAM address to write
+  66:ram.c         **** 		0x0000,             // wIndex: unused
+  67:ram.c         **** 		bufPtr,             // data to be written
+  68:ram.c         **** 		(uint16)numBytes,   // wLength: remaining bytes
+ 106              		.loc 1 68 3
+ 107 011a 8B45CC   		movl	-52(%rbp), %eax
+  62:ram.c         **** 		device,
+ 108              		.loc 1 62 12
+ 109 011d 0FB7F0   		movzwl	%ax, %esi
+ 110 0120 0FB755EE 		movzwl	-18(%rbp), %edx
+ 111 0124 488B4DD0 		movq	-48(%rbp), %rcx
+ 112 0128 488B45D8 		movq	-40(%rbp), %rax
+ 113 012c FF75C0   		pushq	-64(%rbp)
+ 114 012f 68881300 		pushq	$5000
+ 114      00
+ 115 0134 4189F1   		movl	%esi, %r9d
+ 116 0137 4989C8   		movq	%rcx, %r8
+ 117 013a B9000000 		movl	$0, %ecx
+ 117      00
+ 118 013f BEA00000 		movl	$160, %esi
+ 118      00
+ 119 0144 4889C7   		movq	%rax, %rdi
+ 120 0147 E8000000 		call	usbControlWrite@PLT
+ 120      00
+ 121 014c 4883C410 		addq	$16, %rsp
+ 122 0150 8945F4   		movl	%eax, -12(%rbp)
+  69:ram.c         **** 		5000,               // timeout
+  70:ram.c         **** 		error
+  71:ram.c         **** 	);
+  72:ram.c         **** 	CHECK_STATUS(uStatus, FX2_USB_ERR, cleanup, "fx2WriteRAM(): Failed to write final block");
+ 123              		.loc 1 72 2
+ 124 0153 837DF400 		cmpl	$0, -12(%rbp)
+ 125 0157 741F     		je	.L7
+ 126              		.loc 1 72 2 is_stmt 0 discriminator 1
+ 127 0159 488B45C0 		movq	-64(%rbp), %rax
+ 128 015d 488D1500 		leaq	.LC2(%rip), %rdx
+ 128      000000
+ 129 0164 4889D6   		movq	%rdx, %rsi
+ 130 0167 4889C7   		movq	%rax, %rdi
+ 131 016a E8000000 		call	errPrefix@PLT
+ 131      00
+ 132 016f C745F001 		movl	$1, -16(%rbp)
+ 132      000000
+ 133 0176 EB3A     		jmp	.L3
+ 134              	.L7:
+  73:ram.c         **** 
+  74:ram.c         **** 	// There's an unavoidable race condition here: this command brings the FX2 out of reset, which
+  75:ram.c         **** 	// causes it to drop off the bus for renumeration. It may drop off before or after the host
+  76:ram.c         **** 	// gets its acknowledgement, so we cannot trust the return code. We have no choice but to
+  77:ram.c         **** 	// assume it worked.
+  78:ram.c         **** 	byte = 0x00;
+ 135              		.loc 1 78 7 is_stmt 1
+ 136 0178 C645ED00 		movb	$0, -19(%rbp)
+  79:ram.c         **** 	uStatus = usbControlWrite(
+ 137              		.loc 1 79 12
+ 138 017c 488D55ED 		leaq	-19(%rbp), %rdx
+ 139 0180 488B45D8 		movq	-40(%rbp), %rax
+ 140 0184 6A00     		pushq	$0
+ 141 0186 68881300 		pushq	$5000
+ 141      00
+ 142 018b 41B90100 		movl	$1, %r9d
+ 142      0000
+ 143 0191 4989D0   		movq	%rdx, %r8
+ 144 0194 B9000000 		movl	$0, %ecx
+ 144      00
+ 145 0199 BA00E600 		movl	$58880, %edx
+ 145      00
+ 146 019e BEA00000 		movl	$160, %esi
+ 146      00
+ 147 01a3 4889C7   		movq	%rax, %rdi
+ 148 01a6 E8000000 		call	usbControlWrite@PLT
+ 148      00
+ 149 01ab 4883C410 		addq	$16, %rsp
+ 150 01af 8945F4   		movl	%eax, -12(%rbp)
+ 151              	.L3:
+  80:ram.c         **** 		device,
+  81:ram.c         **** 		CMD_READ_WRITE_RAM, // bRequest: RAM access
+  82:ram.c         **** 		0xE600,             // wValue: address to write (FX2 CPUCS)
+  83:ram.c         **** 		0x0000,             // wIndex: unused
+  84:ram.c         **** 		&byte,              // data = 0x00: bring 8051 out of reset
+  85:ram.c         **** 		1,                  // wLength: just one byte
+  86:ram.c         **** 		5000,               // timeout
+  87:ram.c         **** 		NULL
+  88:ram.c         **** 	);
+  89:ram.c         **** cleanup:
+  90:ram.c         **** 	return retVal;
+ 152              		.loc 1 90 9
+ 153 01b2 8B45F0   		movl	-16(%rbp), %eax
+  91:ram.c         **** }
+ 154              		.loc 1 91 1
+ 155 01b5 488B55F8 		movq	-8(%rbp), %rdx
+ 156 01b9 64482B14 		subq	%fs:40, %rdx
+ 156      25280000 
+ 156      00
+ 157 01c2 7405     		je	.L9
+ 158 01c4 E8000000 		call	__stack_chk_fail@PLT
+ 158      00
+ 159              	.L9:
+ 160 01c9 C9       		leave
+ 161              		.cfi_def_cfa 7, 8
+ 162 01ca C3       		ret
+ 163              		.cfi_endproc
+ 164              	.LFE4:
+ 166              	.Letext0:
+ 167              		.file 2 "/home/pong/FPGALink/makestuff/common/makestuff.h"
+ 168              		.file 3 "/home/pong/FPGALink/makestuff/libs/libusbwrap/libusbwrap.h"
+ 169              		.file 4 "libfx2loader.h"
+ 170              		.file 5 "/home/pong/FPGALink/makestuff/libs/liberror/liberror.h"
+ 835              		.section	.note.gnu.property,"a"
+ 836              		.align 8
+ 837 0000 04000000 		.long	1f - 0f
+ 838 0004 10000000 		.long	4f - 1f
+ 839 0008 05000000 		.long	5
+ 840              	0:
+ 841 000c 474E5500 		.string	"GNU"
+ 842              	1:
+ 843              		.align 8
+ 844 0010 020000C0 		.long	0xc0000002
+ 845 0014 04000000 		.long	3f - 2f
+ 846              	2:
+ 847 0018 03000000 		.long	0x3
+ 848              	3:
+ 849 001c 00000000 		.align 8
+ 850              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ram.c
+     /tmp/ccAUbHXx.s:18     .text:0000000000000000 fx2WriteRAM
+
+UNDEFINED SYMBOLS
+usbControlWrite
+errPrefix
+__stack_chk_fail
